@@ -123,95 +123,57 @@ class App extends React.Component {
           }
         }
 
-        //Usuario Invitado
-        //Siempre como INVITADO (POR AHORA) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<------------
-          //Borramos el localStorage por si hay algun pago inconcluso o algun dato del redux persistente
-          if (!(token == window.Config.TOKEN_INVITADO)) //Solo en caso que no exista un token
-            localStorage.clear();
+        this.setState({ validandoToken: true }, () => {
+          Rules_Usuario.validarToken(token)
+            .then(resultado => {
+              if (resultado == false) {
+                this.props.logout();
+                window.location.href = window.Config.URL_LOGIN + "?url=" + this.props.location.pathname + this.props.location.search;
+                return;
+              }
 
-          if (token == undefined || token == null || token == "undefined" || token == "" || token == window.Config.TOKEN_INVITADO) {
-            //Logueamos con el usuario Invitado
-            this.props.login({
-              datos: undefined,
-              token: window.Config.TOKEN_INVITADO
+              Rules_Usuario.datos(token)
+                .then(datos => {
+
+                  this.props.login({
+                    datos: datos,
+                    token: token
+                  });
+
+                  //let url = "/";
+                  if (search) {
+                    let url = search.get("url") || "/";
+                    if (url == "/") url = "/Inicio";
+                    this.props.redireccionar(url);
+                  } else {
+                    console.log(this.props.location);
+
+                    if (this.props.location.pathname == "/") {
+                      this.props.redireccionar("/Inicio");
+                    }
+                  }
+
+                  this.onLogin();
+                })
+                .catch(() => {
+                  this.props.logout();
+                  window.location.href = window.Config.URL_LOGIN + "?url=" + this.props.location.pathname + this.props.location.search;
+                });
+
+              this.setState({ validandoToken: false });
+            })
+            .catch(error => {
+              this.props.logout();
+              window.location.href = window.Config.URL_LOGIN + "?url=" + this.props.location.pathname + this.props.location.search;
+
+              this.setState({ validandoToken: false });
             });
-          } else {
-            this.props.login({
-              datos: {},
-              token: token
-            });
-          }
-          this.props.redireccionar("/Inicio");
-
-          // if(window.location.hash == '#/' || window.location.hash == '#/Inicio/HomeUsuario') {
-          //   this.props.redireccionar("/Inicio");
-          // }
-          // --------------------- OJO!! comente esto pero probar de q ande todo bien
-          // if (search) {
-          //   let url = search.get("url") || "/";
-          //   if (url == "/") url = "/Inicio";
-          //   this.props.redireccionar(url);
-          // } else {
-          //   console.log(this.props.location);
-
-          //   if (this.props.location.pathname == "/") {
-          //     this.props.redireccionar("/Inicio");
-          //   }
-          // }
-
-        // } else { //Usuario Vecino Virtual
-        //   this.setState({ validandoToken: true }, () => {
-        //     Rules_Usuario.validarToken(token)
-        //       .then(resultado => {
-        //         if (resultado == false) {
-        //           this.props.logout();
-        //           window.location.href = window.Config.URL_LOGIN + "?url=" + this.props.location.pathname + this.props.location.search;
-        //           return;
-        //         }
-
-        //         Rules_Usuario.datos(token)
-        //           .then(datos => {
-
-        //             this.props.login({
-        //               datos: datos,
-        //               token: token
-        //             });
-
-        //             //let url = "/";
-        //             if (search) {
-        //               let url = search.get("url") || "/";
-        //               if (url == "/") url = "/Inicio";
-        //               this.props.redireccionar(url);
-        //             } else {
-        //               console.log(this.props.location);
-
-        //               if (this.props.location.pathname == "/") {
-        //                 this.props.redireccionar("/Inicio");
-        //               }
-        //             }
-
-        //             this.onLogin();
-        //           })
-        //           .catch(() => {
-        //             this.props.logout();
-        //             window.location.href = window.Config.URL_LOGIN + "?url=" + this.props.location.pathname + this.props.location.search;
-        //           });
-
-        //         this.setState({ validandoToken: false });
-        //       })
-        //       .catch(error => {
-        //         this.props.logout();
-        //         window.location.href = window.Config.URL_LOGIN + "?url=" + this.props.location.pathname + this.props.location.search;
-
-        //         this.setState({ validandoToken: false });
-        //       });
-        //   });
-        // }
+        });
       });
     });
   }
 
-  init= (callback) => {
+  init = (callback) => {
     const service = Rules_VecinoVirtual.AplicacionPanel()
       .then(datos => {
         this.props.setAplicacionPanel(datos);
@@ -219,7 +181,7 @@ class App extends React.Component {
       .catch(error => {
         console.log(error);
       });
-      
+
     Promise.all([service]).then(() => {
       callback();
     });

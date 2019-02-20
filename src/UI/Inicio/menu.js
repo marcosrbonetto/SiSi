@@ -1,11 +1,11 @@
-import LandingPage from "@UI/Paginas/LandingPage/index";
+import Home from "@UI/Paginas/Home/index";
 
 const Menu = [
   {
     url: "/Inicio",
     exact: true,
     mostrarEnMenu: true,
-    component: LandingPage,
+    component: Home,
     nombre: "Si Estudio, Si Trabajo",
     titulo: "Si Estudio, Si Trabajo",
   }

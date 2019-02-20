@@ -90,6 +90,7 @@ module.exports = {
       "@Redux": "_Redux",
       "@Utils": "_Utils",
       "@Rules": "_Rules",
+      "@Assets": "_Assets",
       "@Resources": "_Resources",
       "@Componentes": "UI/_Componentes",
       "@UI": "UI",
