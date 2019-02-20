@@ -16,7 +16,6 @@ const styles = theme => ({
   },
   centerContainer: {
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center'
   },
   leftContainer: {
@@ -29,8 +28,8 @@ const styles = theme => ({
   },
   icono: {
     margin: 10,
-    width: 80,
-    height: 80,
+    width: 160,
+    height: 160,
   },
   usuario: {
     fontSize: '1.4em'
