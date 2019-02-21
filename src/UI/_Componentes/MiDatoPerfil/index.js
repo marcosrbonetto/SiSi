@@ -13,7 +13,7 @@ class MiDatoPerfil extends React.PureComponent {
     return (
       <React.Fragment>
         <div className={classes.classContainer}>
-          <i className={classNames("material-icons", classes.classIcono)}>{this.props.icono || this.props.iconoSvg || 'assignment'}</i>
+          {(this.props.iconoSvg && <div className={classes.classIconoSvg}>{this.props.iconoSvg}</div>) || <i className={classNames("material-icons", classes.classIcono)}>{this.props.icono || 'assignment'}</i>}
           <div className={classes.classTextos}>
             <Typography variant="body2">{this.props.texto}</Typography>
             <Typography variant="caption">{this.props.subtexto}</Typography>
@@ -36,6 +36,12 @@ const styles = theme => ({
     '& > *:nth-child(1)': {
       height: '18px'
     }
+  },
+  classIconoSvg: {
+    width: '20px',
+    height: '20px',
+    margin: '8px',
+    fill: '#737373',
   }
 });
 

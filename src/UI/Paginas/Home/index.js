@@ -81,7 +81,7 @@ class Home extends React.PureComponent {
                 </Typography>
               </div>
               <div className={classes.leftContainer}>
-                <Icon className={classes.iconoDetalle}>event</Icon>
+                <Icon className={classes.iconoDetalle}>insert_invitation</Icon>
                 <Typography variant="body1">
                   10/09/1990 (28 años)
               </Typography>

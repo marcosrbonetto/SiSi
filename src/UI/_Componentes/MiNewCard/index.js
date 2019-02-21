@@ -11,6 +11,7 @@ class MiCard extends React.PureComponent {
     let { classes,
       titulo,
       informacionAlerta,
+      seccionBotones,
      } = this.props;
 
     let conMargin = "margin" in this.props && this.props.margin !== false;
@@ -41,7 +42,7 @@ class MiCard extends React.PureComponent {
           )}
           {...this.props.cardProps}
         >
-          {informacionAlerta && <div className={classes.classInformacion}>
+          {informacionAlerta && <div className={classes.classSeccionTopBottom}>
             <i className={classNames('material-icons', classes.classIconoInfo ,this.props.classIconoInfo)}>info</i>
             <Typography variant="body2" className={this.props.textoInfo}>{informacionAlerta}</Typography>
           </div>}
@@ -55,6 +56,11 @@ class MiCard extends React.PureComponent {
 
             {this.props.children}
           </CardContent>
+          {seccionBotones && <div 
+          className={classNames(classes.classSeccionTopBottom, seccionBotones.className, 
+          (seccionBotones.align == 'left' && classes.contentAlignLeft) || (seccionBotones.align == 'center' && classes.contentAlignCenter) || (seccionBotones.align == 'right' && classes.contentAlignRight))}>
+            {seccionBotones.content}
+          </div>}
         </Card>
       </div>
     );
@@ -82,7 +88,7 @@ const styles = theme => ({
   cardSinPadding: {
     padding: '0 !important'
   },
-  classInformacion: {
+  classSeccionTopBottom: {
     padding: '20px',
     whiteSpace: 'normal',
     background: '#f1f1f1',
@@ -92,6 +98,15 @@ const styles = theme => ({
   classIconoInfo: {
     margin: '0px 14px 0px 0px',
     color: '#ffb300'
+  },
+  contentAlignLeft: {
+    justifyContent: 'flex-start'
+  },
+  contentAlignCenter: {
+    justifyContent: 'center'
+  },
+  contentAlignRight: {
+    justifyContent: 'flex-end'
   }
 });
 

@@ -93,6 +93,7 @@ module.exports = {
       "@Assets": "_Assets",
       "@Resources": "_Resources",
       "@Componentes": "UI/_Componentes",
+      "@ComponentesPerfil": "UI/Paginas/Perfil/Componentes",
       "@UI": "UI",
       "@ReduxSrc": "_Redux/Src"
     },

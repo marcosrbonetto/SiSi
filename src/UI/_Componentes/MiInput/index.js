@@ -2,7 +2,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import classNames from "classnames";
 
-import { Typography } from "@material-ui/core";
+import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -10,6 +10,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import Checkbox from '@material-ui/core/Checkbox';
+import ListItemText from '@material-ui/core/ListItemText';
 
 class MiInput extends React.PureComponent {
   render() {
@@ -21,7 +23,12 @@ class MiInput extends React.PureComponent {
       icono,
       iconoSvg,
       defaultValue,
-      placeholder
+      placeholder,
+      classInput,
+      type,
+      checked,
+      preInput,
+      postInput
     } = this.props;
 
     const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
@@ -29,50 +36,68 @@ class MiInput extends React.PureComponent {
     return (
       <React.Fragment>
         <div className={classes.classContainer}>
-          {(this.props.icono || this.props.iconoSvg) &&
-          <i className={classNames("material-icons", classes.classIcono)}>{this.props.icono || this.props.iconoSvg || 'assignment'}</i>}
-          <div className={classNames(classes.classTextos, classes.wideWidth)}>
+          {icono &&
+            <i className={classNames("material-icons", classes.classIcono)}>{icono || 'assignment'}</i>}
+          {iconoSvg &&
+            <div className={classes.classIconoSvg}>{iconoSvg}</div>}
 
-            {tipoInput && tipoInput == 'text' &&
-            <React.Fragment>
-              <TextField
-                label={label}
-                className={classNames(classes.wideWidth, this.props.classInput)}
-                value={defaultValue || ''}
-                margin="none"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                placeholder={placeholder}
-                inputProps={{
-                  className: classes.wideWidth
-                }}
-              />
+          <div className={classNames(classes.containerInput, classes.wideWidth)}>
+          <Typography variant="body1" className={classes.textoAdicional}>{preInput}</Typography>
+
+            {tipoInput && tipoInput == 'input' &&
+              <React.Fragment>
+                <TextField
+                  type={type || 'text'}
+                  label={label}
+                  className={classNames(classes.wideWidth, classInput)}
+                  value={defaultValue || ''}
+                  margin="none"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  placeholder={placeholder}
+                  inputProps={{
+                    className: classes.wideWidth
+                  }}
+                />
               </React.Fragment>
             }
-
 
             {tipoInput && tipoInput == 'select' &&
-            <React.Fragment>
-              <FormControl className={classNames(classes.formControl, classes.wideWidth)}>
-                <InputLabel shrink htmlFor={randomId+'-label-placeholder'}>{label}</InputLabel>
-                <Select
-                  value={defaultValue || 0}
-                  input={<Input name={randomId} id={randomId+'-label-placeholder'} />}
-                  displayEmpty
-                  name={randomId}
-                  className={this.props.classInput}
-                  placeholder={placeholder}
-                >
+              <React.Fragment>
+                <FormControl className={classNames(classes.formControl, classes.wideWidth)}>
+                  <InputLabel shrink htmlFor={randomId + '-label-placeholder'}>{label}</InputLabel>
+                  <Select
+                    value={defaultValue || 0}
+                    input={<Input name={randomId} id={randomId + '-label-placeholder'} />}
+                    displayEmpty
+                    name={randomId}
+                    className={classInput}
+                    placeholder={placeholder}
+                  >
 
-                  {itemsSelect && itemsSelect.map((item) => {
-                    return <MenuItem value={item.value}>{item.label}</MenuItem>;
-                  })}
-                </Select>
-              </FormControl>
+                    {itemsSelect && itemsSelect.map((item) => {
+                      return <MenuItem value={item.value}>{item.label}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
               </React.Fragment>
             }
 
+            {tipoInput && tipoInput == 'checkbox' &&
+              <React.Fragment>
+                <div className={classes.classCheckbox}>
+                <Checkbox
+                  checked={checked}
+                  tabIndex={-1}
+                  disableRipple
+                />
+                <ListItemText primary={label} className={classes.labelCheckbox} />
+                </div>
+              </React.Fragment>
+            }
+
+            <Typography variant="body1" className={classes.textoAdicional}>{postInput}</Typography>
           </div>
         </div>
       </React.Fragment>
@@ -95,6 +120,28 @@ const styles = theme => ({
   },
   wideWidth: {
     width: '100%'
+  },
+  classIconoSvg: {
+    width: '27px',
+    height: '27px',
+    margin: '8px',
+    fill: '#737373',
+    marginTop: '13px'
+  },
+  classCheckbox: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  labelCheckbox: {
+    padding:'0px'
+  },
+  containerInput: {
+    display: 'flex',
+    alignItems: 'baseline',
+    fontSize: '18px',
+  },
+  textoAdicional: {
+    fontSize: '16px',
   }
 });
 

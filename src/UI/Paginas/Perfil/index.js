@@ -11,21 +11,16 @@ import classNames from "classnames";
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
 
-//Assets
-import Logo_SiSi from "@Assets/images/Logo_SiSi.png";
-
 //Material UI 
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import Avatar from "@material-ui/core/Avatar";
-import Icon from '@material-ui/core/Icon';
-import Divider from '@material-ui/core/Divider';
-import Button from "@material-ui/core/Button";
 
-//Mis Componentes
-import MiCard from "@Componentes/MiNewCard";
-import MiDatoPerfil from "@Componentes/MiDatoPerfil";
-import MiInput from "@Componentes/MiInput";
+import DatosAcceso from '@ComponentesPerfil/DatosAcceso'
+import DatosAdicionales from '@ComponentesPerfil/DatosAdicionales'
+import DatosContacto from '@ComponentesPerfil/DatosContacto'
+import DatosPersonales from '@ComponentesPerfil/DatosPersonales'
+import DomicilioParticular from '@ComponentesPerfil/DomicilioParticular'
+import Notificaciones from '@ComponentesPerfil/Notificaciones'
 
 const mapStateToProps = state => {
   return {
@@ -50,7 +45,6 @@ class Perfil extends React.PureComponent {
   }
 
   componentWillMount() {
-    //this.props.mostrarCargando(true);
 
   }
 
@@ -72,137 +66,28 @@ class Perfil extends React.PureComponent {
               <Avatar alt="Menu del usuario" src={urlFotoPerfil} className={classNames(classes.icono)} /><br /><br />
             </div>
 
-            <MiCard
-              titulo={'Datos personales'}
-              informacionAlerta={'Como sus datos personales se encuentran validados por el Registro Nacional de Personas, estos no se pueden editar'}
-            >
-
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'Nombre'}
-                subtexto={'Adrian Dotta'}
-              />
-              <br />
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'N° de documento'}
-                subtexto={'35526616'}
-              />
-              <br />
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'CUIL'}
-                subtexto={'20355266169'}
-              />
-              <br />
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'Fecha de nacimiento'}
-                subtexto={'10/09/1990'}
-              />
-              <br />
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'Sexo'}
-                subtexto={'Masculino'}
-              />
-              <br />
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'Domicilio legal'}
-                subtexto={'Manzana F Lote 18, B° Los Cielos, Valle Escondido, Cordoba Capital, Cordoba, Cordoba, Argentina (Código Postal: 5003)'}
-              />
-
-            </MiCard>
+            <DatosPersonales />
+            
             <br /><br />
-            <MiCard
-              titulo={'Datos de acceso'}
-            >
-
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'Nombre de Usuario'}
-                subtexto={'dotta_a'}
-              />
-              <br />
-              <MiDatoPerfil
-                icono={'assignment'}
-                texto={'Contraseña'}
-                subtexto={'••••••••••••'}
-              />
-
-            </MiCard>
+            
+            <DatosAcceso />
+            
             <br /><br />
-            <MiCard
-              titulo={'Domicilio particular'}
-            >
+            
+            <DomicilioParticular />
 
-              <Grid container spacing={16}>
-                <Grid item xs={12} sm={8}>
-                  <MiInput
-                    tipoInput={'text'}
-                    label={'Dirección'}
-                    defaultValue={'Parana'}
-                  />
-                  <br />
-                  <Grid container>
-                    <Grid item xs={12} sm={6}>
-                      <MiInput
-                        tipoInput={'text'}
-                        label={'Torre'}
-                        defaultValue={'lala'}
-                        placeholder={'(Opcional)'}
-                      />
-                    </Grid>
-                    <br />
-                    <Grid item xs={12} sm={6}>
-                      <MiInput
-                        tipoInput={'text'}
-                        label={'Piso'}
-                        defaultValue={'8'}
-                      />
-                    </Grid>
-                  </Grid>
-                  <br />
-                  <MiInput
-                    tipoInput={'select'}
-                    label={'Barrio'}
-                    defaultValue={1}
-                    itemsSelect={
-                      [
-                        {
-                          value: 1,
-                          label: 'Barrio 1'
-                        },
-                        {
-                          value: 2,
-                          label: 'Barrio 2'
-                        },
-                        {
-                          value: 3,
-                          label: 'Barrio 3'
-                        },
-                      ]
-                    }
-                  />
-                </Grid>
+            <br /><br />
+            
+            <DatosAdicionales />
 
-                <Grid item xs={12} sm={4}>
-                  <MiInput
-                    tipoInput={'text'}
-                    label={'Altura'}
-                    defaultValue={'441'}
-                  />
-                  <br />
-                  <MiInput
-                    tipoInput={'text'}
-                    label={'Depto'}
-                    defaultValue={'B'}
-                  />
-                </Grid>
-              </Grid>
+            <br /><br />
 
-            </MiCard>
+            <DatosContacto />
+
+            <br/><br/>
+
+            <Notificaciones />
+
           </Grid>
         </Grid>
       </div>

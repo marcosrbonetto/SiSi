@@ -52,6 +52,10 @@ const styles = theme => ({
   },
   button: {
     marginTop: '6px'
+  },
+  bottomContent: {
+    display: 'flex',
+    alignItems: 'flex-end',
   }
 });
 
