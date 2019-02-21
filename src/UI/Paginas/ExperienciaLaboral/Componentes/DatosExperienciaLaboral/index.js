@@ -38,7 +38,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
     super(props);
 
     this.state = {
-
+      dialogoOpen: false
     };
   }
 
@@ -46,8 +46,17 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
   }
 
+  onDialogoOpen = () => {
+    this.setState({ dialogoOpen: true });
+  }
+
+  onDialogoClose = () => {
+    this.setState({ dialogoOpen: false });
+  }
+
   render() {
     const { classes } = this.props;
+    const { dialogoOpen } = this.state;
 
     return (
       <React.Fragment>
@@ -68,11 +77,12 @@ class DatosExperienciaLaboral extends React.PureComponent {
           />
 
           <MiControledDialog
-            open={true}
-            // onDialogoOpen={this.onDialogoOpen}
-            // onDialogoClose={this.onDialogoClose}
+            open={dialogoOpen}
+            onDialogoOpen={this.onDialogoOpen}
+            onDialogoClose={this.onDialogoClose}
             textoLink={'Agregar'}
             titulo={'Agregar experiencia laboral'}
+            classTextoLink={classes.textoLink}
           >
             <Grid container>
               <Grid item xs={12} sm={12}>
@@ -138,6 +148,11 @@ const styles = theme => ({
   bottomContent: {
     display: 'flex',
     alignItems: 'flex-end',
+  },
+  textoLink: {
+    color: theme.palette.primary.main,
+    textDecoration: 'underline',
+    marginLeft: '20px',
   }
 });
 

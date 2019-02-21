@@ -93,6 +93,7 @@ class MiInput extends React.PureComponent {
                     checked={checked}
                     tabIndex={-1}
                     disableRipple
+                    color="primary"
                   />
                   <ListItemText primary={label} className={classes.labelCheckbox} />
                 </div>
@@ -105,6 +106,7 @@ class MiInput extends React.PureComponent {
                   margin="normal"
                   label={label}
                   value={defaultValue || new Date()}
+                  format={'dd/MM/YYYY'}
                 />
               </React.Fragment>
             }

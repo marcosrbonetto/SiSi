@@ -50,14 +50,14 @@ class MiControledDialog extends React.PureComponent {
   };
 
   render() {
-    let { classes, titulo, textoLink, textoInformativo } = this.props;
+    let { classes, titulo, textoLink, textoInformativo, classTextoLink } = this.props;
 
     return (
       <div>
         {!this.props.buttonAction &&
           <Typography
             onClick={this.handleOpenModal}
-            variant="subheading" className={classNames(classes.textList, classes.link)} gutterBottom>{textoLink}</Typography>
+            variant="subheading" className={classNames(classes.textList, classes.link, classTextoLink)} gutterBottom>{textoLink}</Typography>
         }
         {this.props.buttonAction &&
           <div>
