@@ -1,6 +1,7 @@
 import Home from "@UI/Paginas/Home/index";
 import Perfil from "@UI/Paginas/Perfil/index";
 import ExperienciaLaboral from "@UI/Paginas/ExperienciaLaboral/index";
+import EstudiosRealizados from "@UI/Paginas/EstudiosRealizados/index";
 
 const Menu = [
   {
@@ -26,6 +27,14 @@ const Menu = [
     component: ExperienciaLaboral,
     nombre: "Mi Experiencia Laboral",
     titulo: "Mi Experiencia Laboral",
+  },
+  {
+    url: "/Inicio/EstudiosRealizados",
+    exact: true,
+    mostrarEnMenu: true,
+    component: EstudiosRealizados,
+    nombre: "Mis Estudios Realizados",
+    titulo: "Mis Estudios Realizados",
   }
 ];
 
