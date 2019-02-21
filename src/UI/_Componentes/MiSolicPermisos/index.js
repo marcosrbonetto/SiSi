@@ -45,7 +45,7 @@ class MiSolicPermisos extends React.PureComponent {
 
     return (
       <div className={classes.root}>
-        <Badge badgeContent={this.props.cantPermisos} color="secondary" className={classNames(classes.lista,classes.container)}>
+        <Badge badgeContent={this.props.cantPermisos} color="primary" className={classNames(classes.lista,classes.container)}>
           <FormControl className={classes.lista}>
             <InputLabel htmlFor="select-multiple-checkbox" className={classes.labelSelect}>{this.props.label}</InputLabel>
             <Select

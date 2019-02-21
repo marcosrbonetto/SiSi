@@ -100,7 +100,7 @@ class Home extends React.PureComponent {
               </div>
 
               <div className={classes.leftContainer}>
-                <Button variant="outlined" color="secondary" size="small" className={classes.button}>
+                <Button variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
                 Modificar
                 </Button>
@@ -117,7 +117,7 @@ class Home extends React.PureComponent {
                 <Typography variant="body1">
                   Te preinscribiste a Administración - Ingles - Nivel Básico
               </Typography>
-              <Button variant="outlined" color="secondary" size="small" className={classes.button}>
+              <Button variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>delete</Icon>
                 Desinscribirme
                 </Button>
@@ -134,7 +134,7 @@ class Home extends React.PureComponent {
                 <Typography variant="body1">
                   No cargaste experiencias laborales
               </Typography>
-              <Button variant="outlined" color="secondary" size="small" className={classes.button}>
+              <Button variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
                 Modificar
                 </Button>
@@ -151,7 +151,7 @@ class Home extends React.PureComponent {
                 <Typography variant="body1">
                   No cargaste estudios realizados
               </Typography>
-              <Button variant="outlined" color="secondary" size="small" className={classes.button}>
+              <Button variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
                 Modificar
                 </Button>

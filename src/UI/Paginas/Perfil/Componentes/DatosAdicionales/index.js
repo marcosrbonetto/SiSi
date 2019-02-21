@@ -53,7 +53,7 @@ class DatosAdicionales extends React.PureComponent {
                     titulo={'Datos adicionales'}
                     seccionBotones={{
                         align: 'right',
-                        content: <Button variant="outlined" color="secondary" className={classes.button}>
+                        content: <Button variant="outlined" color="primary" className={classes.button}>
                         <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
                         Modificar</Button>
                     }}

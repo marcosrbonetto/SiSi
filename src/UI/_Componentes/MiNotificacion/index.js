@@ -182,7 +182,7 @@ class MiNotificacion extends React.PureComponent {
           color="inherit"
           onClick={this.handleClick}
         >
-          {(this.state.cantTotalNotif > 0 && <Badge badgeContent={this.state.cantTotalNotif} color="secondary" >
+          {(this.state.cantTotalNotif > 0 && <Badge badgeContent={this.state.cantTotalNotif} color="primary" >
             <NotificationsIcon />
           </Badge>)
             || <NotificationsIcon />}
@@ -220,7 +220,7 @@ class MiNotificacion extends React.PureComponent {
 
             {this.state.arrayCUITNotificaciones && this.state.arrayCUITNotificaciones.map((item, index) => {
               return <div>
-                <Badge badgeContent={item.cantNotif} color="secondary" classes={{ badge: classes.badgeNotificaciones }}>
+                <Badge badgeContent={item.cantNotif} color="primary" classes={{ badge: classes.badgeNotificaciones }}>
                   <ExpansionPanel expanded={expanded === 'panel' + index} onChange={this.handleChange('panel' + index)}>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                       <Typography variant="subheading">{item.cuit == null ? 'Generales' : (item.cuit == cuilUserLog ? 'Mis Notificaciones' : item.cuit)}</Typography>
@@ -266,7 +266,7 @@ class MiNotificacion extends React.PureComponent {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleToggleNotificacion} color="secondary">
+            <Button onClick={this.handleToggleNotificacion} color="primary">
               Cerrar
             </Button>
           </DialogActions>

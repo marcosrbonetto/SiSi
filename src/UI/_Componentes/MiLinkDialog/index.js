@@ -104,15 +104,15 @@ class MiLinkDialog extends React.PureComponent {
           <DialogActions>
             {(this.props.buttonOptions && 
             <div>
-              <Button onClick={this.handleCancelEvent} color="secondary">
+              <Button onClick={this.handleCancelEvent} color="primary">
                 {this.props.labelCancel ? this.props.labelCancel : 'Cancelar'}
               </Button>
-              <Button onClick={this.handleAcceptEvent} color="secondary">
+              <Button onClick={this.handleAcceptEvent} color="primary">
                 {this.props.labelAccept ? this.props.labelAccept : 'Aceptar'}
               </Button>
             </div>
             ) || 
-            <Button onClick={this.handleCloseModal} color="secondary">
+            <Button onClick={this.handleCloseModal} color="primary">
               Cerrar
             </Button>}
           </DialogActions>

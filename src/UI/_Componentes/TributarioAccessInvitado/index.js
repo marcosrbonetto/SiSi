@@ -178,7 +178,7 @@ class TributarioAccessInvitado extends React.PureComponent {
                             <Grid item xs={3}>
                                 <Button
                                     variant="contained"
-                                    color="secondary"
+                                    color="primary"
                                     className={classNames(classes.buttonActions, "buttonActions")}
                                     onClick={this.handleEntrarTributo}
                                 >Entrar</Button>

@@ -76,7 +76,7 @@ class LandingPage extends React.PureComponent {
 
           <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               className={classes.buttonActions}
               href={'https://servicios2.cordoba.gov.ar/MuniOnlinePanel/#/'}
               target={'_blank'}

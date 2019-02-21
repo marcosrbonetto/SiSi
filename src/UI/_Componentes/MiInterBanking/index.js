@@ -176,7 +176,7 @@ class MiInterBanking extends React.PureComponent {
             <div key="buttonAction">
               <Button
                 variant="contained"
-                color="secondary"
+                color="primary"
                 className={classNames(classes.buttonActions, classes.buttonMercadoLibre)}
                 onClick={this.handleClick}
                 disabled={this.state.disabled}
@@ -206,7 +206,7 @@ class MiInterBanking extends React.PureComponent {
                   <span className={classes.textoInfoCupon}>Se generó correctamente {infoCupon.lenght > 1 ? 'los cupones' : 'el cupón'} de pago. </span>
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                     href={'https://sib1.interbanking.com.ar/secureLogin.do?from=home'}
                     target="_blank"
                   >

@@ -120,7 +120,7 @@ class MiInformacionDeudaCUIT extends Component {
                         action={
                             <Button
                                 variant="outlined"
-                                color="secondary"
+                                color="primary"
                                 className={classes.importButton}
                                 onClick={this.handleGetCUITAfip}
                             >
@@ -135,7 +135,7 @@ class MiInformacionDeudaCUIT extends Component {
                         {arrayCuits.length > 0 && arrayCuits.map((cuit) => {
                             return <Button
                                 variant="outlined"
-                                color="secondary"
+                                color="primary"
                                 onClick={this.handleShowReport}
                                 cuit={cuit}
                                 className={classes.buttonCUIT}

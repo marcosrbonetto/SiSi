@@ -55,7 +55,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
           informacionAlerta={'Cargá acá tu último trabajo formal o informal. Por ej.: Atención del público en Centro de Salud. Recordá que es obligatorio. Podes cargar mas de una actividad.'}
           seccionBotones={{
             align: 'right',
-            content: <Button variant="outlined" color="secondary" className={classes.button}>
+            content: <Button variant="outlined" color="primary" className={classes.button}>
               <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
               Guardar</Button>
           }}

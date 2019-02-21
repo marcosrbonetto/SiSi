@@ -290,7 +290,7 @@ class MiMercadoPago extends React.PureComponent {
           <div key="buttonAction">
             <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               className={classNames(classes.buttonActions, classes.buttonMercadoLibre)}
               onClick={() => { this.onBotonCedulonClick() }}
               disabled={this.state.disabled}
@@ -334,7 +334,7 @@ class MiMercadoPago extends React.PureComponent {
                 <Grid item xs={12} sm={3}>
                   <Button
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                     className={classes.buttonActions}
                     onClick={this.handleValidarEmail}
                   >

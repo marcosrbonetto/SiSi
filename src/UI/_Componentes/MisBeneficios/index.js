@@ -254,7 +254,7 @@ class MisBeneficios extends React.PureComponent {
 
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             className={classNames(classes.buttonActions, classes.promotionButton)}
             onClick={this.handleClick}
           >

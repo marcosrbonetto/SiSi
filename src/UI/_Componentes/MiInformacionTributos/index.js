@@ -64,7 +64,7 @@ class MiInformacionTributos extends React.Component {
           classMaxWidth={classes.maxWidth}
         >
           <div key="buttonAction">
-            <Button onClick={this.onDialogoOpen} className={classNames(classes.btnInfoTributos, "btnInfoTributos")} variant="outlined" color="secondary">
+            <Button onClick={this.onDialogoOpen} className={classNames(classes.btnInfoTributos, "btnInfoTributos")} variant="outlined" color="primary">
               Información de Tributos
             </Button>
           </div>

@@ -40,7 +40,7 @@ class MiSoporteUsuario extends React.PureComponent {
           disableHoverListener
           disableTouchListener
           interactive>
-          <Button onClick={this.handleTooltipOpen} className={classes.button} color="secondary">
+          <Button onClick={this.handleTooltipOpen} className={classes.button} color="primary">
             <i class="material-icons">announcement</i>
             <span className={classes.btnAnimation}>Soporte</span>
           </Button>

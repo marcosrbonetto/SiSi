@@ -184,7 +184,7 @@ class MiAlternativaPlan extends React.Component {
 
                       <Button
                         variant="outlined"
-                        color="secondary"
+                        color="primary"
                       //className={classes.buttonActions}
                       >Recalcular</Button>
                     </Paper>
@@ -226,7 +226,7 @@ class MiAlternativaPlan extends React.Component {
                           <div key="buttonAction">
                             <Button
                               variant="outlined"
-                              color="secondary"
+                              color="primary"
                               onClick={this.handleShowImpresion}
                             >Imprimir</Button>
                           </div>
@@ -263,7 +263,7 @@ class MiAlternativaPlan extends React.Component {
                           <div key="buttonAction">
                             <Button
                               variant="outlined"
-                              color="secondary"
+                              color="primary"
                               onClick={this.handleShowImpresion}
                             >Imprimir</Button>
                           </div>
@@ -286,7 +286,7 @@ class MiAlternativaPlan extends React.Component {
           <div key="footerContent" className={classes.footerContent}>
             {!showCalcular && <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               className={classes.buttonActions}
               disabled={disabledCalcular}
               onClick={this.handleShowCalculador}
@@ -294,7 +294,7 @@ class MiAlternativaPlan extends React.Component {
               ||
               <Button
                 variant="contained"
-                color="secondary"
+                color="primary"
                 className={classes.buttonActions}
                 onClick={this.handleHideCalculador}
               >Ver Períodos</Button>

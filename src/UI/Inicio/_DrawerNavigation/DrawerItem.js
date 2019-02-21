@@ -63,14 +63,14 @@ const styles = theme => {
     textoSeleccionado: {
       "& span": {
         fontWeight: 500,
-        color: theme.palette.secondary.main
+        color: theme.palette.primary.main
       }
     },
     icono: {
       color: "#888"
     },
     iconoSeleccionado: {
-      color: theme.palette.secondary.main
+      color: theme.palette.primary.main
     }
   };
 };

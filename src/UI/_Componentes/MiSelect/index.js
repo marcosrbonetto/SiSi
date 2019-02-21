@@ -68,7 +68,7 @@ const styles = theme => ({
 function NoOptionsMessage(props) {
   return (
     <Typography
-      color="textSecondary"
+      color="textPrimary"
       className={props.selectProps.classes.noOptionsMessage}
       {...props.innerProps}
     >
@@ -118,7 +118,7 @@ function Option(props) {
 function Placeholder(props) {
   return (
     <Typography
-      color="textSecondary"
+      color="textPrimary"
       className={props.selectProps.classes.placeholder}
       {...props.innerProps}
     >

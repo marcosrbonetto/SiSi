@@ -149,7 +149,7 @@ class MiToolbar extends React.Component {
     titulo = getTextoTipoTributo(titulo);
 
     return (
-      <AppBar position="absolute" className={classNames(classes.appBar)}>
+      <AppBar color="secondary" position="absolute" className={classNames(classes.appBar)}>
         <Toolbar disableGutters={true} className={classes.toolbar}>
           {this.props.renderLeftIcon != undefined &&
             this.props.renderLeftIcon()}
@@ -193,7 +193,7 @@ class MiToolbar extends React.Component {
 
           {/* Inicio sesion Vecino Virtual */}
           {/*!this.state.datosUsuario && <div>
-            <Button onClick={this.handleInicioSesion} variant="contained" color="secondary">
+            <Button onClick={this.handleInicioSesion} variant="contained" color="primary">
               Iniciar Sesión
             </Button>
           </div>*/}
@@ -269,7 +269,7 @@ class MiToolbar extends React.Component {
             this.props.cargando == true && classes.contenedorCargandoVisible
           )}
         >
-          <LinearProgress color="secondary" />
+          <LinearProgress color="primary" />
         </div>
       </AppBar>
     );

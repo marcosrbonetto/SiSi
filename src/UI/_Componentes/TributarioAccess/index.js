@@ -94,7 +94,7 @@ class TributarioAccess extends React.PureComponent {
                             <div>
                                 <Button
                                     variant="outlined"
-                                    color="secondary"
+                                    color="primary"
                                     className={classNames(classes.buttonActions, classes.buttonAddTributo, 'botonesTributarios')}
                                     tributo={this.props.tipo}
                                     onClick={this.handleOnClickAddTributo}>

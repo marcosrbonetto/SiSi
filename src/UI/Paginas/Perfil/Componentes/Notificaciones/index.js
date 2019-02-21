@@ -53,7 +53,7 @@ class Notificaciones extends React.PureComponent {
           informacionAlerta={'Para poder comunicarnos con vos, necesitamos que aceptes recibir notificaciones a través de los datos de contacto que completaste en el punto anterior'}
           seccionBotones={{
             align: 'right',
-            content: <Button variant="outlined" color="secondary" className={classes.button}>
+            content: <Button variant="outlined" color="primary" className={classes.button}>
             <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
             Modificar</Button>
           }}

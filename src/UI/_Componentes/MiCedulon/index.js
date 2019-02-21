@@ -156,7 +156,7 @@ class MiCedulon extends React.PureComponent {
           <div key="buttonAction">
             <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               className={classes.buttonActions}
               onClick={this.handleClick}
               disabled={this.state.disabled}

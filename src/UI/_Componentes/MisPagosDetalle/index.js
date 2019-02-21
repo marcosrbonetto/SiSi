@@ -260,7 +260,7 @@ class MisPagosDetalle extends React.PureComponent {
           Los cuales pertenecen al beneficio <b>{beneficio.beneficio.titulo}</b>, desea aplicar el descuento?
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             size="small"
             style={{
               background: '#ffa114',

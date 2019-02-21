@@ -27,7 +27,7 @@ class MiPDFPrinter extends React.PureComponent {
         {base64File != '' && <div>
           {isIE && <Button
             variant="outlined"
-            color="secondary"
+            color="primary"
             onClick={this.printFile}
             className={buttonStyle || classes.bottonDescarga}
           >
@@ -39,7 +39,7 @@ class MiPDFPrinter extends React.PureComponent {
                 <Button
                   size="small"
                   variant="outlined"
-                  color="secondary"
+                  color="primary"
                   href={base64File}
                   download={textoFile}
                   className={buttonStyle || classes.bottonDescarga}

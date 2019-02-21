@@ -21,7 +21,7 @@ class IndicadorCargando extends React.PureComponent {
           className={classNames(classes.background)}
           style={{ opacity: opacity, backgroundColor: backgroundColor }}
         />
-        <CircularProgress color="secondary" />
+        <CircularProgress color="primary" />
       </div>
     );
   }
