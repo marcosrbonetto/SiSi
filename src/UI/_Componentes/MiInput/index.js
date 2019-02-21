@@ -13,6 +13,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import { MuiPickersUtilsProvider, TimePicker, DatePicker } from 'material-ui-pickers';
+
 class MiInput extends React.PureComponent {
   render() {
     let {
@@ -42,7 +44,7 @@ class MiInput extends React.PureComponent {
             <div className={classes.classIconoSvg}>{iconoSvg}</div>}
 
           <div className={classNames(classes.containerInput, classes.wideWidth)}>
-          <Typography variant="body1" className={classes.textoAdicional}>{preInput}</Typography>
+            <Typography variant="body1" className={classes.textoAdicional}>{preInput}</Typography>
 
             {tipoInput && tipoInput == 'input' &&
               <React.Fragment>
@@ -87,13 +89,23 @@ class MiInput extends React.PureComponent {
             {tipoInput && tipoInput == 'checkbox' &&
               <React.Fragment>
                 <div className={classes.classCheckbox}>
-                <Checkbox
-                  checked={checked}
-                  tabIndex={-1}
-                  disableRipple
-                />
-                <ListItemText primary={label} className={classes.labelCheckbox} />
+                  <Checkbox
+                    checked={checked}
+                    tabIndex={-1}
+                    disableRipple
+                  />
+                  <ListItemText primary={label} className={classes.labelCheckbox} />
                 </div>
+              </React.Fragment>
+            }
+
+            {tipoInput && tipoInput == 'date' &&
+              <React.Fragment>
+                <DatePicker
+                  margin="normal"
+                  label={label}
+                  value={defaultValue || new Date()}
+                />
               </React.Fragment>
             }
 
@@ -133,7 +145,7 @@ const styles = theme => ({
     alignItems: 'center',
   },
   labelCheckbox: {
-    padding:'0px'
+    padding: '0px'
   },
   containerInput: {
     display: 'flex',

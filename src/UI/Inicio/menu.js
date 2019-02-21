@@ -1,5 +1,6 @@
 import Home from "@UI/Paginas/Home/index";
 import Perfil from "@UI/Paginas/Perfil/index";
+import ExperienciaLaboral from "@UI/Paginas/ExperienciaLaboral/index";
 
 const Menu = [
   {
@@ -17,6 +18,14 @@ const Menu = [
     component: Perfil,
     nombre: "Mi Perfil",
     titulo: "Mi Perfil",
+  },
+  {
+    url: "/Inicio/ExperienciaLaboral",
+    exact: true,
+    mostrarEnMenu: true,
+    component: ExperienciaLaboral,
+    nombre: "Mi Experiencia Laboral",
+    titulo: "Mi Experiencia Laboral",
   }
 ];
 

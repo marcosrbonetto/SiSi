@@ -94,6 +94,8 @@ module.exports = {
       "@Resources": "_Resources",
       "@Componentes": "UI/_Componentes",
       "@ComponentesPerfil": "UI/Paginas/Perfil/Componentes",
+      "@ComponentesExperienciaLaboral": "UI/Paginas/ExperienciaLaboral/Componentes",
+      "@ComponentesEstudiosRealizados": "UI/Paginas/EstudiosRealizados/Componentes",
       "@UI": "UI",
       "@ReduxSrc": "_Redux/Src"
     },
