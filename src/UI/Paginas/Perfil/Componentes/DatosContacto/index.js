@@ -64,7 +64,7 @@ class DatosContacto extends React.PureComponent {
                 icono={'mail'}
                 tipoInput={'input'}
                 label={'E-Mail'}
-                defaultValue={'adridotta@gmail.com'}
+                value={'adridotta@gmail.com'}
               />
             </Grid>
             <br/><br/><br/><br/>
@@ -77,7 +77,7 @@ class DatosContacto extends React.PureComponent {
                       tipoInput={'input'}
                       type={'number'}
                       label={'Celular'}
-                      defaultValue={'351'}
+                      value={'351'}
                       preInput={'0'}
                       placeholder={'Área'}
                     />
@@ -87,7 +87,7 @@ class DatosContacto extends React.PureComponent {
                     <MiInput
                       tipoInput={'input'}
                       type={'number'}
-                      defaultValue={'2056172'}
+                      value={'2056172'}
                       preInput={'15'}
                       placeholder={'Número'}
                     />
@@ -112,7 +112,7 @@ class DatosContacto extends React.PureComponent {
                     <MiInput
                       tipoInput={'input'}
                       type={'number'}
-                      defaultValue={''}
+                      value={''}
                       placeholder={'Número'}
                     />
                   </Grid>

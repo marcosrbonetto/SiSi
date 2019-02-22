@@ -63,7 +63,7 @@ class DomicilioParticular extends React.PureComponent {
               <MiInput
                 tipoInput={'input'}
                 label={'Dirección'}
-                defaultValue={'Parana'}
+                value={'Parana'}
               />
               <br />
               <Grid container>
@@ -71,7 +71,7 @@ class DomicilioParticular extends React.PureComponent {
                   <MiInput
                     tipoInput={'input'}
                     label={'Torre'}
-                    defaultValue={'lala'}
+                    value={'lala'}
                     placeholder={'(Opcional)'}
                   />
                 </Grid>
@@ -80,7 +80,7 @@ class DomicilioParticular extends React.PureComponent {
                   <MiInput
                     tipoInput={'input'}
                     label={'Piso'}
-                    defaultValue={'8'}
+                    value={'8'}
                   />
                 </Grid>
               </Grid>
@@ -88,7 +88,7 @@ class DomicilioParticular extends React.PureComponent {
               <MiInput
                 tipoInput={'select'}
                 label={'Barrio'}
-                defaultValue={0}
+                value={0}
                 itemsSelect={
                   [
                     {
@@ -116,13 +116,13 @@ class DomicilioParticular extends React.PureComponent {
               <MiInput
                 tipoInput={'input'}
                 label={'Altura'}
-                defaultValue={'441'}
+                value={'441'}
               />
               <br />
               <MiInput
                 tipoInput={'input'}
                 label={'Depto'}
-                defaultValue={'B'}
+                value={'B'}
               />
             </Grid>
           </Grid>

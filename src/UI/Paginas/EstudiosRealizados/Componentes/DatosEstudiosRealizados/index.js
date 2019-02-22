@@ -89,7 +89,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
                 <MiInput
                   tipoInput={'select'}
                   label={'Tipo de estudio'}
-                  defaultValue={1}
+                  value={1}
                   itemsSelect={
                     [
                       {
@@ -137,7 +137,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
                   <MiInput
                     tipoInput={'select'}
                     label={'Provincia'}
-                    defaultValue={1}
+                    value={1}
                     itemsSelect={
                       [
                         {
@@ -159,7 +159,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
                 <MiInput
                     tipoInput={'select'}
                     label={'Año de egreso'}
-                    defaultValue={2019}
+                    value={2019}
                     itemsSelect={
                       [
                         {

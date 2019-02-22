@@ -63,7 +63,7 @@ class DatosAdicionales extends React.PureComponent {
                             <MiInput
                                 tipoInput={'select'}
                                 label={'Estado civil'}
-                                defaultValue={0}
+                                value={0}
                                 itemsSelect={
                                     [
                                         {
@@ -97,7 +97,7 @@ class DatosAdicionales extends React.PureComponent {
                             <MiInput
                                 tipoInput={'select'}
                                 label={'Estudios alcanzados'}
-                                defaultValue={0}
+                                value={0}
                                 itemsSelect={
                                     [
                                         {
@@ -144,7 +144,7 @@ class DatosAdicionales extends React.PureComponent {
                                 tipoInput={'input'}
                                 type={'number'}
                                 label={'Cantidad de hijos'}
-                                defaultValue={'0'}
+                                value={'0'}
                             />
                             <br />
                             <MiInput
@@ -158,7 +158,7 @@ class DatosAdicionales extends React.PureComponent {
                             <MiInput
                                 tipoInput={'select'}
                                 label={'Ocupación'}
-                                defaultValue={0}
+                                value={0}
                                 itemsSelect={
                                     [
                                         {

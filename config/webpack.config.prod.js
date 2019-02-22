@@ -101,6 +101,7 @@ module.exports = {
       "@ComponentesPerfil": "UI/Paginas/Perfil/Componentes",
       "@ComponentesExperienciaLaboral": "UI/Paginas/ExperienciaLaboral/Componentes",
       "@ComponentesEstudiosRealizados": "UI/Paginas/EstudiosRealizados/Componentes",
+      "@ComponentesProgramas": "UI/Paginas/Programas/Componentes",
       "@UI": "UI",
       "@ReduxSrc": "_Redux/Src"
     },

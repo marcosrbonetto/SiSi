@@ -2,6 +2,8 @@ import Home from "@UI/Paginas/Home/index";
 import Perfil from "@UI/Paginas/Perfil/index";
 import ExperienciaLaboral from "@UI/Paginas/ExperienciaLaboral/index";
 import EstudiosRealizados from "@UI/Paginas/EstudiosRealizados/index";
+import Programas from "@UI/Paginas/Programas/index";
+
 
 const Menu = [
   {
@@ -17,24 +19,32 @@ const Menu = [
     exact: true,
     mostrarEnMenu: true,
     component: Perfil,
-    nombre: "Mi Perfil",
-    titulo: "Mi Perfil",
+    nombre: "Perfil",
+    titulo: "Perfil",
+  },
+  {
+    url: "/Inicio/Programas",
+    exact: true,
+    mostrarEnMenu: true,
+    component: Programas,
+    nombre: "Programas",
+    titulo: "Programas",
   },
   {
     url: "/Inicio/ExperienciaLaboral",
     exact: true,
     mostrarEnMenu: true,
     component: ExperienciaLaboral,
-    nombre: "Mi Experiencia Laboral",
-    titulo: "Mi Experiencia Laboral",
+    nombre: "Experiencia Laboral",
+    titulo: "Experiencia Laboral",
   },
   {
     url: "/Inicio/EstudiosRealizados",
     exact: true,
     mostrarEnMenu: true,
     component: EstudiosRealizados,
-    nombre: "Mis Estudios Realizados",
-    titulo: "Mis Estudios Realizados",
+    nombre: "Estudios Realizados",
+    titulo: "Estudios Realizados",
   }
 ];
 

@@ -44,7 +44,7 @@ class MiCard extends React.PureComponent {
         >
           {informacionAlerta && <div className={classes.classSeccionTopBottom}>
             <i className={classNames('material-icons', classes.classIconoInfo ,this.props.classIconoInfo)}>info</i>
-            <Typography variant="body2" className={this.props.textoInfo}>{informacionAlerta}</Typography>
+            <Typography variant="body2" className={this.props.classInformacionAlerta}>{informacionAlerta}</Typography>
           </div>}
           <CardContent
             className={classNames(

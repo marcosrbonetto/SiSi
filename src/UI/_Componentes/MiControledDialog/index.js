@@ -50,7 +50,7 @@ class MiControledDialog extends React.PureComponent {
   };
 
   render() {
-    let { classes, titulo, textoLink, textoInformativo, classTextoLink } = this.props;
+    let { classes, titulo, textoLink, textoInformativo, classTextoLink, botonera, classContainterContent } = this.props;
 
     return (
       <div>
@@ -72,20 +72,20 @@ class MiControledDialog extends React.PureComponent {
             paper: (this.paraMobile && classes.paraMobile) || (this.props.classMaxWidth ? this.props.classMaxWidth : classes.maxWidth)
           }}
         >
-          <DialogTitle id="scroll-dialog-title">
+          {titulo && <DialogTitle id="scroll-dialog-title">
             {titulo}
-            {textoInformativo && 
-            <Tooltip
-              disableFocusListener disableTouchListener
-              classes={{ tooltip: classes.textTooltip }}
-              title={
-                textoInformativo
-              }
-            >
-              <i className={classNames(classes.infoIcon, "material-icons")}>info</i>
-            </Tooltip>}
-          </DialogTitle>
-          <DialogContent className={classes.content}>
+            {textoInformativo &&
+              <Tooltip
+                disableFocusListener disableTouchListener
+                classes={{ tooltip: classes.textTooltip }}
+                title={
+                  textoInformativo
+                }
+              >
+                <i className={classNames(classes.infoIcon, "material-icons")}>info</i>
+              </Tooltip>}
+          </DialogTitle>}
+          <DialogContent className={classNames(classes.content, classContainterContent)}>
             <DialogContentText>
               {this.getComponent('headerContent')}
               {this.getComponent('mainContent')}
@@ -94,7 +94,11 @@ class MiControledDialog extends React.PureComponent {
           </DialogContent>
           {this.props.footerFixed && this.getComponent('footerContent')}
           <DialogActions>
-            <Button onClick={this.handleCloseModal} color="primary">Cerrar</Button>
+            {botonera &&
+              <React.Fragment>
+                {botonera}
+              </React.Fragment>
+              || <Button onClick={this.handleCloseModal} color="primary">Cerrar</Button>}
           </DialogActions>
         </Dialog>
       </div>

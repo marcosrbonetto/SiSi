@@ -29,7 +29,7 @@ const theme = createMuiTheme({
     },
     background: {
       default: "#eee"
-    }
+    },
   },
   button: {
     display: 'inline-block',
@@ -37,7 +37,17 @@ const theme = createMuiTheme({
     margin: '2px',
     borderRadius: '20px'
   },
+  buttonSiSi: {
+    display: 'inline-block',
+    minWidth: 'auto',
+    margin: '2px',
+    borderRadius: '20px',
+    backgroundColor: '#faed51'
+  },
   color: {
+    sisi: {
+      main: "#faed51"
+    },
     ok: {
       main: "#149257"
     },

@@ -24,13 +24,14 @@ class MiInput extends React.PureComponent {
       itemsSelect,
       icono,
       iconoSvg,
-      defaultValue,
+      value,
       placeholder,
       classInput,
       type,
       checked,
       preInput,
-      postInput
+      postInput,
+      onChange,
     } = this.props;
 
     const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
@@ -39,9 +40,9 @@ class MiInput extends React.PureComponent {
       <React.Fragment>
         <div className={classes.classContainer}>
           {icono &&
-            <i className={classNames("material-icons", classes.classIcono)}>{icono || 'assignment'}</i>}
+            <i className={classNames("material-icons", classes.classIcono, label && classes.conLabel)}>{icono || 'assignment'}</i>}
           {iconoSvg &&
-            <div className={classes.classIconoSvg}>{iconoSvg}</div>}
+            <div className={classNames(classes.classIconoSvg, label && classes.conLabelSvg)}>{iconoSvg}</div>}
 
           <div className={classNames(classes.containerInput, classes.wideWidth)}>
             <Typography variant="body1" className={classes.textoAdicional}>{preInput}</Typography>
@@ -52,7 +53,7 @@ class MiInput extends React.PureComponent {
                   type={type || 'text'}
                   label={label}
                   className={classNames(classes.wideWidth, classInput)}
-                  value={defaultValue || ''}
+                  value={value || ''}
                   margin="none"
                   InputLabelProps={{
                     shrink: true,
@@ -61,6 +62,7 @@ class MiInput extends React.PureComponent {
                   inputProps={{
                     className: classes.wideWidth
                   }}
+                  onChange={onChange}
                 />
               </React.Fragment>
             }
@@ -70,12 +72,13 @@ class MiInput extends React.PureComponent {
                 <FormControl className={classNames(classes.formControl, classes.wideWidth)}>
                   <InputLabel shrink htmlFor={randomId + '-label-placeholder'}>{label}</InputLabel>
                   <Select
-                    value={defaultValue || 0}
+                    value={value || 0}
                     input={<Input name={randomId} id={randomId + '-label-placeholder'} />}
                     displayEmpty
                     name={randomId}
                     className={classInput}
                     placeholder={placeholder}
+                    onChange={onChange}
                   >
 
                     {itemsSelect && itemsSelect.map((item) => {
@@ -94,6 +97,7 @@ class MiInput extends React.PureComponent {
                     tabIndex={-1}
                     disableRipple
                     color="primary"
+                    onChange={onChange}
                   />
                   <ListItemText primary={label} className={classes.labelCheckbox} />
                 </div>
@@ -105,8 +109,9 @@ class MiInput extends React.PureComponent {
                 <DatePicker
                   margin="normal"
                   label={label}
-                  value={defaultValue || new Date()}
+                  value={value || new Date()}
                   format={'dd/MM/YYYY'}
+                  onChange={onChange}
                 />
               </React.Fragment>
             }
@@ -130,7 +135,13 @@ const styles = theme => ({
   classIcono: {
     margin: '6px',
     color: theme.color.block.main,
-    marginTop: '12px'
+  },
+  conLabel: {
+    marginTop: '18px !important'
+  },
+  conLabelSvg: {
+    marginTop: '21px !important',
+    marginBottom: '0px !important',
   },
   wideWidth: {
     width: '100%'
