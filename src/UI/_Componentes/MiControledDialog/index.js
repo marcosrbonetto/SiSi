@@ -49,8 +49,24 @@ class MiControledDialog extends React.PureComponent {
     this.props.onDialogoClose && this.props.onDialogoClose();
   };
 
+  handleAcceptEvent = () => {
+    this.props.buttonOptions.onDialogoAccept && this.props.buttonOptions.onDialogoAccept();
+  }
+
+  handleCancelEvent = () => {
+    this.props.buttonOptions.onDialogoCancel && this.props.buttonOptions.onDialogoCancel();
+  }
+
   render() {
-    let { classes, titulo, textoLink, textoInformativo, classTextoLink, botonera, classContainterContent } = this.props;
+    let { classes,
+      titulo,
+      textoLink,
+      textoInformativo,
+      classTextoLink,
+      botonera,
+      classContainterContent,
+      buttonOptions,
+    } = this.props;
 
     return (
       <div>
@@ -98,7 +114,18 @@ class MiControledDialog extends React.PureComponent {
               <React.Fragment>
                 {botonera}
               </React.Fragment>
-              || <Button onClick={this.handleCloseModal} color="primary">Cerrar</Button>}
+              ||
+              (buttonOptions &&
+                <div>
+                  <Button onClick={this.handleCancelEvent} color="primary">
+                    {buttonOptions.labelCancel || 'Cancelar'}
+                  </Button>
+                  <Button onClick={this.handleAcceptEvent} color="primary">
+                    {buttonOptions.labelAccept || 'Aceptar'}
+                  </Button>
+                </div>
+              ) ||
+              <Button onClick={this.handleCloseModal} color="primary">Cerrar</Button>}
           </DialogActions>
         </Dialog>
       </div>
