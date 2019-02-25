@@ -55,7 +55,7 @@ class MiToolbar extends React.Component {
 
     this.state = {
       anchorPopupUsuario: undefined,
-      datosUsuario: undefined,
+      datosUsuario: this.props.loggedUser && this.props.loggedUser.datos || undefined,
       anchorElVV: null
     };
   }

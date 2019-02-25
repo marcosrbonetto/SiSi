@@ -19,6 +19,7 @@ import MiCard from "@Componentes/MiNewCard";
 import MiInput from "@Componentes/MiInput";
 
 import MiControledDialog from "@Componentes/MiControledDialog";
+import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral'
 
 const mapStateToProps = state => {
   return {
@@ -138,6 +139,16 @@ class DatosExperienciaLaboral extends React.PureComponent {
             </Grid>
           </MiControledDialog>
 
+          <br/><br/>
+
+          <div className={classes.itemsContainer}>
+            <CardExperienciaLaboral />
+
+            <CardExperienciaLaboral />
+
+            <CardExperienciaLaboral />
+          </div>
+
         </MiCard>
       </React.Fragment>
     );
@@ -145,6 +156,10 @@ class DatosExperienciaLaboral extends React.PureComponent {
 }
 
 const styles = theme => ({
+  itemsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
   bottomContent: {
     display: 'flex',
     alignItems: 'flex-end',

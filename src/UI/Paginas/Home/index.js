@@ -10,6 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { push } from "connected-react-router";
 
 //Assets
 import Logo_SiSi from "@Assets/images/Logo_SiSi.png";
@@ -35,7 +36,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   mostrarCargando: (cargar) => {
     dispatch(mostrarCargando(cargar));
-  }
+  },
+  redireccionar: url => {
+      dispatch(push(url));
+  },
 });
 
 class Home extends React.PureComponent {
@@ -48,8 +52,23 @@ class Home extends React.PureComponent {
   }
 
   componentWillMount() {
-    //this.props.mostrarCargando(true);
 
+  }
+
+  onModificarPerfil = () => {
+    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token;
+  };
+
+  onClickPreinscipcion = () => {
+    this.props.redireccionar('/Inicio/Programas');
+  }
+
+  onClickExperienciaLaboral = () => {
+    this.props.redireccionar('/Inicio/ExperienciaLaboral');
+  }
+
+  onClickEstudiosRealizados = () => {
+    this.props.redireccionar('/Inicio/EstudiosRealizados');
   }
 
   render() {
@@ -100,7 +119,7 @@ class Home extends React.PureComponent {
               </div>
 
               <div className={classes.leftContainer}>
-                <Button variant="outlined" color="primary" size="small" className={classes.button}>
+                <Button onClick={this.onModificarPerfil} variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
                 Modificar
                 </Button>
@@ -117,7 +136,7 @@ class Home extends React.PureComponent {
                 <Typography variant="body1">
                   Te preinscribiste a Administración - Ingles - Nivel Básico
               </Typography>
-              <Button variant="outlined" color="primary" size="small" className={classes.button}>
+              <Button onClick={this.onClickPreinscipcion} variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>delete</Icon>
                 Desinscribirme
                 </Button>
@@ -134,7 +153,7 @@ class Home extends React.PureComponent {
                 <Typography variant="body1">
                   No cargaste experiencias laborales
               </Typography>
-              <Button variant="outlined" color="primary" size="small" className={classes.button}>
+              <Button onClick={this.onClickExperienciaLaboral} variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
                 Modificar
                 </Button>
@@ -151,7 +170,7 @@ class Home extends React.PureComponent {
                 <Typography variant="body1">
                   No cargaste estudios realizados
               </Typography>
-              <Button variant="outlined" color="primary" size="small" className={classes.button}>
+              <Button onClick={this.onClickEstudiosRealizados} variant="outlined" color="primary" size="small" className={classes.button}>
                 <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
                 Modificar
                 </Button>
