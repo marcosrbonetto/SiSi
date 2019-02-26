@@ -1,6 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
+import _ from "lodash";
+
 //Styles
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
@@ -8,6 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { mostrarAlerta, stringToDate } from "@Utils/functions";
 
 //Material UI
 import Icon from '@material-ui/core/Icon';
@@ -20,6 +23,7 @@ import MiInput from "@Componentes/MiInput";
 
 import MiControledDialog from "@Componentes/MiControledDialog";
 import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral'
+import FormExperienciaLaboral from '@ComponentesExperienciaLaboral/FormExperienciaLaboral'
 
 const mapStateToProps = state => {
   return {
@@ -38,8 +42,10 @@ class DatosExperienciaLaboral extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.myRef = React.createRef();
+
     this.state = {
-      dialogoOpen: false
+      listaExperienciaLaboral: []
     };
   }
 
@@ -47,17 +53,33 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
   }
 
-  onDialogoOpen = () => {
-    this.setState({ dialogoOpen: true });
+  agregarExperienciaLaboral = (experienciaLaboralAgregada) => {
+    if (!experienciaLaboralAgregada) return false;
+
+    //Agregamos ID
+    const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+    experienciaLaboralAgregada.id = randomId;
+
+    this.setState({
+      listaExperienciaLaboral: [...this.state.listaExperienciaLaboral, experienciaLaboralAgregada]
+    }, () => {
+      console.log(this.state.listaExperienciaLaboral);
+    });
   }
 
-  onDialogoClose = () => {
-    this.setState({ dialogoOpen: false });
+  eliminarExperienciaLaboral = (idExpLab) => {
+    const newArrayExLab = _.filter(this.state.listaExperienciaLaboral, (expLab) => {
+      return expLab.id != idExpLab;
+    });
+    
+    this.setState({
+      listaExperienciaLaboral: newArrayExLab
+    });
   }
 
   render() {
     const { classes } = this.props;
-    const { dialogoOpen } = this.state;
+    const { listaExperienciaLaboral } = this.state;
 
     return (
       <React.Fragment>
@@ -77,76 +99,17 @@ class DatosExperienciaLaboral extends React.PureComponent {
             checked={true}
           />
 
-          <MiControledDialog
-            open={dialogoOpen}
-            onDialogoOpen={this.onDialogoOpen}
-            onDialogoClose={this.onDialogoClose}
-            textoLink={'Agregar'}
-            titulo={'Agregar experiencia laboral'}
-            classTextoLink={classes.textoLink}
-          >
-            <Grid container>
-              <Grid item xs={12} sm={12}>
-                <MiInput
-                  tipoInput={'input'}
-                  type={'text'}
-                  label={'Nombre de la empresa'}
-                  placeholder={'Ingrese el nombre de la empresa...'}
-                />
-              </Grid>
-              <br /><br /><br />
-              <Grid item xs={12} sm={12}>
-                <MiInput
-                  tipoInput={'input'}
-                  type={'text'}
-                  label={'Descripción de la empresa'}
-                  placeholder={'Describa la actividad de la empresa...'}
-                />
-              </Grid>
-              <br /><br /><br />
-              <Grid item xs={12} sm={12}>
-                <MiInput
-                  tipoInput={'input'}
-                  type={'text'}
-                  label={'Datos de contacto'}
-                  placeholder={'Domicilio, Email, Teléfono, Referente...'}
-                />
-              </Grid>
-              <br /><br /><br />
-              <Grid item xs={12} sm={12}>
-                <MiInput
-                  tipoInput={'input'}
-                  type={'text'}
-                  label={'CUIT de la empresa'}
-                  placeholder={'Si lo conoces, ingrese el CUIT de la empresa...'}
-                />
-              </Grid>
-              <br /><br /><br />
-              <Grid container>
-                <Grid item xs={12} sm={6}>
-                  <MiInput
-                    tipoInput={'date'}
-                    label={'Fecha de inicio'}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <MiInput
-                    tipoInput={'date'}
-                    label={'Fecha de fin'}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-          </MiControledDialog>
-
-          <br/><br/>
+          <FormExperienciaLaboral
+            handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
+          />
 
           <div className={classes.itemsContainer}>
-            <CardExperienciaLaboral />
-
-            <CardExperienciaLaboral />
-
-            <CardExperienciaLaboral />
+            {listaExperienciaLaboral.map((cardData) => {
+              return <CardExperienciaLaboral 
+              cardData={cardData}
+              handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}
+              />
+            })}
           </div>
 
         </MiCard>
@@ -163,11 +126,6 @@ const styles = theme => ({
   bottomContent: {
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  textoLink: {
-    color: theme.palette.primary.main,
-    textDecoration: 'underline',
-    marginLeft: '20px',
   }
 });
 

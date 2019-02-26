@@ -12,11 +12,45 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { MuiPickersUtilsProvider, TimePicker, DatePicker } from 'material-ui-pickers';
 
-class MiInput extends React.PureComponent {
+class MiInput extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      checkDate: props.disabled != undefined ? !props.disabled : true
+    }
+  }
+
+  handleInputOnCange = (event) => {
+    this.props.onChange && this.props.onChange(event.target.value, 'value', event, this.props);
+  }
+
+  handleInputDateOnCange = (event) => {
+    this.props.onChange && this.props.onChange(event, 'value', undefined, this.props);
+  }
+
+  handleInputOnFocusOut = (event) => {
+    this.props.onFocusOut && this.props.onFocusOut(event, this.props);
+  }
+
+  handleCheckDateOnCange = (event) => {
+    this.setState({
+      checkDate: !this.state.checkDate
+    }, () => {
+      this.props.onChange && this.props.onChange(!this.state.checkDate, 'disabled', event, this.props);
+    });
+  }
+
   render() {
+    const {
+      checkDate
+    } = this.state;
+
     let {
       classes,
       tipoInput,
@@ -29,9 +63,12 @@ class MiInput extends React.PureComponent {
       classInput,
       type,
       checked,
+      disabled,
       preInput,
       postInput,
-      onChange,
+      error,
+      mensajeError,
+      withDisabled
     } = this.props;
 
     const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
@@ -50,6 +87,7 @@ class MiInput extends React.PureComponent {
             {tipoInput && tipoInput == 'input' &&
               <React.Fragment>
                 <TextField
+                  error={error || false}
                   type={type || 'text'}
                   label={label}
                   className={classNames(classes.wideWidth, classInput)}
@@ -62,7 +100,12 @@ class MiInput extends React.PureComponent {
                   inputProps={{
                     className: classes.wideWidth
                   }}
-                  onChange={onChange}
+                  onChange={this.handleInputOnCange}
+                  onBlur={this.handleInputOnFocusOut}
+                  helperText={error && mensajeError}
+                  FormHelperTextProps={{
+                    className: classes.errorText
+                  }}
                 />
               </React.Fragment>
             }
@@ -72,19 +115,22 @@ class MiInput extends React.PureComponent {
                 <FormControl className={classNames(classes.formControl, classes.wideWidth)}>
                   <InputLabel shrink htmlFor={randomId + '-label-placeholder'}>{label}</InputLabel>
                   <Select
+                    error={error || false}
                     value={value || 0}
                     input={<Input name={randomId} id={randomId + '-label-placeholder'} />}
                     displayEmpty
                     name={randomId}
                     className={classInput}
                     placeholder={placeholder}
-                    onChange={onChange}
+                    onChange={this.handleInputOnCange}
+                    onBlur={this.handleInputOnFocusOut}
                   >
 
                     {itemsSelect && itemsSelect.map((item) => {
                       return <MenuItem value={item.value}>{item.label}</MenuItem>;
                     })}
                   </Select>
+                  <FormHelperText className={classes.errorText}>{error && mensajeError}</FormHelperText>
                 </FormControl>
               </React.Fragment>
             }
@@ -93,25 +139,38 @@ class MiInput extends React.PureComponent {
               <React.Fragment>
                 <div className={classes.classCheckbox}>
                   <Checkbox
+                    error={error || false}
                     checked={checked}
                     tabIndex={-1}
                     disableRipple
                     color="primary"
-                    onChange={onChange}
+                    onChange={this.handleInputOnCange}
                   />
                   <ListItemText primary={label} className={classes.labelCheckbox} />
                 </div>
+                <FormHelperText className={classes.errorText}>{error && mensajeError}</FormHelperText>
               </React.Fragment>
             }
 
             {tipoInput && tipoInput == 'date' &&
               <React.Fragment>
+                {withDisabled && <Checkbox
+                  checked={checkDate}
+                  tabIndex={-1}
+                  disableRipple
+                  color="primary"
+                  onClick={this.handleCheckDateOnCange}
+                />}
                 <DatePicker
+                  disabled={withDisabled ? !checkDate : false}
+                  error={error || false}
                   margin="normal"
-                  label={label}
                   value={value || new Date()}
+                  label={label}
                   format={'dd/MM/YYYY'}
-                  onChange={onChange}
+                  onChange={this.handleInputDateOnCange}
+                  onBlur={this.handleInputOnFocusOut}
+                  helperText={error && mensajeError}
                 />
               </React.Fragment>
             }
@@ -167,6 +226,9 @@ const styles = theme => ({
   },
   textoAdicional: {
     fontSize: '16px',
+  },
+  errorText: {
+    marginTop: '2px'
   }
 });
 

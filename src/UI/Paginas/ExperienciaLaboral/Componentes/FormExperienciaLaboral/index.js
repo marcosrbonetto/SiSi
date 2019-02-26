@@ -1,0 +1,370 @@
+import React from "react";
+import { withRouter } from "react-router-dom";
+
+import _ from "lodash";
+
+//Styles
+import { withStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import classNames from "classnames";
+
+//Redux
+import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { mostrarAlerta, stringToDate } from "@Utils/functions";
+
+//Material UI
+import Grid from "@material-ui/core/Grid";
+
+//Mis Componentes
+import MiInput from "@Componentes/MiInput";
+
+import MiControledDialog from "@Componentes/MiControledDialog";
+import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral'
+
+
+const mapStateToProps = state => {
+  return {
+    loggedUser: state.Usuario.loggedUser,
+    paraMobile: state.MainContent.paraMobile,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  mostrarCargando: (cargar) => {
+    dispatch(mostrarCargando(cargar));
+  }
+});
+
+class FormExperienciaLaboral extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      openForm: false,
+      formInputs: [
+        {
+          id: 'InputNombreEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,50}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 50 catacteres.'
+        },
+        {
+          id: 'InputDescripcionEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,150}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+        },
+        {
+          id: 'InputDatosContactoEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,150}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+        },
+        {
+          id: 'InputCuitEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^[0-9]{11}$/,
+          error: false,
+          required: false,
+          mensajeError: 'Este campo es obligatorio y debe contener 11 números.'
+        },
+        {
+          id: 'InputFechaInicioEmpresa',
+          value: new Date(),
+          initValue: new Date(),
+          disabled: false,
+          error: false,
+          required: true,
+          mensajeError: 'La fecha de inicio debe ser mayor a la fecha fin.'
+        },
+        {
+          id: 'InputFechaFinEmpresa',
+          value: new Date(),
+          initValue: new Date(),
+          disabled: true,
+          error: false,
+          required: false
+        },
+      ]
+    };
+  }
+
+  onDialogoOpen = () => {
+    let formInputs = this.state.formInputs;
+    formInputs.map((inputs) => {
+      inputs.value = inputs.initValue;
+      inputs.error = false;
+    });
+    
+    this.setState({ 
+      openForm: true,
+      formInputs : _.cloneDeep(formInputs)
+    });
+  }
+
+  onDialogoClose = () => {
+    this.setState({ openForm: false });
+  }
+
+  onChangeInput = (value, type, input, props) => {
+    const inputChanged = _.find(this.state.formInputs, { id: props.id });
+    if(!inputChanged) return false;
+
+    if(inputChanged[type] != undefined)
+      inputChanged[type] = value != undefined ? value : inputChanged.value;
+
+    inputChanged.error = false;
+
+    this.setState({
+      formInputs : _.cloneDeep(this.state.formInputs)
+    });
+  }
+
+  onFocusOutInput = (input, props) => {
+    const inputChanged = _.find(this.state.formInputs, { id: props.id });
+    if(!inputChanged) return false;
+      
+    if (inputChanged.valiateCondition && !inputChanged.valiateCondition.test(props.tipoInput == 'date' ? input : input.target.value)) {
+      inputChanged.error = true;
+      
+      this.setState({
+        formInputs: _.cloneDeep(this.state.formInputs)
+      });
+    }
+  }
+
+  validateForm = () => {
+    let formHayError = false;
+    let formInputs = _.cloneDeep(this.state.formInputs);
+
+    formInputs.map((input)=> {
+      if (
+        (input.required && input.value == '') || 
+        (input.required && input.value == '' && input.disabled != undefined && !input.disabled) || 
+        (input.required && input.checked != undefined && !input.checked) || 
+        (input.value != '' && input.valiateCondition && !input.valiateCondition.test(input.value))
+      ) {
+        input.error = true;
+        formHayError = true;
+      }
+    });
+
+    //Conditions between inputs
+    const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
+    const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
+
+    if(InputFechaInicioEmpresa.value && InputFechaFinEmpresa.value && 
+      InputFechaInicioEmpresa.disabled == false && InputFechaFinEmpresa.disabled == false && 
+      InputFechaInicioEmpresa.value.getTime() > InputFechaFinEmpresa.value.getTime()) {
+      InputFechaInicioEmpresa.error = true;
+      InputFechaFinEmpresa.error = true;
+      
+      formHayError = true;
+    } else {
+      InputFechaInicioEmpresa.error = false;
+      InputFechaFinEmpresa.error = false;
+    }
+
+    this.setState({
+      formInputs : _.cloneDeep(formInputs)
+    });
+      
+    return formHayError;
+  }
+
+  getExperienciaLaboral = () => {
+    let formInputs = this.state.formInputs;
+    const InputNombreEmpresa = _.find(formInputs, { id: 'InputNombreEmpresa' });
+    const InputDescripcionEmpresa = _.find(formInputs, { id: 'InputDescripcionEmpresa' });
+    const InputDatosContactoEmpresa = _.find(formInputs, { id: 'InputDatosContactoEmpresa' });
+    const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
+    const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
+    const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
+
+    const nuevaExpLab = {
+      nombre: InputNombreEmpresa.value,
+      descripcion: InputDescripcionEmpresa.value,
+      contacto: InputDatosContactoEmpresa.value,
+      cuit: InputCuitEmpresa.value,
+      fechaInicio: !InputFechaInicioEmpresa.disabled ? InputFechaInicioEmpresa.value : null,
+      fechaFinalizacion: !InputFechaFinEmpresa.disabled ? InputFechaFinEmpresa.value : null,
+    };
+
+    return nuevaExpLab;
+  }
+
+  agregarExperienciaLaboral = () => { 
+    const formHayError = this.validateForm();
+    
+    if(formHayError) {
+      mostrarAlerta('Se han encontrado campos erroneos.');
+      return false;
+    }
+
+    const experienciaLaboralAgregada = this.getExperienciaLaboral();
+
+    this.setState({ openForm: false },() => {
+      this.props.handleExperienciaLaboralAgregada && this.props.handleExperienciaLaboralAgregada(experienciaLaboralAgregada);
+    });
+  }
+
+  render() {
+    const { 
+      classes
+    } = this.props;
+
+    const {
+      openForm,
+      formInputs
+    } = this.state;
+
+    //Set inputs
+    const InputNombreEmpresa = _.find(formInputs, { id: 'InputNombreEmpresa' });
+    const InputDescripcionEmpresa = _.find(formInputs, { id: 'InputDescripcionEmpresa' });
+    const InputDatosContactoEmpresa = _.find(formInputs, { id: 'InputDatosContactoEmpresa' });
+    const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
+    const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
+    const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
+
+    return (
+      <React.Fragment>
+        <MiControledDialog
+            open={openForm}
+            onDialogoOpen={this.onDialogoOpen}
+            onDialogoClose={this.onDialogoClose}
+            textoLink={'Agregar'}
+            titulo={'Agregar experiencia laboral'}
+            classTextoLink={classes.textoLink}
+            buttonOptions={{
+              labelAccept: 'Agregar',
+              onDialogoAccept: this.agregarExperienciaLaboral,
+              onDialogoCancel: this.onDialogoClose
+            }}
+          >
+            <Grid container>
+              <Grid item xs={12} sm={12}>
+                <MiInput
+                  onChange={this.onChangeInput}
+                  onFocusOut={this.onFocusOutInput}
+                  id={'InputNombreEmpresa'}
+                  tipoInput={'input'}
+                  type={'text'}
+                  value={InputNombreEmpresa && InputNombreEmpresa.value || ''}
+                  error={InputNombreEmpresa && InputNombreEmpresa.error || false}
+                  mensajeError={InputNombreEmpresa && InputNombreEmpresa.mensajeError || 'Campo erroneo'}
+                  label={'Nombre de la empresa'}
+                  placeholder={'Ingrese el nombre de la empresa...'}
+                />
+              </Grid>
+              <br /><br /><br />
+              <Grid item xs={12} sm={12}>
+                <MiInput
+                  onChange={this.onChangeInput}
+                  onFocusOut={this.onFocusOutInput}
+                  id={'InputDescripcionEmpresa'}
+                  tipoInput={'input'}
+                  type={'text'}
+                  value={InputDescripcionEmpresa && InputDescripcionEmpresa.value || ''}
+                  error={InputDescripcionEmpresa && InputDescripcionEmpresa.error || false}
+                  mensajeError={InputDescripcionEmpresa && InputDescripcionEmpresa.mensajeError || 'Campo erroneo'}
+                  label={'Descripción de la empresa'}
+                  placeholder={'Describa la actividad de la empresa...'}
+                />
+              </Grid>
+              <br /><br /><br />
+              <Grid item xs={12} sm={12}>
+                <MiInput
+                  onChange={this.onChangeInput}
+                  onFocusOut={this.onFocusOutInput}
+                  id={'InputDatosContactoEmpresa'}
+                  tipoInput={'input'}
+                  type={'text'}
+                  value={InputDatosContactoEmpresa && InputDatosContactoEmpresa.value || ''}
+                  error={InputDatosContactoEmpresa && InputDatosContactoEmpresa.error || false}
+                  mensajeError={InputDatosContactoEmpresa && InputDatosContactoEmpresa.mensajeError || 'Campo erroneo'}
+                  label={'Datos de contacto'}
+                  placeholder={'Domicilio, Email, Teléfono, Referente...'}
+                />
+              </Grid>
+              <br /><br /><br />
+              <Grid item xs={12} sm={12}>
+                <MiInput
+                  onChange={this.onChangeInput}
+                  onFocusOut={this.onFocusOutInput}
+                  id={'InputCuitEmpresa'}
+                  tipoInput={'input'}
+                  type={'text'}
+                  value={InputCuitEmpresa && InputCuitEmpresa.value || ''}
+                  error={InputCuitEmpresa && InputCuitEmpresa.error || false}
+                  mensajeError={InputCuitEmpresa && InputCuitEmpresa.mensajeError || 'Campo erroneo'}
+                  label={'CUIT de la empresa'}
+                  placeholder={'Si lo conoces, ingrese el CUIT de la empresa...'}
+                />
+              </Grid>
+              <br /><br /><br />
+              <Grid container>
+                <Grid item xs={12} sm={6}>
+                  <MiInput
+                    onChange={this.onChangeInput}
+                    onFocusOut={this.onFocusOutInput}
+                    id={'InputFechaInicioEmpresa'}
+                    tipoInput={'date'}
+                    label={'Fecha de inicio'}
+                    value={InputFechaInicioEmpresa && InputFechaInicioEmpresa.value || new Date()}
+                    error={InputFechaInicioEmpresa && InputFechaInicioEmpresa.error || false}
+                    mensajeError={InputFechaInicioEmpresa && InputFechaInicioEmpresa.mensajeError || 'Campo erroneo'}
+                    withDisabled={true}
+                    disabled={InputFechaInicioEmpresa && InputFechaInicioEmpresa.disabled != undefined ? InputFechaInicioEmpresa.disabled : true}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <MiInput
+                    onChange={this.onChangeInput}
+                    onFocusOut={this.onFocusOutInput}
+                    id={'InputFechaFinEmpresa'}
+                    tipoInput={'date'}
+                    label={'Fecha de fin'}
+                    value={InputFechaFinEmpresa && InputFechaFinEmpresa.value || new Date()}
+                    error={InputFechaFinEmpresa && InputFechaFinEmpresa.error || false}
+                    mensajeError={InputFechaFinEmpresa && InputFechaFinEmpresa.mensajeError || ''}
+                    withDisabled={true}
+                    disabled={InputFechaFinEmpresa && InputFechaFinEmpresa.disabled != undefined ? InputFechaFinEmpresa.disabled : true}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+          </MiControledDialog>
+      </React.Fragment>
+    );
+  }
+}
+
+const styles = theme => ({
+  container: {
+    display: 'inline-block',
+    margin: '10px'
+  },
+  textoLink: {
+    color: theme.palette.primary.main,
+    textDecoration: 'underline',
+    marginLeft: '20px',
+  }
+});
+
+let componente = FormExperienciaLaboral;
+componente = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(componente));
+componente = withRouter(componente);
+export default componente;

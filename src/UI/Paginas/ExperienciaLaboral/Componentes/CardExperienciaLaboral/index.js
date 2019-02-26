@@ -18,6 +18,8 @@ import MiCard from "@Componentes/MiCard";
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+import { dateToString } from "@Utils/functions";
+
 const mapStateToProps = state => {
   return {
     loggedUser: state.Usuario.loggedUser,
@@ -44,25 +46,30 @@ class CardExperienciaLaboral extends React.PureComponent {
 
   }
 
+  handleEliminarExperienciaLaboral = (event) => {
+    const idExpLab = event && event.currentTarget.attributes.idExpLab.value || 0;
+
+    this.props.handleEliminarExperienciaLaboral && this.props.handleEliminarExperienciaLaboral(idExpLab);
+  }
+
   render() {
-    const { classes } = this.props;
-    const { dialogoOpen } = this.state;
+    const { classes, cardData } = this.props;
 
     return (
       <React.Fragment>
         <MiCard className={classes.container}>
             <Typography variant="headline">
-              NETBEL S.A.
-              <Button size="small" color="secondary" aria-label="Add" className={classes.iconoEliminar}>
+              {cardData.nombre || '-'}
+              <Button onClick={this.handleEliminarExperienciaLaboral} idExpLab={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEliminar}>
                 <DeleteIcon />
               </Button>
             </Typography>
             <Typography component="p">
-              <b>Descripción:</b> asd<br />
-              <b>Contacto:</b> asd<br />
-              <b>CUIT:</b> asd<br />
-              <b>Desde:</b> 01/02/2019<br />
-              <b>Hasta:</b> 28/02/2019
+              <b>Descripción:</b> {cardData.descripcion || '-'}<br />
+              <b>Contacto:</b> {cardData.contacto || '-'}<br />
+              <b>CUIT:</b> {cardData.cuit || '-'}<br />
+              <b>Desde:</b> {cardData.fechaInicio ? dateToString(cardData.fechaInicio, 'DD/MM/YYYY') : '-'}<br />
+              <b>Hasta:</b> {cardData.fechaFinalizacion ? dateToString(cardData.fechaFinalizacion, 'DD/MM/YYYY') : '-'}
             </Typography>
         </MiCard>
       </React.Fragment>
@@ -73,7 +80,8 @@ class CardExperienciaLaboral extends React.PureComponent {
 const styles = theme => ({
   container: {
     display: 'inline-block',
-    margin: '10px'
+    margin: '10px',
+    minWidth: '220px'
   },
   iconoEliminar: {
     top: '-4px',
@@ -81,6 +89,7 @@ const styles = theme => ({
     background: '#cacaca',
     boxShadow: 'none',
     minWidth: '10px',
+    float: 'right',
     borderRadius: '30px',
     '&:hover': {
       background: '#929090'
