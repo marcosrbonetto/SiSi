@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, stringToDate } from "@Utils/functions";
+import { mostrarAlerta, dateToString } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -196,8 +196,8 @@ class FormExperienciaLaboral extends React.PureComponent {
       descripcion: InputDescripcionEmpresa.value,
       contacto: InputDatosContactoEmpresa.value,
       cuit: InputCuitEmpresa.value,
-      fechaInicio: !InputFechaInicioEmpresa.disabled ? InputFechaInicioEmpresa.value : null,
-      fechaFinalizacion: !InputFechaFinEmpresa.disabled ? InputFechaFinEmpresa.value : null,
+      fechaInicio: !InputFechaInicioEmpresa.disabled ? dateToString(InputFechaInicioEmpresa.value, 'DD/MM/YYYY') : null,
+      fechaFinalizacion: !InputFechaFinEmpresa.disabled ? dateToString(InputFechaFinEmpresa.value, 'DD/MM/YYYY') : null,
     };
 
     return nuevaExpLab;

@@ -124,7 +124,7 @@ class App extends React.Component {
         }
 
         this.setState({ validandoToken: true }, () => {
-          Rules_Usuario.validarToken(token)
+          Rules_VecinoVirtual.validarToken(token)
             .then(resultado => {
               if (resultado == false) {
                 this.props.logout();
@@ -132,7 +132,7 @@ class App extends React.Component {
                 return;
               }
 
-              Rules_Usuario.datos(token)
+              Rules_Usuario.getInfoUsuario(token)
                 .then(datos => {
 
                   this.props.login({
@@ -204,7 +204,7 @@ class App extends React.Component {
         return;
       }
 
-      Rules_Usuario.validarToken(token)
+      Rules_VecinoVirtual.validarToken(token)
         .then(resultado => {
           if (resultado == false) {
             this.props.logout();

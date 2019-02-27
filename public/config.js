@@ -4,15 +4,15 @@ const LOCAL = 3;
 const ENTORNO = LOCAL;
 
 //WS Tributario
-const URL_WS_SISI_LOCAL = "https://srv-dev04/WSAutogestionTributaria_Bridge";
-const URL_WS_SISI_TEST = "https://srv-dev04/WSSiSi_Bridge";
+const URL_WS_SISI_LOCAL = "https://srv-dev04.cordoba.local/WSSiSi";
+const URL_WS_SISI_TEST = "https://srv-dev04.cordoba.local/WSSiSi_Bridge";
 const URL_WS_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/WSSiSi_Bridge";
 let URL_WS_TRIBUTARIO = URL_WS_SISI_DEPLOY;
 
 //Url Login
-const URL_LOGIN_LOCAL = "https://servicios2.cordoba.gov.ar/CBA147/SiSi_Login";
-const URL_LOGIN_TEST = "https://servicios2.cordoba.gov.ar/CBA147/SiSi_Login";
-const URL_LOGIN_DEPLOY = "https://servicios2.cordoba.gov.ar/CBA147/SiSi_Login";
+const URL_LOGIN_LOCAL = "https://servicios2.cordoba.gov.ar/VecinoVirtual/Login/#/Login/SiSiPresencialLocal";
+const URL_LOGIN_TEST = "https://servicios2.cordoba.gov.ar/VecinoVirtual/Login/#/Login/SiSiPresencialTest";
+const URL_LOGIN_DEPLOY = "https://servicios2.cordoba.gov.ar/VecinoVirtual/Login/#/Login/SiSiPresencial";
 let URL_LOGIN = URL_LOGIN_DEPLOY;
 
 //Segun el entorno, cargo las variables

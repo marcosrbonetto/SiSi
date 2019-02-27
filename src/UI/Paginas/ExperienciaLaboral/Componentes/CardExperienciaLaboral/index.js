@@ -68,8 +68,8 @@ class CardExperienciaLaboral extends React.PureComponent {
               <b>Descripción:</b> {cardData.descripcion || '-'}<br />
               <b>Contacto:</b> {cardData.contacto || '-'}<br />
               <b>CUIT:</b> {cardData.cuit || '-'}<br />
-              <b>Desde:</b> {cardData.fechaInicio ? dateToString(cardData.fechaInicio, 'DD/MM/YYYY') : '-'}<br />
-              <b>Hasta:</b> {cardData.fechaFinalizacion ? dateToString(cardData.fechaFinalizacion, 'DD/MM/YYYY') : '-'}
+              <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
+              <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}
             </Typography>
         </MiCard>
       </React.Fragment>

@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, stringToDate } from "@Utils/functions";
+import { mostrarAlerta, dateToString } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -227,8 +227,8 @@ class FormEstudiosRealizados extends React.PureComponent {
       lugarDeCursado: InputLugarCursadoEstudio.value,
       duracion: InputDuracionEstudio.value,
       idMedidaDeTiempo: InputMedidaTiempoEstudio.value,
-      fechaInicio: !InputFechaInicioEstudio.disabled ? InputFechaInicioEstudio.value : null,
-      fechaFinalizacion: !InputFechaFinEstudio.disabled ? InputFechaFinEstudio.value : null,
+      fechaInicio: !InputFechaInicioEstudio.disabled ? dateToString(InputFechaInicioEstudio.value, 'DD/MM/YYYY') : null,
+      fechaFinalizacion: !InputFechaFinEstudio.disabled ? dateToString(InputFechaFinEstudio.value, 'DD/MM/YYYY') : null,
       urlCertificado: InputURLCertificadoEstudio.value,
     };
 

@@ -76,8 +76,8 @@ class CardEstudiosRealizados extends React.PureComponent {
               <b>Descripción:</b> {cardData.descripcion || '-'}<br />
               <b>Lugar de Cursado:</b> {cardData.lugarDeCursado || '-'}<br />
               <b>Duración:</b> {cardData.duracion || '-'} {medidaDeTiempo && medidaDeTiempo.label || '-'}<br />
-              <b>Desde:</b> {cardData.fechaInicio ? dateToString(cardData.fechaInicio, 'DD/MM/YYYY') : '-'}<br />
-              <b>Hasta:</b> {cardData.fechaFinalizacion ? dateToString(cardData.fechaFinalizacion, 'DD/MM/YYYY') : '-'}<br />
+              <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
+              <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}<br />
               <b>Url Certificado</b> <a href={cardData.urlCertificado || '#'} target="_blank">Link</a><br />
             </Typography>
         </MiCard>

@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, stringToDate } from "@Utils/functions";
+import { mostrarAlerta, mostrarMensaje, stringToDate } from "@Utils/functions";
 
 //Material UI
 import Icon from '@material-ui/core/Icon';
@@ -21,8 +21,10 @@ import Grid from "@material-ui/core/Grid";
 import MiCard from "@Componentes/MiNewCard";
 import MiInput from "@Componentes/MiInput";
 
-import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral'
-import FormExperienciaLaboral from '@ComponentesExperienciaLaboral/FormExperienciaLaboral'
+import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral';
+import FormExperienciaLaboral from '@ComponentesExperienciaLaboral/FormExperienciaLaboral';
+
+import Rules_ExperienciaLaboral from "@Rules/Rules_ExperienciaLaboral";
 
 const mapStateToProps = state => {
   return {
@@ -41,15 +43,23 @@ class DatosExperienciaLaboral extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.myRef = React.createRef();
+    const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;    
+    listaExperienciaLaboral.map((item) => {
+      const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+      item.id = randomId;
+    });
 
     this.state = {
-      listaExperienciaLaboral: []
+      listaExperienciaLaboral: listaExperienciaLaboral && listaExperienciaLaboral.length > 0 && listaExperienciaLaboral || []
     };
   }
 
   componentWillMount() {
+    const insertOK = localStorage.getItem('insertExperienciaLaboral');
+    localStorage.removeItem('insertExperienciaLaboral');
 
+    if(insertOK)
+      mostrarMensaje('Experiencias laborales guardadas exitosamente!');
   }
 
   agregarExperienciaLaboral = (experienciaLaboralAgregada) => {
@@ -66,11 +76,33 @@ class DatosExperienciaLaboral extends React.PureComponent {
     });
   }
 
+  guardarExperienciaLaborales = () => {
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+    const experienciasLaborales = this.state.listaExperienciaLaboral;
+    debugger;
+    Rules_ExperienciaLaboral.insertExperienciaLaboral(token,experienciasLaborales)
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar guardar las experiencias laborales');
+          return false;
+        }
+
+        localStorage.setItem('insertExperienciaLaboral','OK');
+        window.location.reload();
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar guardar las experiencias laborales');
+        console.error('Error Servicio "Rules_ExperienciaLaboral.insertExperienciaLaboral": ' + error);
+      });
+  }
+
   eliminarExperienciaLaboral = (idExpLab) => {
     const newArrayExpLab = _.filter(this.state.listaExperienciaLaboral, (expLab) => {
       return expLab.id != idExpLab;
     });
-    
+
     this.setState({
       listaExperienciaLaboral: newArrayExpLab
     });
@@ -86,7 +118,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
           informacionAlerta={'Cargá acá tu último trabajo formal o informal. Por ej.: Atención del público en Centro de Salud. Recordá que es obligatorio. Podes cargar mas de una actividad.'}
           seccionBotones={{
             align: 'right',
-            content: <Button variant="outlined" color="primary" className={classes.button}>
+            content: <Button onClick={this.guardarExperienciaLaborales} variant="outlined" color="primary" className={classes.button}>
               <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
               Guardar</Button>
           }}
@@ -104,9 +136,9 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
           <div className={classes.itemsContainer}>
             {listaExperienciaLaboral.map((cardData) => {
-              return <CardExperienciaLaboral 
-              cardData={cardData}
-              handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}
+              return <CardExperienciaLaboral
+                cardData={cardData}
+                handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}
               />
             })}
           </div>

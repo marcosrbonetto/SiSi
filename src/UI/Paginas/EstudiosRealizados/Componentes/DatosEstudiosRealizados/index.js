@@ -10,6 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { mostrarAlerta, mostrarMensaje, stringToDate } from "@Utils/functions";
 
 //Material UI
 import Icon from '@material-ui/core/Icon';
@@ -22,6 +23,8 @@ import MiInput from "@Componentes/MiInput";
 
 import CardEstudiosRealizados from '@ComponentesEstudiosRealizados/CardEstudiosRealizados'
 import FormEstudiosRealizados from '@ComponentesEstudiosRealizados/FormEstudiosRealizados'
+
+import Rules_EstudiosRealizados from "@Rules/Rules_EstudiosRealizados";
 
 const mapStateToProps = state => {
   return {
@@ -40,13 +43,23 @@ class DatosEstudiosRealizados extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    let listaEstudiosRealizados = props.loggedUser.datos.estudios;
+    listaEstudiosRealizados.map((item) => {
+      const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+      item.id = randomId;
+    });
+
     this.state = {
-      listaEstudiosRealizados: []
+      listaEstudiosRealizados: listaEstudiosRealizados && listaEstudiosRealizados.length > 0 && listaEstudiosRealizados || []
     };
   }
 
   componentWillMount() {
+    const insertOK = localStorage.getItem('insertEstudiosRealizados');
+    localStorage.removeItem('insertEstudiosRealizados');
 
+    if(insertOK)
+      mostrarMensaje('Estudios realizados guardados exitosamente!');
   }
 
   agregarEstudiosRealizados = (EstudiosRealizadosAgregada) => {
@@ -61,6 +74,28 @@ class DatosEstudiosRealizados extends React.PureComponent {
     }, () => {
       console.log(this.state.listaEstudiosRealizados);
     });
+  }
+
+  guardarEstudiosRealizados = () => {
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+    const estudiosRealizados = this.state.listaEstudiosRealizados;
+    
+    Rules_EstudiosRealizados.insertEstudiosRealizados(token,estudiosRealizados)
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar guardar los estudios realizados');
+          return false;
+        }
+
+        localStorage.setItem('insertEstudiosRealizados','OK');
+        window.location.reload();
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar guardar los estudios realizados');
+        console.error('Error Servicio "Rules_EstudiosRealizados.insertEstudiosRealizados": ' + error);
+      });
   }
 
   eliminarEstudiosRealizados = (idEstRea) => {
@@ -83,7 +118,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
           informacionAlerta={'Cargá acá tus estudios realizados, desde el secundario hasta el nivel que haya alzcanzado'}
           seccionBotones={{
             align: 'right',
-            content: <Button variant="outlined" color="primary" className={classes.button}>
+            content: <Button onClick={this.guardarEstudiosRealizados} variant="outlined" color="primary" className={classes.button}>
               <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
               Guardar</Button>
           }}

@@ -41,6 +41,11 @@ class Programas extends React.PureComponent {
 
     this.tienePreInscripcion = true;
 
+    // const listaProgramas = this.props.loggedUser.data.estudios;
+    // this.state = {
+    //   listaProgramas: listaProgramas.length > 0 && listaProgramas || []
+    // };
+
     this.state = {
       dialogoOpen: false
     };

@@ -26,6 +26,9 @@ import Button from "@material-ui/core/Button";
 //Mis Componentes
 import MiCard from "@Componentes/MiCard";
 
+//Funciones
+import { dateToString,calcularEdad } from "@Utils/functions"
+
 const mapStateToProps = state => {
   return {
     loggedUser: state.Usuario.loggedUser,
@@ -72,14 +75,30 @@ class Home extends React.PureComponent {
   }
 
   render() {
-    const { classes } = this.props;
+    const { 
+      classes,
+      loggedUser
+    } = this.props;
 
-    const datosUsuario = this.props.loggedUser.datos;
+    const datosUsuario = loggedUser.datos;
     let urlFotoPerfil;
     if (datosUsuario) {
       urlFotoPerfil = CordobaFilesUtils.getUrlFotoMediana(datosUsuario.identificadorFotoPersonal, datosUsuario.sexoMasculino);
     }
 
+    const fechaNacimiento = datosUsuario.fechaNacimiento && dateToString(new Date(datosUsuario.fechaNacimiento),'DD/MM/YYYY') || '-'
+    const ocupacion = datosUsuario.ocupacionId && datosUsuario.ocupacionNombre || 'Desocupado';
+    const tieneTrabajoActualmente = datosUsuario.tieneTrabajoActualmente && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
+    
+    const tienePreinscripcion = datosUsuario.preinscripcion.curso ? true : false;
+    const programa = tienePreinscripcion && <span>Te preinscribiste a {datosUsuario.preinscripcion.curso.nombrePrograma}</span> || 'Todavía no te has preinscripto a ningún programa';
+    
+    const tieneExperienciasLaborales = datosUsuario.experienciasLaborales.length > 0;
+    const experienciasLaborales = tieneExperienciasLaborales && 'Actualmente posee ' +datosUsuario.experienciasLaborales.length+ ' experencias laborales cargadas.' || 'No ha cargado experiencias laborales';
+    
+    const tieneEstudiosRealizados = datosUsuario.estudios.length > 0;
+    const estudiosRealizados = tieneEstudiosRealizados && 'Actualmente posee ' +datosUsuario.estudios.length+ ' estudios realizados cargadas.' || 'No ha cargado estudios realizados';
+    
     return (
       <div className={classes.mainContainer}>
         <Grid container spacing={16} justify="center">
@@ -102,19 +121,19 @@ class Home extends React.PureComponent {
               <div className={classes.leftContainer}>
                 <Icon className={classes.iconoDetalle}>insert_invitation</Icon>
                 <Typography variant="body1">
-                  10/09/1990 (28 años)
+                  {fechaNacimiento} ({calcularEdad(fechaNacimiento)} años)
               </Typography>
               </div>
               <div className={classes.leftContainer}>
                 <Icon className={classes.iconoDetalle}>person</Icon>
                 <Typography variant="body1">
-                  Desocupado
+                  {ocupacion}
               </Typography>
               </div>
               <div className={classes.leftContainer}>
                 <Icon className={classes.iconoDetalle}>work</Icon>
                 <Typography variant="body1">
-                  Actualmente sin trabajo
+                  {tieneTrabajoActualmente}
               </Typography>
               </div>
 
@@ -134,11 +153,11 @@ class Home extends React.PureComponent {
                   Programa
                 </Typography>
                 <Typography variant="body1">
-                  Te preinscribiste a Administración - Ingles - Nivel Básico
+                  {programa}
               </Typography>
               <Button onClick={this.onClickPreinscipcion} variant="outlined" color="primary" size="small" className={classes.button}>
-                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>delete</Icon>
-                Desinscribirme
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tienePreinscripcion ? 'delete' : 'create'}</Icon>
+                  {tienePreinscripcion ? 'Desinscribirme' : 'Inscribirme'}
                 </Button>
               </div>
 
@@ -151,11 +170,11 @@ class Home extends React.PureComponent {
                   Experiencia laboral
                 </Typography>
                 <Typography variant="body1">
-                  No cargaste experiencias laborales
+                  {experienciasLaborales}
               </Typography>
               <Button onClick={this.onClickExperienciaLaboral} variant="outlined" color="primary" size="small" className={classes.button}>
-                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
-                Modificar
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tieneExperienciasLaborales ? 'list_alt' : 'create'}</Icon>
+                {tieneExperienciasLaborales ? 'Ver' : 'Cargar'}
                 </Button>
               </div>
 
@@ -168,11 +187,11 @@ class Home extends React.PureComponent {
                   Estidios realizados
                 </Typography>
                 <Typography variant="body1">
-                  No cargaste estudios realizados
+                  {estudiosRealizados}
               </Typography>
               <Button onClick={this.onClickEstudiosRealizados} variant="outlined" color="primary" size="small" className={classes.button}>
-                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
-                Modificar
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tieneEstudiosRealizados ? 'list_alt' : 'create'}</Icon>
+                {tieneEstudiosRealizados ? 'Ver' : 'Cargar'}
                 </Button>
               </div>
 
