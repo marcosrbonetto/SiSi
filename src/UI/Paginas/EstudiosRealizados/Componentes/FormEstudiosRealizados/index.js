@@ -221,12 +221,12 @@ class FormEstudiosRealizados extends React.PureComponent {
     const InputURLCertificadoEstudio = _.find(formInputs, { id: 'InputURLCertificadoEstudio' });
 
     const nuevaExpLab = {
-      idTipo: InputTipoEstudio.value,
+      tipoEstudio: InputTipoEstudio.value,
       nombre: InputNombreEstudio.value,
       descripcion: InputDescripcionEstudio.value,
       lugarDeCursado: InputLugarCursadoEstudio.value,
       duracion: InputDuracionEstudio.value,
-      idMedidaDeTiempo: InputMedidaTiempoEstudio.value,
+      medidaDeTiempo: InputMedidaTiempoEstudio.value,
       fechaInicio: !InputFechaInicioEstudio.disabled ? dateToString(InputFechaInicioEstudio.value, 'DD/MM/YYYY') : null,
       fechaFinalizacion: !InputFechaFinEstudio.disabled ? dateToString(InputFechaFinEstudio.value, 'DD/MM/YYYY') : null,
       urlCertificado: InputURLCertificadoEstudio.value,

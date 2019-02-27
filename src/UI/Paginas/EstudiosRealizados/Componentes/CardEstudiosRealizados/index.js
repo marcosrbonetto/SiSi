@@ -59,8 +59,8 @@ class CardEstudiosRealizados extends React.PureComponent {
   render() {
     const { classes, cardData } = this.props;
 
-    var tipoEstudio = _.find(arrayTipoEstudios, { value: cardData.idTipo });
-    var medidaDeTiempo = _.find(arrayMedidaDeTiempo, { value: cardData.idMedidaDeTiempo });
+    var tipoEstudio = _.find(arrayTipoEstudios, { value: cardData.tipoEstudio });
+    var medidaDeTiempo = _.find(arrayMedidaDeTiempo, { value: cardData.medidaDeTiempo });
 
     return (
       <React.Fragment>
