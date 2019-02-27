@@ -21,7 +21,6 @@ import Grid from "@material-ui/core/Grid";
 import MiCard from "@Componentes/MiNewCard";
 import MiInput from "@Componentes/MiInput";
 
-import MiControledDialog from "@Componentes/MiControledDialog";
 import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral'
 import FormExperienciaLaboral from '@ComponentesExperienciaLaboral/FormExperienciaLaboral'
 
@@ -68,12 +67,12 @@ class DatosExperienciaLaboral extends React.PureComponent {
   }
 
   eliminarExperienciaLaboral = (idExpLab) => {
-    const newArrayExLab = _.filter(this.state.listaExperienciaLaboral, (expLab) => {
+    const newArrayExpLab = _.filter(this.state.listaExperienciaLaboral, (expLab) => {
       return expLab.id != idExpLab;
     });
     
     this.setState({
-      listaExperienciaLaboral: newArrayExLab
+      listaExperienciaLaboral: newArrayExpLab
     });
   }
 

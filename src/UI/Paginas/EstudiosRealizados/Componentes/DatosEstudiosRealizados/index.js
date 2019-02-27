@@ -1,6 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
+import _ from "lodash";
+
 //Styles
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
@@ -18,7 +20,8 @@ import Grid from "@material-ui/core/Grid";
 import MiCard from "@Componentes/MiNewCard";
 import MiInput from "@Componentes/MiInput";
 
-import MiControledDialog from "@Componentes/MiControledDialog";
+import CardEstudiosRealizados from '@ComponentesEstudiosRealizados/CardEstudiosRealizados'
+import FormEstudiosRealizados from '@ComponentesEstudiosRealizados/FormEstudiosRealizados'
 
 const mapStateToProps = state => {
   return {
@@ -38,7 +41,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
     super(props);
 
     this.state = {
-      dialogoOpen: false
+      listaEstudiosRealizados: []
     };
   }
 
@@ -46,17 +49,33 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
   }
 
-  onDialogoOpen = () => {
-    this.setState({ dialogoOpen: true });
+  agregarEstudiosRealizados = (EstudiosRealizadosAgregada) => {
+    if (!EstudiosRealizadosAgregada) return false;
+
+    //Agregamos ID
+    const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+    EstudiosRealizadosAgregada.id = randomId;
+
+    this.setState({
+      listaEstudiosRealizados: [...this.state.listaEstudiosRealizados, EstudiosRealizadosAgregada]
+    }, () => {
+      console.log(this.state.listaEstudiosRealizados);
+    });
   }
 
-  onDialogoClose = () => {
-    this.setState({ dialogoOpen: false });
+  eliminarEstudiosRealizados = (idEstRea) => {
+    const newArrayEstRea = _.filter(this.state.listaEstudiosRealizados, (estRea) => {
+      return estRea.id != idEstRea;
+    });
+
+    this.setState({
+      listaEstudiosRealizados: newArrayEstRea
+    });
   }
 
   render() {
     const { classes } = this.props;
-    const { dialogoOpen } = this.state;
+    const { listaEstudiosRealizados } = this.state;
 
     return (
       <React.Fragment>
@@ -76,131 +95,18 @@ class DatosEstudiosRealizados extends React.PureComponent {
             checked={true}
           />
 
-          <MiControledDialog
-            open={dialogoOpen}
-            onDialogoOpen={this.onDialogoOpen}
-            onDialogoClose={this.onDialogoClose}
-            textoLink={'Agregar'}
-            titulo={'Agregar estudio realizado'}
-            classTextoLink={classes.textoLink}
-          >
-            <Grid container>
-              <Grid item xs={12} sm={12}>
-                <MiInput
-                  tipoInput={'select'}
-                  label={'Tipo de estudio'}
-                  value={1}
-                  itemsSelect={
-                    [
-                      {
-                        value: 1,
-                        label: 'Carrera'
-                      },
-                      {
-                        value: 2,
-                        label: 'Curso'
-                      },
-                      {
-                        value: 3,
-                        label: 'Congreso'
-                      },
-                      {
-                        value: 4,
-                        label: 'Otro'
-                      }
-                    ]
-                  }
-                />
-              </Grid>
+          <FormEstudiosRealizados
+            handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}
+          />
 
-              <br /><br /><br />
-              <Grid item xs={12} sm={12}>
-                <MiInput
-                  tipoInput={'input'}
-                  type={'text'}
-                  label={'Descripción de la Institución'}
-                  placeholder={'Ingrese el nombre de la institución...'}
-                />
-              </Grid>
-
-              <br /><br /><br />
-              <Grid container>
-                <Grid item xs={12} sm={6}>
-                  <MiInput
-                    tipoInput={'input'}
-                    type={'text'}
-                    label={'Pueblo/Ciudad'}
-                    placeholder={'Ingrese el pueblo o ciudad...'}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <MiInput
-                    tipoInput={'select'}
-                    label={'Provincia'}
-                    value={1}
-                    itemsSelect={
-                      [
-                        {
-                          value: 0,
-                          label: 'Seleccione...'
-                        },
-                        {
-                          value: 1,
-                          label: 'Córdoba'
-                        }
-                      ]
-                    }
-                  />
-                </Grid>
-              </Grid>
-
-              <br /><br /><br />
-              <Grid item xs={12} sm={2}>
-                <MiInput
-                    tipoInput={'select'}
-                    label={'Año de egreso'}
-                    value={2019}
-                    itemsSelect={
-                      [
-                        {
-                          value: 2019,
-                          label: '2019'
-                        },
-                        {
-                          value: 2018,
-                          label: '2018'
-                        },
-                        {
-                          value: 2017,
-                          label: '2017'
-                        },
-                        {
-                          value: 2016,
-                          label: '2016'
-                        },
-                      ]
-                    }
-                  />
-              </Grid>
-
-              <br /><br /><br />
-              <Grid container>
-                <Grid item xs={12} sm={6}>
-                  <MiInput
-                    tipoInput={'date'}
-                    label={'Fecha de inicio'}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <MiInput
-                    tipoInput={'date'}
-                    label={'Fecha de fin'}
-                  />
-                </Grid>
-              </Grid>
-
-            </Grid>
-          </MiControledDialog>
+          <div className={classes.itemsContainer}>
+            {listaEstudiosRealizados.map((cardData) => {
+              return <CardEstudiosRealizados
+                cardData={cardData}
+                handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
+              />
+            })}
+          </div>
 
         </MiCard>
       </React.Fragment>

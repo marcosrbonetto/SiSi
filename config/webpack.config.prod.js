@@ -97,6 +97,7 @@ module.exports = {
       "@Rules": "_Rules",
       "@Assets": "_Assets",
       "@Resources": "_Resources",
+      "@DatosEstaticos": "_DatosEstaticos",
       "@Componentes": "UI/_Componentes",
       "@ComponentesPerfil": "UI/Paginas/Perfil/Componentes",
       "@ComponentesExperienciaLaboral": "UI/Paginas/ExperienciaLaboral/Componentes",

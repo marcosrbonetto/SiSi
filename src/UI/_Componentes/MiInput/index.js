@@ -68,7 +68,8 @@ class MiInput extends React.Component {
       postInput,
       error,
       mensajeError,
-      withDisabled
+      withDisabled,
+      maxLength
     } = this.props;
 
     const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
@@ -105,6 +106,9 @@ class MiInput extends React.Component {
                   helperText={error && mensajeError}
                   FormHelperTextProps={{
                     className: classes.errorText
+                  }}
+                  inputProps={{
+                    maxLength: maxLength,
                   }}
                 />
               </React.Fragment>
