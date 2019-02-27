@@ -9,6 +9,7 @@ import classNames from "classnames";
 
 //Assets
 import Logo_SiSi from "@Assets/images/Logo_SiSi.png";
+import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
@@ -21,6 +22,9 @@ import Button from "@material-ui/core/Button";
 //Componentes
 import MiControledDialog from "@Componentes/MiControledDialog";
 import SeleccionPrograma from '@ComponentesProgramas/SeleccionPrograma'
+
+import Rules_Preinscripcion from "@Rules/Rules_Preinscripcion";
+import Rules_Programas from "@Rules/Rules_Programas";
 
 const mapStateToProps = state => {
   return {
@@ -39,20 +43,24 @@ class Programas extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.tienePreInscripcion = true;
-
-    // const listaProgramas = this.props.loggedUser.data.estudios;
-    // this.state = {
-    //   listaProgramas: listaProgramas.length > 0 && listaProgramas || []
-    // };
+    this.tienePreInscripcion = props.loggedUser.datos.preinscripcion.curso ? true : false;
 
     this.state = {
-      dialogoOpen: false
+      dialogoOpen: false,
+      listaProgramas: undefined
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    this.cargarProgramas();
+  }
 
+  componentWillMount() {
+    const desinscriptcionOK = localStorage.getItem('deletePreinscripcion');
+    localStorage.removeItem('deletePreinscripcion');
+
+    if (desinscriptcionOK)
+      mostrarMensaje('Se ha desinscripto exitosamente!');
   }
 
   onDialogoOpen = () => {
@@ -64,17 +72,58 @@ class Programas extends React.PureComponent {
   }
 
   aceptarDesinscripcion = () => {
-      //TODO
+    //TODO
+  }
+
+  cargarProgramas = () => {
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    Rules_Programas.getProgramas(token)
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar obtener los programas.');
+          return false;
+        }
+
+        this.setState({
+          listaProgramas: datos.return
+        });
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar obtener los programas.');
+        console.error('Error Servicio "Rules_Preinscripcion.getProgramas": ' + error);
+      });
   }
 
   cancelarDesinscripcion = () => {
     this.onDialogoClose();
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    Rules_Preinscripcion.deletePreinscripcion(token)
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
+          return false;
+        }
+
+        localStorage.setItem('deletePreinscripcion', 'OK');
+        window.location.reload();
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
+        console.error('Error Servicio "Rules_Preinscripcion.deletePreinscripcion": ' + error);
+      });
   }
 
   render() {
     const { classes } = this.props;
-    const { dialogoOpen } = this.state;
-    
+    const { dialogoOpen, listaProgramas } = this.state;
+
     return (
       <div className={classes.mainContainer}>
         <Grid container spacing={16} justify="center">
@@ -86,28 +135,37 @@ class Programas extends React.PureComponent {
                 Ya estas Preinscripto a<br />
                 <b>SERVICIOS Y COMERCIO - PELUQUERÍA INTEGRAL</b><br />
                 Por lo que no vas a poder inscribirte a otro programa</Typography>
-                <br/>
-                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoOpen}>Desinscribirme</Button>
-            </Grid>
-            ||
-            <Grid item xs={12} sm={6}>
-
-
-              <SeleccionPrograma
-                tituloPrograma={'SI ESTUDIO +24'}
-                classTituloPrograma={classes.tituloPrograma}
-                textoInformativo={'1000 oportunidades para 38 Cursos de Formación Profesional (CFP) que dura 3 meses promedio.'}
-              />
-
-              <br /><br /><br />
-
-              <SeleccionPrograma
-                tituloPrograma={'SI TRABAJO'}
-                classTituloPrograma={classes.tituloPrograma}
-                textoInformativo={'Hasta 1000 Prácticas Laborales para egresados de los Cursos de Formación Profesional (CFP) en empresas oferentes o la empresa que nos propongas. Media jornada - 20 horas semanales (hasta 6 meses sin relación laboral - con una remuneración de $ 3600 por mes.'}
-              />
-
+              <br />
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoOpen}>Desinscribirme</Button>
             </Grid>}
+
+          {!this.tienePreInscripcion && listaProgramas &&
+            <React.Fragment>
+              {listaProgramas.length > 0 &&
+
+                <Grid item xs={12} sm={6}>
+
+                  {listaProgramas.map((programa) => {
+                    return <React.Fragment>
+                      <SeleccionPrograma
+                        tituloPrograma={programa.nombre}
+                        classTituloPrograma={classes.tituloPrograma}
+                        textoInformativo={programa.descripcion}
+                        arrayProgramas={programa.cursos}
+                      />
+
+                      <br /><br /><br />
+                    </React.Fragment>
+                  })}
+
+                </Grid>
+
+                ||
+                <Grid item xs={12} sm={12}>
+                  <Typography variant="body2" gutterBottom className={classes.informacion} style={{ textAlign: 'center' }}>
+                    No hay programas disponibles</Typography>
+                </Grid>}
+            </React.Fragment>}
         </Grid>
 
         <MiControledDialog

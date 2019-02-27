@@ -25,7 +25,8 @@ import MiInput from "@Componentes/MiInput";
 
 
 import MiControledDialog from "@Componentes/MiControledDialog";
-import { isNumber } from "util";
+
+import Rules_Preinscripcion from "@Rules/Rules_Preinscripcion";
 
 const mapStateToProps = state => {
   return {
@@ -44,6 +45,8 @@ class SeleccionPrograma extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    const arrayProgramas = props.arrayProgramas || [];
+
     this.state = {
       dialogoOpen: false,
       dialogoOpenInfoPrograma: false,
@@ -51,59 +54,8 @@ class SeleccionPrograma extends React.PureComponent {
       dialogInformacionPrograma: null,
       dialogoOpenInfoPreInscripcion: false,
       inputBuscador: '',
-      programas: [
-        {
-          idPrograma: 1,
-          titulo: 'Programa 1',
-          subtitulo: 'este es el programa 1',
-          informacion: <p>
-            <b>¿Qué aprenderás?</b><br/>
-            Se brindarán conocimientos para iniciarte en la lectura y escritura del idioma inglés.<br/><br/>
-            <b>¿Qué podrás hacer?</b><br/>
-            Obtendrás conocimientos básicos para leer, escribir y comunicarte en idioma inglés
-          </p>
-        },
-        {
-          idPrograma: 2,
-          titulo: 'Programa 2',
-          informacion: <p>Informacion del Programa 2</p>
-        },
-        {
-          idPrograma: 3,
-          titulo: 'Programa 3',
-          subtitulo: 'este es el programa 3',
-          informacion: <p>Informacion del programa 3</p>
-        },
-        {
-          idPrograma: 4,
-          titulo: 'Programa 4',
-          informacion: <p>Informacion del Programa 4</p>
-        }
-      ],
-      listaProgramas: [
-        {
-          idPrograma: 1,
-          titulo: 'Programa 1',
-          subtitulo: 'este es el programa 1',
-          informacion: <p>Informacion del programa 1</p>
-        },
-        {
-          idPrograma: 2,
-          titulo: 'Programa 2',
-          informacion: <p>Informacion del Programa 2</p>
-        },
-        {
-          idPrograma: 3,
-          titulo: 'Programa 3',
-          subtitulo: 'este es el programa 3',
-          informacion: <p>Informacion del programa 3</p>
-        },
-        {
-          idPrograma: 4,
-          titulo: 'Programa 4',
-          informacion: <p>Informacion del Programa 4</p>
-        }
-      ]
+      programas: arrayProgramas,
+      listaProgramas: arrayProgramas
     };
   }
 
@@ -151,7 +103,7 @@ class SeleccionPrograma extends React.PureComponent {
     if (inputValue == '')
       return stateArrayProgramas;
     else
-      return _.filter(stateArrayProgramas, (item) => { return item.titulo.indexOf(inputValue) != -1 });
+      return _.filter(stateArrayProgramas, (item) => { return item.nombre.indexOf(inputValue) != -1 });
   }
 
   onClickPrograma = (event) => {
@@ -164,15 +116,49 @@ class SeleccionPrograma extends React.PureComponent {
     if (programaSeleccionado) {
       this.setState({
         dialogoOpenInfoPrograma: true,
-        dialogTituloPrograma: programaSeleccionado.titulo,
-        dialogInformacionPrograma: programaSeleccionado.informacion,
+        dialogTituloPrograma: programaSeleccionado.nombrePrograma,
+        dialogInformacionPrograma: programaSeleccionado.observaciones || '¿Esta seguro que desea preinscribirse a este curso?',
       });
     }
   }
 
   procesarPreInscripcion = () => {
     this.onDialogoCloseInfoPrograma();
-    this.onDialogoOpenInfoPreInscripcion();
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    const body = {
+      "idCurso": 0,
+      "tieneEmpresa": true,
+      "nombreEmpresa": "string",
+      "cuitEmpresa": "string",
+      "domicilioEmpresa": "string",
+      "descripcionEmpresa": "string"
+    }
+
+    Rules_Preinscripcion.insertPreinscripcion(token, body)
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
+          return false;
+        }
+
+        if (estaEnListaEspera) {
+          this.setState({
+            dialogoOpenInfoPreInscripcion: true,
+            programaPreinscripto: datos.return.curso && <span>a {datos.return.curso.nombrePrograma}</span> || '',
+            enfilaDeEspera: datos.return.filaDeEspera
+          });
+        }
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
+        console.error('Error Servicio "Rules_Preinscripcion.insertPreinscripcion": ' + error);
+      });
+
+    //this.onDialogoOpenInfoPreInscripcion();
   }
 
   render() {
@@ -183,7 +169,8 @@ class SeleccionPrograma extends React.PureComponent {
       textoBotonDialog,
       textoInformativo,
       classTituloPrograma,
-      classTextoInformativo
+      classTextoInformativo,
+      loggedUser
     } = this.props;
 
     const {
@@ -193,7 +180,9 @@ class SeleccionPrograma extends React.PureComponent {
       dialogoOpenInfoPrograma,
       dialogTituloPrograma,
       dialogInformacionPrograma,
-      dialogoOpenInfoPreInscripcion
+      dialogoOpenInfoPreInscripcion,
+      programaPreinscripto,
+      enfilaDeEspera
     } = this.state;
 
     return (
@@ -233,7 +222,7 @@ class SeleccionPrograma extends React.PureComponent {
                   onClick={this.onClickPrograma}
                   idPrograma={programa.idPrograma}>
                   <ListItemText
-                    primary={programa.titulo}
+                    primary={programa.nombre}
                     secondary={programa.subtitulo ? programa.subtitulo : null}
                   />
                 </ListItem>
@@ -274,20 +263,25 @@ class SeleccionPrograma extends React.PureComponent {
           classContainterContent={classes.contenedorInfoPreInscripcion}
         >
           <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>
-          <Typography variant={'title'} style={{fontSize: '30px'}}>
-            Tu preinscripción a Administración - Ingles - Nivel Básico fue realizada con éxito
+          <Typography variant={'title'} style={{ fontSize: '30px' }}>
+            Tu preinscripción {programaPreinscripto} fue realizada con éxito
           </Typography>
-          <br/>
+          <br />
           <Typography variant="subheading">
-          Te enviamos un mail a adridotta@gmail.com con el comprobante del registro
+            Te enviamos un mail a {loggedUser.datos.email} con el comprobante del registro
           </Typography>
-          <br/><br/>
-          <Typography variant="subheading">
-          El programa al cual te preinscribiste ya tiene el cupo completo. Si lo deseas te podemos anotar en una lista de espera.
-          </Typography>
-          <br/><br/>
-          <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoPreInscripcion}>Elegir otro Curso</Button>
-          <Button variant="contained" className={classes.buttonSiSi} >{'Anotarme en la lista de espera'}</Button>
+          <br /><br />
+          {enfilaDeEspera &&
+            <React.Fragment>
+              <Typography variant="subheading">El programa al cual te preinscribiste ya tiene el cupo completo. Si lo deseas te podemos anotar en una lista de espera.</Typography><br /> <br />
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoEliminarPreInscripcion}>Elegir otro Curso</Button>
+              <Button variant="contained" className={classes.buttonSiSi} >{'Anotarme en la lista de espera'}</Button></React.Fragment>
+          }
+          {!enfilaDeEspera &&
+            <React.Fragment>
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoPreInscripcion}>Finalizar</Button>
+            </React.Fragment>
+          }
         </MiControledDialog>
       </React.Fragment>
     );

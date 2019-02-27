@@ -203,7 +203,7 @@ class MiInterBanking extends React.PureComponent {
 
               {infoCupon &&
                 <div>
-                  <span className={classes.textoInfoCupon}>Se generó correctamente {infoCupon.lenght > 1 ? 'los cupones' : 'el cupón'} de pago. </span>
+                  <span className={classes.textoInfoCupon}>Se generó correctamente {infoCupon.length > 1 ? 'los cupones' : 'el cupón'} de pago. </span>
                   <Button
                     variant="contained"
                     color="primary"
