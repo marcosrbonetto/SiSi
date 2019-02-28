@@ -1,4 +1,12 @@
-import { USUARIO_LOGIN, USUARIO_CERRAR_SESION } from "@Redux/Constants/index";
+import _ from "lodash";
+
+import {
+  USUARIO_LOGIN,
+  USUARIO_CERRAR_SESION,
+  UPDATE_PREINSCRIPCION,
+  UPDATE_ESTUDIOS,
+  UPDATE_EXPERIENCIAS,
+} from "@Redux/Constants/index";
 
 const initialState = {
   loggedUser: undefined
@@ -8,19 +16,44 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case USUARIO_LOGIN: {
       localStorage.setItem("token", action.payload.token);
-      
-      let loggedUser = {...state.loggedUser};
 
-      if(action.payload.token)
+      let loggedUser = { ...state.loggedUser };
+
+      if (action.payload.token)
         loggedUser['token'] = action.payload.token;
-      if(action.payload.datos)
+      if (action.payload.datos)
         loggedUser['datos'] = action.payload.datos;
 
-      return {...state, loggedUser: loggedUser}
+      return { ...state, loggedUser: loggedUser }
     }
     case USUARIO_CERRAR_SESION: {
       localStorage.removeItem("token");
       return { ...state, loggedUser: undefined };
+    }
+
+    case UPDATE_PREINSCRIPCION: {
+      let loggedUser = _.cloneDeep(state.loggedUser);
+      if(!(loggedUser && loggedUser.datos)) return state;
+
+      loggedUser.datos['preinscripcion'] = action.payload;
+      
+      return { ...state, loggedUser: loggedUser };
+    }
+    case UPDATE_ESTUDIOS: {
+      let loggedUser = _.cloneDeep(state.loggedUser);
+      if(!(loggedUser && loggedUser.datos)) return state;
+
+      loggedUser.datos['estudios'] = action.payload;
+      
+      return { ...state, loggedUser: loggedUser };
+    }
+    case UPDATE_EXPERIENCIAS: {
+      let loggedUser = _.cloneDeep(state.loggedUser);
+      if(!(loggedUser && loggedUser.datos)) return state;
+
+      loggedUser.datos['experienciasLaborales'] = action.payload;
+      
+      return { ...state, loggedUser: loggedUser };
     }
     default:
       return state;

@@ -12,7 +12,8 @@ import Logo_SiSi from "@Assets/images/Logo_SiSi.png";
 import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
 
 //Redux
-import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { mostrarCargando } from '@Redux/Actions/mainContent';
+import { actualizarPreinscipcion } from '@Redux/Actions/usuario';
 
 //Material UI 
 import Grid from '@material-ui/core/Grid';
@@ -36,6 +37,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   mostrarCargando: (cargar) => {
     dispatch(mostrarCargando(cargar));
+  },
+  actualizarPreinscipcion: (data) => {
+    dispatch(actualizarPreinscipcion(data));
   }
 });
 
@@ -55,11 +59,7 @@ class Programas extends React.PureComponent {
   }
 
   componentWillMount() {
-    const desinscriptcionOK = localStorage.getItem('deletePreinscripcion');
-    localStorage.removeItem('deletePreinscripcion');
-
-    if (desinscriptcionOK)
-      mostrarMensaje('Se ha desinscripto exitosamente!');
+    
   }
 
   onDialogoOpen = () => {
@@ -100,6 +100,10 @@ class Programas extends React.PureComponent {
 
   cancelarDesinscripcion = () => {
     this.onDialogoClose();
+  }
+
+  aceptarDesinscripcion = () => {
+    this.onDialogoClose();
 
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
@@ -112,8 +116,12 @@ class Programas extends React.PureComponent {
           return false;
         }
 
-        localStorage.setItem('deletePreinscripcion', 'OK');
-        window.location.reload();
+        this.setState({
+          tienePreInscripcion: false
+        }, () => {
+          this.props.actualizarPreinscipcion(null);
+          mostrarMensaje('Se ha desinscripto exitosamente!');
+        });
       })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar desinscribirte.');

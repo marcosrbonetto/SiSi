@@ -9,6 +9,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { actualizarPreinscipcion } from '@Redux/Actions/usuario';
 
 //Material UI
 import Divider from '@material-ui/core/Divider';
@@ -39,6 +40,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   mostrarCargando: (cargar) => {
     dispatch(mostrarCargando(cargar));
+  },
+  actualizarPreinscipcion: (data) => {
+    dispatch(actualizarPreinscipcion(data));
   }
 });
 
@@ -110,7 +114,10 @@ class SeleccionCurso extends React.PureComponent {
           return false;
         }
 
-        this.setState({ dialogoOpenInfoPreInscripcion: false });
+        this.props.actualizarPreinscipcion(null);
+        this.setState({ dialogoOpenInfoPreInscripcion: false }, () => {
+          this.props.cambioEstadoPreinscripcion && this.props.cambioEstadoPreinscripcion(false);
+        });
       })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
@@ -183,9 +190,11 @@ class SeleccionCurso extends React.PureComponent {
           return false;
         }
 
+        this.props.actualizarPreinscipcion(datos.return);
+
         this.setState({
           dialogoOpenInfoPreInscripcion: true,
-          cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombreCurso}</span> || '',
+          cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombre}</span> || '',
           enfilaDeEspera: datos.return && datos.return.filaDeEspera
         });
       })
@@ -297,6 +306,7 @@ class SeleccionCurso extends React.PureComponent {
           onDialogoOpen={this.onDialogoOpenInfoPreInscripcion}
           onDialogoClose={this.onDialogoCloseInfoPreInscripcion}
           classContainterContent={classes.contenedorInfoPreInscripcion}
+          botonera={true}
         >
           <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>
           <Typography variant={'title'} style={{ fontSize: '30px' }}>

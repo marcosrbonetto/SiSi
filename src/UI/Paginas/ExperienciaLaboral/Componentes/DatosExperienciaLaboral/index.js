@@ -9,7 +9,8 @@ import { connect } from "react-redux";
 import classNames from "classnames";
 
 //Redux
-import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { mostrarCargando } from '@Redux/Actions/mainContent';
+import { actualizarExperienciasLaborales } from '@Redux/Actions/usuario';
 import { mostrarAlerta, mostrarMensaje, stringToDate } from "@Utils/functions";
 
 //Material UI
@@ -36,6 +37,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   mostrarCargando: (cargar) => {
     dispatch(mostrarCargando(cargar));
+  },
+  actualizarExperienciasLaborales: (data) => {
+    dispatch(actualizarExperienciasLaborales(data));
   }
 });
 
@@ -55,11 +59,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
   }
 
   componentWillMount() {
-    const insertOK = localStorage.getItem('insertExperienciaLaboral');
-    localStorage.removeItem('insertExperienciaLaboral');
-
-    if(insertOK)
-      mostrarMensaje('Experiencias laborales guardadas exitosamente!');
+    
   }
 
   agregarExperienciaLaboral = (experienciaLaboralAgregada) => {
@@ -80,7 +80,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
     const experienciasLaborales = this.state.listaExperienciaLaboral;
-    debugger;
+    
     Rules_ExperienciaLaboral.insertExperienciaLaboral(token,experienciasLaborales)
       .then((datos) => {
         this.props.mostrarCargando(false);
@@ -89,8 +89,8 @@ class DatosExperienciaLaboral extends React.PureComponent {
           return false;
         }
 
-        localStorage.setItem('insertExperienciaLaboral','OK');
-        window.location.reload();
+        this.props.actualizarExperienciasLaborales(experienciasLaborales);
+        mostrarMensaje('Experiencias laborales guardadas exitosamente!');
       })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar guardar las experiencias laborales');

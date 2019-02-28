@@ -9,7 +9,8 @@ import { connect } from "react-redux";
 import classNames from "classnames";
 
 //Redux
-import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { mostrarCargando } from '@Redux/Actions/mainContent';
+import { actualizarEstudiosRealizados } from '@Redux/Actions/usuario';
 import { mostrarAlerta, mostrarMensaje, stringToDate } from "@Utils/functions";
 
 //Material UI
@@ -36,6 +37,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   mostrarCargando: (cargar) => {
     dispatch(mostrarCargando(cargar));
+  },
+  actualizarEstudiosRealizados: (data) => {
+    dispatch(actualizarEstudiosRealizados(data));
   }
 });
 
@@ -55,11 +59,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
   }
 
   componentWillMount() {
-    const insertOK = localStorage.getItem('insertEstudiosRealizados');
-    localStorage.removeItem('insertEstudiosRealizados');
-
-    if(insertOK)
-      mostrarMensaje('Estudios realizados guardados exitosamente!');
+    
   }
 
   agregarEstudiosRealizados = (EstudiosRealizadosAgregada) => {
@@ -89,8 +89,8 @@ class DatosEstudiosRealizados extends React.PureComponent {
           return false;
         }
 
-        localStorage.setItem('insertEstudiosRealizados','OK');
-        window.location.reload();
+        this.props.actualizarEstudiosRealizados(estudiosRealizados);
+        mostrarMensaje('Estudios realizados guardados exitosamente!');
       })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar guardar los estudios realizados');
