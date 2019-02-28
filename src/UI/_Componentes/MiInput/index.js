@@ -248,9 +248,9 @@ export const onInputChangeValidateForm = (form, param) => {
   let formInputs = _.cloneDeep(form);
 
   const inputChanged = _.find(formInputs, { id: param.props.id });
-  if(!inputChanged) return false;
+  if (!inputChanged) return false;
 
-  if(inputChanged[param.type] != undefined)
+  if (inputChanged[param.type] != undefined)
     inputChanged[param.type] = param.value != undefined ? param.value : inputChanged.value;
 
   inputChanged.error = false;
@@ -260,14 +260,17 @@ export const onInputChangeValidateForm = (form, param) => {
 
 export const onInputFocusOutValidateForm = (form, param) => {
   let formInputs = _.cloneDeep(form);
+  const inputValue = param.props.tipoInput == 'date' ? param.input : param.input.target.value;
 
   const inputChanged = _.find(formInputs, { id: param.props.id });
-  if(!inputChanged) return false;
-    
-  if (inputChanged.valiateCondition && !inputChanged.valiateCondition.test(param.props.tipoInput == 'date' ? param.input : param.input.target.value)) {
-    inputChanged.error = true;
-    
-    return formInputs;
+  if (!inputChanged) return false;
+
+  if (!(!inputChanged.required && inputValue == '')) {
+    if (inputChanged.valiateCondition && !inputChanged.valiateCondition.test(inputValue)) {
+      inputChanged.error = true;
+
+      return formInputs;
+    }
   }
 
   return form;
@@ -277,18 +280,18 @@ export const validateForm = (form) => {
   let formHayError = false;
   let formInputs = _.cloneDeep(form);
 
-  formInputs.map((input)=> {
+  formInputs.map((input) => {
     if (
-      (input.required && input.value == '') || 
-      (input.required && input.value == '' && input.disabled != undefined && !input.disabled) || 
-      (input.required && input.checked != undefined && !input.checked) || 
+      (input.required && input.value == '') ||
+      (input.required && input.value == '' && input.disabled != undefined && !input.disabled) ||
+      (input.required && input.checked != undefined && !input.checked) ||
       (input.value != '' && input.valiateCondition && !input.valiateCondition.test(input.value))
     ) {
       input.error = true;
       formHayError = true;
     }
   });
-    
+
   return {
     formInputs: formInputs,
     formHayError: formHayError
