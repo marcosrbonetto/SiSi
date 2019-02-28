@@ -43,9 +43,8 @@ class Programas extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.tienePreInscripcion = props.loggedUser.datos.preinscripcion.curso ? true : false;
-
     this.state = {
+      tienePreInscripcion: props.loggedUser.datos.preinscripcion ? true : false,
       dialogoOpen: false,
       listaProgramas: undefined
     };
@@ -71,8 +70,10 @@ class Programas extends React.PureComponent {
     this.setState({ dialogoOpen: false });
   }
 
-  aceptarDesinscripcion = () => {
-    //TODO
+  cambioEstadoPreinscripcion = (tienePreInscripcion) => {
+    this.setState({
+      tienePreInscripcion: tienePreInscripcion
+    });
   }
 
   cargarProgramas = () => {
@@ -122,13 +123,13 @@ class Programas extends React.PureComponent {
 
   render() {
     const { classes } = this.props;
-    const { dialogoOpen, listaProgramas } = this.state;
+    const { tienePreInscripcion, dialogoOpen, listaProgramas } = this.state;
 
     return (
       <div className={classes.mainContainer}>
         <Grid container spacing={16} justify="center">
 
-          {this.tienePreInscripcion &&
+          {tienePreInscripcion &&
             <Grid item xs={12} sm={6} className={classes.containerTienePreInscripcion}>
               <img src={Logo_SiSi} width={150} height={84} className={classes.imgSiSi} /><br /><br />
               <Typography variant="body2" gutterBottom className={classes.informacion}>
@@ -139,7 +140,7 @@ class Programas extends React.PureComponent {
               <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoOpen}>Desinscribirme</Button>
             </Grid>}
 
-          {!this.tienePreInscripcion && listaProgramas &&
+          {!tienePreInscripcion && listaProgramas &&
             <React.Fragment>
               {listaProgramas.length > 0 &&
 
@@ -151,7 +152,8 @@ class Programas extends React.PureComponent {
                         tituloPrograma={programa.nombre}
                         classTituloPrograma={classes.tituloPrograma}
                         textoInformativo={programa.descripcion}
-                        arrayProgramas={programa.cursos}
+                        arrayCursos={programa.cursos}
+                        cambioEstadoPreinscripcion={this.cambioEstadoPreinscripcion}
                       />
 
                       <br /><br /><br />

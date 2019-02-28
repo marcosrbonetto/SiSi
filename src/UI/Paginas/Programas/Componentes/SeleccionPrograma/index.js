@@ -23,6 +23,7 @@ import Icon from '@material-ui/core/Icon';
 import MiCard from "@Componentes/MiNewCard";
 import MiInput from "@Componentes/MiInput";
 
+import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
 
 import MiControledDialog from "@Componentes/MiControledDialog";
 
@@ -41,21 +42,24 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-class SeleccionPrograma extends React.PureComponent {
+class SeleccionCurso extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const arrayProgramas = props.arrayProgramas || [];
+    const arrayCursos = props.arrayCursos || [];
 
     this.state = {
       dialogoOpen: false,
-      dialogoOpenInfoPrograma: false,
-      dialogTituloPrograma: null,
-      dialogInformacionPrograma: null,
+      dialogoOpenInfoCurso: false,
+      dialogTituloCurso: null,
+      dialogInformacionCurso: null,
       dialogoOpenInfoPreInscripcion: false,
       inputBuscador: '',
-      programas: arrayProgramas,
-      listaProgramas: arrayProgramas
+      cursos: arrayCursos,
+      listaCursos: arrayCursos,
+      cursoPreinscripto: '',
+      enfilaDeEspera: false,
+      cursoSeleccionado: undefined
     };
   }
 
@@ -71,12 +75,15 @@ class SeleccionPrograma extends React.PureComponent {
     this.setState({ dialogoOpen: false });
   }
 
-  onDialogoOpenInfoPrograma = () => {
-    this.setState({ dialogoOpenInfoPrograma: true });
+  onDialogoOpenInfoCurso = () => {
+    this.setState({ dialogoOpenInfoCurso: true });
   }
 
-  onDialogoCloseInfoPrograma = () => {
-    this.setState({ dialogoOpenInfoPrograma: false });
+  onDialogoCloseInfoCurso = () => {
+    this.setState({ 
+      dialogoOpenInfoCurso: false,
+      cursoSeleccionado: undefined
+    });
   }
 
   onDialogoOpenInfoPreInscripcion = () => {
@@ -84,57 +91,88 @@ class SeleccionPrograma extends React.PureComponent {
   }
 
   onDialogoCloseInfoPreInscripcion = () => {
-    this.setState({ dialogoOpenInfoPreInscripcion: false });
+    this.setState({ dialogoOpenInfoPreInscripcion: false }, () => {
+      this.props.cambioEstadoPreinscripcion && this.props.cambioEstadoPreinscripcion(true);
+    });
+  }
+
+  onDialogoEliminarPreInscripcion = () => {
+    this.onDialogoClose();
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    Rules_Preinscripcion.deletePreinscripcion(token)
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
+          return false;
+        }
+
+        this.setState({ dialogoOpenInfoPreInscripcion: false });
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
+        console.error('Error Servicio "Rules_Preinscripcion.deletePreinscripcion": ' + error);
+      });
   }
 
   onChangeInputBusqueda = (event) => {
     var inputValue = event.target.value;
-    var arrayProgramasFiltrados = this.getProgramasFiltrados(inputValue);
+    var arrayCursosFiltrados = this.getCursosFiltrados(inputValue);
 
     this.setState({
       inputBuscador: inputValue,
-      listaProgramas: arrayProgramasFiltrados
+      listaCursos: arrayCursosFiltrados
     });
   }
 
-  getProgramasFiltrados = (inputValue) => {
-    var stateArrayProgramas = this.state.programas;
+  getCursosFiltrados = (inputValue) => {
+    var stateArrayCursos = this.state.cursos;
 
     if (inputValue == '')
-      return stateArrayProgramas;
+      return stateArrayCursos;
     else
-      return _.filter(stateArrayProgramas, (item) => { return item.nombre.indexOf(inputValue) != -1 });
+      return _.filter(stateArrayCursos, (item) => { return item.nombre.indexOf(inputValue) != -1 });
   }
 
-  onClickPrograma = (event) => {
-    var idPrograma = event.currentTarget.attributes.idPrograma.value;
-    idPrograma = !isNaN(idPrograma) ? parseInt(idPrograma) : idPrograma;
-    var programas = this.state.programas;
+  onClickCurso = (event) => {
+    var idCurso = event.currentTarget.attributes.idCurso.value;
+    idCurso = !isNaN(idCurso) ? parseInt(idCurso) : idCurso;
+    var cursos = this.state.cursos;
 
-    var programaSeleccionado = _.find(programas, { idPrograma: idPrograma });
+    var cursoSeleccionado = _.find(cursos, { id: idCurso });
 
-    if (programaSeleccionado) {
+    if (cursoSeleccionado) {
       this.setState({
-        dialogoOpenInfoPrograma: true,
-        dialogTituloPrograma: programaSeleccionado.nombrePrograma,
-        dialogInformacionPrograma: programaSeleccionado.observaciones || '¿Esta seguro que desea preinscribirse a este curso?',
+        dialogoOpenInfoCurso: true,
+        dialogTituloCurso: cursoSeleccionado.nombreCurso,
+        dialogInformacionCurso: cursoSeleccionado.observaciones || '¿Esta seguro que desea preinscribirse a este curso?',
+        cursoSeleccionado: cursoSeleccionado
       });
     }
   }
 
   procesarPreInscripcion = () => {
-    this.onDialogoCloseInfoPrograma();
+    this.onDialogoCloseInfoCurso();
 
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
+    const curso = this.state.cursoSeleccionado;
+
+    if(!curso) {
+      this.props.mostrarCargando(false);
+      return false;
+    }
 
     const body = {
-      "idCurso": 0,
-      "tieneEmpresa": true,
-      "nombreEmpresa": "string",
-      "cuitEmpresa": "string",
-      "domicilioEmpresa": "string",
-      "descripcionEmpresa": "string"
+      "idCurso": curso.id,
+      "tieneEmpresa": false,
+      "nombreEmpresa": '',
+      "cuitEmpresa": '',
+      "domicilioEmpresa": '',
+      "descripcionEmpresa": ''
     }
 
     Rules_Preinscripcion.insertPreinscripcion(token, body)
@@ -145,13 +183,11 @@ class SeleccionPrograma extends React.PureComponent {
           return false;
         }
 
-        if (estaEnListaEspera) {
-          this.setState({
-            dialogoOpenInfoPreInscripcion: true,
-            programaPreinscripto: datos.return.curso && <span>a {datos.return.curso.nombrePrograma}</span> || '',
-            enfilaDeEspera: datos.return.filaDeEspera
-          });
-        }
+        this.setState({
+          dialogoOpenInfoPreInscripcion: true,
+          cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombreCurso}</span> || '',
+          enfilaDeEspera: datos.return && datos.return.filaDeEspera
+        });
       })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
@@ -164,32 +200,32 @@ class SeleccionPrograma extends React.PureComponent {
   render() {
     const {
       classes,
-      tituloPrograma,
+      tituloCurso,
       textoBoton,
       textoBotonDialog,
       textoInformativo,
-      classTituloPrograma,
+      classTituloCurso,
       classTextoInformativo,
       loggedUser
     } = this.props;
 
     const {
       dialogoOpen,
-      listaProgramas,
+      listaCursos,
       inputBuscador,
-      dialogoOpenInfoPrograma,
-      dialogTituloPrograma,
-      dialogInformacionPrograma,
+      dialogoOpenInfoCurso,
+      dialogTituloCurso,
+      dialogInformacionCurso,
       dialogoOpenInfoPreInscripcion,
-      programaPreinscripto,
+      cursoPreinscripto,
       enfilaDeEspera
     } = this.state;
 
     return (
       <React.Fragment>
         <MiCard
-          informacionAlerta={tituloPrograma}
-          classInformacionAlerta={classTituloPrograma}
+          informacionAlerta={tituloCurso}
+          classInformacionAlerta={classTituloCurso}
           seccionBotones={{
             align: 'center',
             content: <Button variant="contained" className={classes.buttonSiSi} onClick={this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
@@ -202,7 +238,7 @@ class SeleccionPrograma extends React.PureComponent {
           open={dialogoOpen}
           onDialogoOpen={this.onDialogoOpen}
           onDialogoClose={this.onDialogoClose}
-          titulo={'Cursos del programa ' + tituloPrograma}
+          titulo={'Cursos'}
         >
           <MiInput
             onChange={this.onChangeInputBusqueda}
@@ -215,15 +251,15 @@ class SeleccionPrograma extends React.PureComponent {
 
           <List className={classes.lista}>
             {
-              listaProgramas && listaProgramas.length &&
-              listaProgramas.map((programa) => {
+              listaCursos && listaCursos.length &&
+              listaCursos.map((curso) => {
                 return <ListItem
                   className={classes.itemLista}
-                  onClick={this.onClickPrograma}
-                  idPrograma={programa.idPrograma}>
+                  onClick={this.onClickCurso}
+                  idCurso={curso.id}>
                   <ListItemText
-                    primary={programa.nombre}
-                    secondary={programa.subtitulo ? programa.subtitulo : null}
+                    primary={curso.nombre}
+                    secondary={curso.subtitulo ? curso.subtitulo : null}
                   />
                 </ListItem>
               })
@@ -238,21 +274,21 @@ class SeleccionPrograma extends React.PureComponent {
         </MiControledDialog>
 
         <MiControledDialog
-          open={dialogoOpenInfoPrograma}
-          onDialogoOpen={this.onDialogoOpenInfoPrograma}
-          onDialogoClose={this.onDialogoCloseInfoPrograma}
-          titulo={'Cursos del programa ' + dialogTituloPrograma}
+          open={dialogoOpenInfoCurso}
+          onDialogoOpen={this.onDialogoOpenInfoCurso}
+          onDialogoClose={this.onDialogoCloseInfoCurso}
+          titulo={'Cursos del programa ' + dialogTituloCurso}
           botonera={
             <div className={classes.containerBotonera}>
               <Divider />
               <div className={classes.botonesBotonera}>
-                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoPrograma}>Otro Curso</Button>
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button>
                 <Button variant="contained" className={classes.buttonSiSi} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'PRE - INSCRIBIRME'}</Button>
               </div>
             </div>
           }
         >
-          {dialogInformacionPrograma}
+          {dialogInformacionCurso}
         </MiControledDialog>
 
 
@@ -264,7 +300,7 @@ class SeleccionPrograma extends React.PureComponent {
         >
           <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>
           <Typography variant={'title'} style={{ fontSize: '30px' }}>
-            Tu preinscripción {programaPreinscripto} fue realizada con éxito
+            Tu preinscripción {cursoPreinscripto} fue realizada con éxito
           </Typography>
           <br />
           <Typography variant="subheading">
@@ -273,9 +309,9 @@ class SeleccionPrograma extends React.PureComponent {
           <br /><br />
           {enfilaDeEspera &&
             <React.Fragment>
-              <Typography variant="subheading">El programa al cual te preinscribiste ya tiene el cupo completo. Si lo deseas te podemos anotar en una lista de espera.</Typography><br /> <br />
+              <Typography variant="subheading">El curso al cual te preinscribiste ya tiene el cupo completo. Si lo deseas te podemos anotar en una lista de espera.</Typography><br /> <br />
               <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoEliminarPreInscripcion}>Elegir otro Curso</Button>
-              <Button variant="contained" className={classes.buttonSiSi} >{'Anotarme en la lista de espera'}</Button></React.Fragment>
+              <Button variant="contained" className={classes.onDialogoCloseInfoPreInscripcion} >{'Anotarme en la lista de espera'}</Button></React.Fragment>
           }
           {!enfilaDeEspera &&
             <React.Fragment>
@@ -336,7 +372,7 @@ const styles = theme => ({
   }
 });
 
-let componente = SeleccionPrograma;
+let componente = SeleccionCurso;
 componente = connect(
   mapStateToProps,
   mapDispatchToProps

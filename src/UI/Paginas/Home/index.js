@@ -90,7 +90,7 @@ class Home extends React.PureComponent {
     const ocupacion = datosUsuario.ocupacionId && datosUsuario.ocupacionNombre || 'Desocupado';
     const tieneTrabajoActualmente = datosUsuario.tieneTrabajoActualmente && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
     
-    const tienePreinscripcion = datosUsuario.preinscripcion.curso ? true : false;
+    const tienePreinscripcion = datosUsuario.preinscripcion ? true : false;
     const programa = tienePreinscripcion && <span>Te preinscribiste a {datosUsuario.preinscripcion.curso.nombrePrograma}</span> || 'Todavía no te has preinscripto a ningún programa';
     
     const tieneExperienciasLaborales = datosUsuario.experienciasLaborales.length > 0;
