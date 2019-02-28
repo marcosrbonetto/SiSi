@@ -183,7 +183,7 @@ class MiToolbar extends React.Component {
           {/* Icono de Notificaciones */}
           {/* Icono del usuario */}
           {this.state.datosUsuario && <div className={classes.loggedIcons}>
-            <MiNotificacion />
+            {/*<MiNotificacion />*/}
 
             <IconButton onClick={this.onUsuarioPress} color="inherit">
               <Avatar alt="Menu del usuario" src={urlFotoPerfilMiniatura} className={classNames(classes.icono)} />
