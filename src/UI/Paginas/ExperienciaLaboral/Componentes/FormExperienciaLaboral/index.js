@@ -17,6 +17,7 @@ import Grid from "@material-ui/core/Grid";
 
 //Mis Componentes
 import MiInput from "@Componentes/MiInput";
+import { onInputChangeValidateForm, onInputFocusOutValidateForm, validateForm } from "@Componentes/MiInput";
 
 import MiControledDialog from "@Componentes/MiControledDialog";
 import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral'
@@ -76,7 +77,7 @@ class FormExperienciaLaboral extends React.PureComponent {
           valiateCondition: /^[0-9]{11}$/,
           error: false,
           required: false,
-          mensajeError: 'Este campo es obligatorio y debe contener 11 números.'
+          mensajeError: 'Este campo es opcional y debe contener 11 números.'
         },
         {
           id: 'InputFechaInicioEmpresa',
@@ -117,47 +118,29 @@ class FormExperienciaLaboral extends React.PureComponent {
   }
 
   onChangeInput = (value, type, input, props) => {
-    const inputChanged = _.find(this.state.formInputs, { id: props.id });
-    if(!inputChanged) return false;
 
-    if(inputChanged[type] != undefined)
-      inputChanged[type] = value != undefined ? value : inputChanged.value;
-
-    inputChanged.error = false;
+    const newformInputs = onInputChangeValidateForm(this.state.formInputs, {value, type, input, props});
 
     this.setState({
-      formInputs : _.cloneDeep(this.state.formInputs)
+      formInputs : newformInputs
     });
   }
 
   onFocusOutInput = (input, props) => {
-    const inputChanged = _.find(this.state.formInputs, { id: props.id });
-    if(!inputChanged) return false;
-      
-    if (inputChanged.valiateCondition && !inputChanged.valiateCondition.test(props.tipoInput == 'date' ? input : input.target.value)) {
-      inputChanged.error = true;
-      
-      this.setState({
-        formInputs: _.cloneDeep(this.state.formInputs)
-      });
-    }
+
+    const newformInputs = onInputFocusOutValidateForm(this.state.formInputs, {input, props});
+
+    this.setState({
+      formInputs : newformInputs
+    });
   }
 
   validateForm = () => {
-    let formHayError = false;
-    let formInputs = _.cloneDeep(this.state.formInputs);
 
-    formInputs.map((input)=> {
-      if (
-        (input.required && input.value == '') || 
-        (input.required && input.value == '' && input.disabled != undefined && !input.disabled) || 
-        (input.required && input.checked != undefined && !input.checked) || 
-        (input.value != '' && input.valiateCondition && !input.valiateCondition.test(input.value))
-      ) {
-        input.error = true;
-        formHayError = true;
-      }
-    });
+    const resultValidation = validateForm(this.state.formInputs);
+
+    let formHayError = resultValidation.formHayError;
+    let formInputs = resultValidation.formInputs;
 
     //Conditions between inputs
     const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
@@ -308,7 +291,7 @@ class FormExperienciaLaboral extends React.PureComponent {
                   error={InputCuitEmpresa && InputCuitEmpresa.error || false}
                   mensajeError={InputCuitEmpresa && InputCuitEmpresa.mensajeError || 'Campo erroneo'}
                   label={'CUIT de la empresa'}
-                  placeholder={'Si lo conoces, ingrese el CUIT de la empresa...'}
+                  placeholder={'(Opcional) Si lo conoces, ingrese el CUIT de la empresa...'}
                 />
               </Grid>
               <br /><br /><br />

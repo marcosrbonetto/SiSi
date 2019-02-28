@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 import { withStyles } from "@material-ui/core/styles";
 import classNames from "classnames";
 
@@ -237,3 +238,59 @@ const styles = theme => ({
 });
 
 export default withStyles(styles)(MiInput);
+
+
+
+
+
+//Validaciones Inputs by Form
+export const onInputChangeValidateForm = (form, param) => {
+  let formInputs = _.cloneDeep(form);
+
+  const inputChanged = _.find(formInputs, { id: param.props.id });
+  if(!inputChanged) return false;
+
+  if(inputChanged[param.type] != undefined)
+    inputChanged[param.type] = param.value != undefined ? param.value : inputChanged.value;
+
+  inputChanged.error = false;
+
+  return formInputs;
+}
+
+export const onInputFocusOutValidateForm = (form, param) => {
+  let formInputs = _.cloneDeep(form);
+
+  const inputChanged = _.find(formInputs, { id: param.props.id });
+  if(!inputChanged) return false;
+    
+  if (inputChanged.valiateCondition && !inputChanged.valiateCondition.test(param.props.tipoInput == 'date' ? param.input : param.input.target.value)) {
+    inputChanged.error = true;
+    
+    return formInputs;
+  }
+
+  return form;
+}
+
+export const validateForm = (form) => {
+  let formHayError = false;
+  let formInputs = _.cloneDeep(form);
+
+  formInputs.map((input)=> {
+    if (
+      (input.required && input.value == '') || 
+      (input.required && input.value == '' && input.disabled != undefined && !input.disabled) || 
+      (input.required && input.checked != undefined && !input.checked) || 
+      (input.value != '' && input.valiateCondition && !input.valiateCondition.test(input.value))
+    ) {
+      input.error = true;
+      formHayError = true;
+    }
+  });
+    
+  return {
+    formInputs: formInputs,
+    formHayError: formHayError
+  };
+}

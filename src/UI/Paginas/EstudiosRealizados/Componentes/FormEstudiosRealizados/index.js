@@ -17,6 +17,7 @@ import Grid from "@material-ui/core/Grid";
 
 //Mis Componentes
 import MiInput from "@Componentes/MiInput";
+import { onInputChangeValidateForm, onInputFocusOutValidateForm, validateForm } from "@Componentes/MiInput";
 
 import MiControledDialog from "@Componentes/MiControledDialog";
 import CardEstudiosRealizados from '@ComponentesEstudiosRealizados/CardEstudiosRealizados'
@@ -143,58 +144,40 @@ class FormEstudiosRealizados extends React.PureComponent {
   }
 
   onChangeInput = (value, type, input, props) => {
-    const inputChanged = _.find(this.state.formInputs, { id: props.id });
-    if (!inputChanged) return false;
 
-    if (inputChanged[type] != undefined)
-      inputChanged[type] = value != undefined ? value : inputChanged.value;
-
-    inputChanged.error = false;
+    const newformInputs = onInputChangeValidateForm(this.state.formInputs, {value, type, input, props});
 
     this.setState({
-      formInputs: _.cloneDeep(this.state.formInputs)
+      formInputs : newformInputs
     });
   }
 
   onFocusOutInput = (input, props) => {
-    const inputChanged = _.find(this.state.formInputs, { id: props.id });
-    if (!inputChanged) return false;
 
-    if (inputChanged.valiateCondition && !inputChanged.valiateCondition.test(props.tipoInput == 'date' ? input : input.target.value)) {
-      inputChanged.error = true;
+    const newformInputs = onInputFocusOutValidateForm(this.state.formInputs, {input, props});
 
-      this.setState({
-        formInputs: _.cloneDeep(this.state.formInputs)
-      });
-    }
+    this.setState({
+      formInputs : newformInputs
+    });
   }
 
   validateForm = () => {
-    let formHayError = false;
-    let formInputs = _.cloneDeep(this.state.formInputs);
 
-    formInputs.map((input) => {
-      if (
-        (input.required && input.value == '') ||
-        (input.required && input.value == '' && input.disabled != undefined && !input.disabled) ||
-        (input.required && input.checked != undefined && !input.checked) ||
-        (input.value != '' && input.valiateCondition && !input.valiateCondition.test(input.value))
-      ) {
-        input.error = true;
-        formHayError = true;
-      }
-    });
+    const resultValidation = validateForm(this.state.formInputs);
+
+    let formHayError = resultValidation.formHayError;
+    let formInputs = resultValidation.formInputs;
 
     //Conditions between inputs
     const InputFechaInicioEstudio = _.find(formInputs, { id: 'InputFechaInicioEstudio' });
     const InputFechaFinEstudio = _.find(formInputs, { id: 'InputFechaFinEstudio' });
 
-    if (InputFechaInicioEstudio.value && InputFechaFinEstudio.value &&
-      InputFechaInicioEstudio.disabled == false && InputFechaFinEstudio.disabled == false &&
+    if(InputFechaInicioEstudio.value && InputFechaFinEstudio.value && 
+      InputFechaInicioEstudio.disabled == false && InputFechaFinEstudio.disabled == false && 
       InputFechaInicioEstudio.value.getTime() > InputFechaFinEstudio.value.getTime()) {
       InputFechaInicioEstudio.error = true;
       InputFechaFinEstudio.error = true;
-
+      
       formHayError = true;
     } else {
       InputFechaInicioEstudio.error = false;
@@ -202,9 +185,9 @@ class FormEstudiosRealizados extends React.PureComponent {
     }
 
     this.setState({
-      formInputs: _.cloneDeep(formInputs)
+      formInputs : _.cloneDeep(formInputs)
     });
-
+      
     return formHayError;
   }
 

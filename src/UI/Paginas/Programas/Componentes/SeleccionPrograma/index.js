@@ -19,10 +19,16 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Icon from '@material-ui/core/Icon';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Grid from '@material-ui/core/Grid';
 
 //Mis Componentes
 import MiCard from "@Componentes/MiNewCard";
 import MiInput from "@Componentes/MiInput";
+import IndicadorCargando from "@UI/_Componentes/IndicadorCargando"
+import { onInputChangeValidateForm, onInputFocusOutValidateForm, validateForm } from "@Componentes/MiInput";
 
 import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
 
@@ -63,12 +69,85 @@ class SeleccionCurso extends React.PureComponent {
       listaCursos: arrayCursos,
       cursoPreinscripto: '',
       enfilaDeEspera: false,
-      cursoSeleccionado: undefined
+      cargandoVisible: false,
+      cursoSeleccionado: undefined,
+      checkEmpresa: 'noEmpresa',
+      formInputs: [
+        {
+          id: 'InputNombreEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,50}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 50 catacteres.'
+        },
+        {
+          id: 'InputDescripcionEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,150}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+        },
+        {
+          id: 'InputCuitEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^[0-9]{11}$/,
+          error: false,
+          required: false,
+          mensajeError: 'Este campo es opcional y debe contener 11 números.'
+        },
+        {
+          id: 'InputContactoEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,20}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+        },
+      ]
     };
   }
 
   componentWillMount() {
 
+  }
+
+  onChangeInput = (value, type, input, props) => {
+
+    const newformInputs = onInputChangeValidateForm(this.state.formInputs, { value, type, input, props });
+
+    this.setState({
+      formInputs: newformInputs
+    });
+  }
+
+  onFocusOutInput = (input, props) => {
+
+    const newformInputs = onInputFocusOutValidateForm(this.state.formInputs, { input, props });
+
+    this.setState({
+      formInputs: newformInputs
+    });
+  }
+
+  validateForm = () => {
+
+    const resultValidation = validateForm(this.state.formInputs);
+
+    this.setState({
+      formInputs: resultValidation.formInputs
+    });
+
+    return resultValidation.formHayError;
+  }
+
+  handleChangeCheckEmpresa = (event) => {
+    this.setState({ checkEmpresa: event.target.value });
   }
 
   onDialogoOpen = () => {
@@ -84,9 +163,8 @@ class SeleccionCurso extends React.PureComponent {
   }
 
   onDialogoCloseInfoCurso = () => {
-    this.setState({ 
-      dialogoOpenInfoCurso: false,
-      cursoSeleccionado: undefined
+    this.setState({
+      dialogoOpenInfoCurso: false
     });
   }
 
@@ -109,6 +187,7 @@ class SeleccionCurso extends React.PureComponent {
     Rules_Preinscripcion.deletePreinscripcion(token)
       .then((datos) => {
         this.props.mostrarCargando(false);
+
         if (!datos.ok) {
           mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
           return false;
@@ -120,13 +199,14 @@ class SeleccionCurso extends React.PureComponent {
         });
       })
       .catch((error) => {
+        this.props.mostrarCargando(false);
         mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
         console.error('Error Servicio "Rules_Preinscripcion.deletePreinscripcion": ' + error);
       });
   }
 
-  onChangeInputBusqueda = (event) => {
-    var inputValue = event.target.value;
+  onChangeInputBusqueda = (value) => {
+    var inputValue = value;
     var arrayCursosFiltrados = this.getCursosFiltrados(inputValue);
 
     this.setState({
@@ -154,7 +234,7 @@ class SeleccionCurso extends React.PureComponent {
     if (cursoSeleccionado) {
       this.setState({
         dialogoOpenInfoCurso: true,
-        dialogTituloCurso: cursoSeleccionado.nombreCurso,
+        dialogTituloCurso: cursoSeleccionado.nombre,
         dialogInformacionCurso: cursoSeleccionado.observaciones || '¿Esta seguro que desea preinscribirse a este curso?',
         cursoSeleccionado: cursoSeleccionado
       });
@@ -162,48 +242,90 @@ class SeleccionCurso extends React.PureComponent {
   }
 
   procesarPreInscripcion = () => {
-    this.onDialogoCloseInfoCurso();
 
-    this.props.mostrarCargando(true);
-    const token = this.props.loggedUser.token;
-    const curso = this.state.cursoSeleccionado;
+    this.setState({
+      cargandoVisible: true
+    }, () => {
+      const token = this.props.loggedUser.token;
+      const curso = this.state.cursoSeleccionado;
+      const checkEmpresa = this.state.checkEmpresa;
+      const formInputs = this.state.formInputs;
 
-    if(!curso) {
-      this.props.mostrarCargando(false);
-      return false;
-    }
+      if (!curso) {
+        this.setState({
+          cargandoVisible: false
+        });
+        return false;
+      }
 
-    const body = {
-      "idCurso": curso.id,
-      "tieneEmpresa": false,
-      "nombreEmpresa": '',
-      "cuitEmpresa": '',
-      "domicilioEmpresa": '',
-      "descripcionEmpresa": ''
-    }
+      let body = {
+        "idCurso": curso.id,
+        "tieneEmpresa": false,
+        "nombreEmpresa": '',
+        "cuitEmpresa": '',
+        "domicilioEmpresa": '',
+        "descripcionEmpresa": ''
+      }
 
-    Rules_Preinscripcion.insertPreinscripcion(token, body)
-      .then((datos) => {
-        this.props.mostrarCargando(false);
-        if (!datos.ok) {
-          mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
+      if (curso &&
+        curso.necesitaEmpresa &&
+        checkEmpresa == 'siEmpresa') {
+
+        const formHayError = this.validateForm();
+
+        if (formHayError) {
+          mostrarAlerta('Se han encontrado campos erroneos.');
           return false;
         }
 
-        this.props.actualizarPreinscipcion(datos.return);
+        const InputNombreEmpresa = _.find(formInputs, { id: 'InputNombreEmpresa' });
+        const InputDescripcionEmpresa = _.find(formInputs, { id: 'InputDescripcionEmpresa' });
+        const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
+        const InputContactoEmpresa = _.find(formInputs, { id: 'InputContactoEmpresa' });
 
-        this.setState({
-          dialogoOpenInfoPreInscripcion: true,
-          cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombre}</span> || '',
-          enfilaDeEspera: datos.return && datos.return.filaDeEspera
+        body = {
+          "idCurso": curso.id,
+          "tieneEmpresa": false,
+          "nombreEmpresa": InputNombreEmpresa.value || '',
+          "cuitEmpresa": InputCuitEmpresa.value || '',
+          "domicilioEmpresa": InputContactoEmpresa.value || '',
+          "descripcionEmpresa": InputDescripcionEmpresa.value || '',
+        }
+      }
+
+      this.onDialogoCloseInfoCurso();
+
+      Rules_Preinscripcion.insertPreinscripcion(token, body)
+        .then((datos) => {
+          if (!datos.ok) {
+            this.setState({
+              cargandoVisible: false,
+              cursoSeleccionado: undefined
+            });
+            mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
+            return false;
+          }
+
+          this.props.actualizarPreinscipcion(datos.return);
+
+          this.setState({
+            cargandoVisible: false,
+            dialogoOpenInfoPreInscripcion: true,
+            cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombre}</span> || '',
+            enfilaDeEspera: datos.return && datos.return.filaDeEspera,
+            cursoSeleccionado: undefined
+          });
+        })
+        .catch((error) => {
+          this.setState({
+            cargandoVisible: false,
+            cursoSeleccionado: undefined
+          });
+          mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
+          console.error('Error Servicio "Rules_Preinscripcion.insertPreinscripcion": ' + error);
         });
-      })
-      .catch((error) => {
-        mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
-        console.error('Error Servicio "Rules_Preinscripcion.insertPreinscripcion": ' + error);
-      });
+    });
 
-    //this.onDialogoOpenInfoPreInscripcion();
   }
 
   render() {
@@ -227,11 +349,22 @@ class SeleccionCurso extends React.PureComponent {
       dialogInformacionCurso,
       dialogoOpenInfoPreInscripcion,
       cursoPreinscripto,
-      enfilaDeEspera
+      enfilaDeEspera,
+      cursoSeleccionado,
+      checkEmpresa,
+      formInputs,
+      cargandoVisible
     } = this.state;
+
+    //Set inputs
+    const InputNombreEmpresa = _.find(formInputs, { id: 'InputNombreEmpresa' });
+    const InputDescripcionEmpresa = _.find(formInputs, { id: 'InputDescripcionEmpresa' });
+    const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
+    const InputContactoEmpresa = _.find(formInputs, { id: 'InputContactoEmpresa' });
 
     return (
       <React.Fragment>
+        <IndicadorCargando visible={cargandoVisible} />
         <MiCard
           informacionAlerta={tituloCurso}
           classInformacionAlerta={classTituloCurso}
@@ -297,7 +430,93 @@ class SeleccionCurso extends React.PureComponent {
             </div>
           }
         >
-          {dialogInformacionCurso}
+          <div key="mainContent">
+            {(cursoSeleccionado && cursoSeleccionado.necesitaEmpresa &&
+              <React.Fragment>
+                <b>¿Desea sugerir una empresa?</b>
+                <RadioGroup
+                  value={checkEmpresa}
+                  onChange={this.handleChangeCheckEmpresa}
+                >
+                  <FormControlLabel style={{ height: '26px' }} value={'noEmpresa'} control={<Radio color="primary" />} label="No deseo sugerir una empresa" />
+                  <FormControlLabel style={{ height: '26px' }} value={'siEmpresa'} control={<Radio color="primary" />} label="Deseo sugerir una empresa" />
+                </RadioGroup>
+                <br />
+                {checkEmpresa == 'siEmpresa' &&
+                  <React.Fragment>
+                    <Grid container>
+                      <Grid item xs={12} sm={12}>
+                        <MiInput
+                          onChange={this.onChangeInput}
+                          onFocusOut={this.onFocusOutInput}
+                          id={'InputNombreEmpresa'}
+                          tipoInput={'input'}
+                          type={'text'}
+                          value={InputNombreEmpresa && InputNombreEmpresa.value || ''}
+                          error={InputNombreEmpresa && InputNombreEmpresa.error || false}
+                          mensajeError={InputNombreEmpresa && InputNombreEmpresa.mensajeError || 'Campo erroneo'}
+                          label={'Nombre de la empresa'}
+                          placeholder={'Ingrese el nombre de la empresa...'}
+                        />
+                      </Grid>
+                      <br /><br /><br />
+                      <Grid item xs={12} sm={12}>
+                        <MiInput
+                          onChange={this.onChangeInput}
+                          onFocusOut={this.onFocusOutInput}
+                          id={'InputDescripcionEmpresa'}
+                          tipoInput={'input'}
+                          type={'text'}
+                          value={InputDescripcionEmpresa && InputDescripcionEmpresa.value || ''}
+                          error={InputDescripcionEmpresa && InputDescripcionEmpresa.error || false}
+                          mensajeError={InputDescripcionEmpresa && InputDescripcionEmpresa.mensajeError || 'Campo erroneo'}
+                          label={'Descripción de la empresa'}
+                          placeholder={'Describa la actividad de la empresa...'}
+                        />
+                      </Grid>
+                      <br /><br /><br />
+                      <Grid container>
+                        <Grid item xs={12} sm={6}>
+                          <MiInput
+                            onChange={this.onChangeInput}
+                            onFocusOut={this.onFocusOutInput}
+                            id={'InputCuitEmpresa'}
+                            tipoInput={'input'}
+                            type={'text'}
+                            value={InputCuitEmpresa && InputCuitEmpresa.value || ''}
+                            error={InputCuitEmpresa && InputCuitEmpresa.error || false}
+                            mensajeError={InputCuitEmpresa && InputCuitEmpresa.mensajeError || 'Campo erroneo'}
+                            label={'CUIT de la empresa'}
+                            placeholder={'(Opcional) Si lo conoces, ingrese el CUIT de la empresa...'}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <MiInput
+                            onChange={this.onChangeInput}
+                            onFocusOut={this.onFocusOutInput}
+                            id={'InputContactoEmpresa'}
+                            tipoInput={'input'}
+                            type={'text'}
+                            value={InputContactoEmpresa && InputContactoEmpresa.value || ''}
+                            error={InputContactoEmpresa && InputContactoEmpresa.error || false}
+                            mensajeError={InputContactoEmpresa && InputContactoEmpresa.mensajeError || 'Campo erroneo'}
+                            label={'Contacto de la empresa'}
+                            placeholder={'Ingrese el contacto Cde la empresa...'}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <br />
+                    <div className={classes.containerInfoEmpresa}>
+                      <i className={classNames('material-icons', classes.classIconoInfo)}>info</i>
+                      <Typography variant="body2">Para sugerir una empresa es OBLIGATORIO llenar la siguiente planilla en papel y acercarla al Centro de Empleo y Capacitación (Galería Cinerama Av. Colon 335 subsuelo) de 8:30 a 14:30 hs</Typography>
+                    </div>
+                  </React.Fragment>
+                }
+              </React.Fragment>
+            )
+              || dialogInformacionCurso}
+          </div>
         </MiControledDialog>
 
 
@@ -379,6 +598,14 @@ const styles = theme => ({
   contenedorInfoPreInscripcion: {
     textAlign: 'center',
     maxWidth: '500px',
+  },
+  classIconoInfo: {
+    margin: '0px 14px 0px 0px',
+    color: '#ffb300'
+  },
+  containerInfoEmpresa: {
+    display: 'flex',
+    alignItems: 'center'
   }
 });
 
