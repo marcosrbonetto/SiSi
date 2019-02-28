@@ -27,6 +27,24 @@ const styles = theme => ({
     width: '160px',
     margin: '0px auto',
   },
+  iconoBoton: {
+    fontSize: '16px',
+    lineHeight: '14px',
+    marginRight: '4px',
+  },
+  secondaryColor: {
+    color: theme.color.ok.main,
+  },
+  seccionCenter: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonModifDatosAdicionales: {
+    width: 'auto',
+    borderRadius: '20px'
+  }
 });
 
 

@@ -431,7 +431,7 @@ class SeleccionCurso extends React.PureComponent {
           }
         >
           <div key="mainContent">
-            {(cursoSeleccionado && !cursoSeleccionado.necesitaEmpresa &&
+            {(cursoSeleccionado && cursoSeleccionado.necesitaEmpresa &&
               <React.Fragment>
                 <b>¿Desea sugerir una empresa?</b>
                 <RadioGroup
