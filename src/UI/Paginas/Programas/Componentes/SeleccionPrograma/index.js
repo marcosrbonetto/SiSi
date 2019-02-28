@@ -431,7 +431,7 @@ class SeleccionCurso extends React.PureComponent {
           }
         >
           <div key="mainContent">
-            {(cursoSeleccionado && cursoSeleccionado.necesitaEmpresa &&
+            {(cursoSeleccionado && !cursoSeleccionado.necesitaEmpresa &&
               <React.Fragment>
                 <b>¿Desea sugerir una empresa?</b>
                 <RadioGroup
@@ -509,8 +509,16 @@ class SeleccionCurso extends React.PureComponent {
                     <br />
                     <div className={classes.containerInfoEmpresa}>
                       <i className={classNames('material-icons', classes.classIconoInfo)}>info</i>
-                      <Typography variant="body2">Para sugerir una empresa es OBLIGATORIO llenar la siguiente planilla en papel y acercarla al Centro de Empleo y Capacitación (Galería Cinerama Av. Colon 335 subsuelo) de 8:30 a 14:30 hs</Typography>
+                      <Typography variant="body2">Para sugerir una empresa es OBLIGATORIO llenar la siguiente planilla en papel y acercarla al Centro de Empleo y Capacitación (Galería Cinerama Av. Colon 335 subsuelo) de 8:30 a 14:30 hs</Typography>                     
                     </div>
+                    
+                    <Button
+                      href={'https://drive.google.com/file/d/1V1PZUlkCHhXhZhvQh_AKEjD4gszEESOF/view'}
+                      target="_blank"
+                      className={classes.buttonDescargaPlanilla}
+                      >
+                        Descargar Planilla
+                      </Button>
                   </React.Fragment>
                 }
               </React.Fragment>
@@ -603,9 +611,19 @@ const styles = theme => ({
     margin: '0px 14px 0px 0px',
     color: '#ffb300'
   },
+  classIconoDownload: {
+    margin: '0px 14px 0px 0px',
+    color: theme.color.ok.main,
+    textDecoration: 'none'
+  },
   containerInfoEmpresa: {
     display: 'flex',
     alignItems: 'center'
+  },
+  buttonDescargaPlanilla: {
+    color: theme.color.ok.main,
+    textDecoration: 'underline',
+    marginLeft: '24px'
   }
 });
 
