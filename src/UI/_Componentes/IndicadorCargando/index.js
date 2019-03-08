@@ -3,9 +3,11 @@ import { withStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import classNames from "classnames";
 
+import Typography from '@material-ui/core/Typography';
+
 class IndicadorCargando extends React.PureComponent {
   render() {
-    let { classes, backgroundColor, opacity } = this.props;
+    let { classes, backgroundColor, opacity, texto } = this.props;
 
     backgroundColor = backgroundColor || "white";
     opacity = opacity || 0.7;
@@ -22,6 +24,7 @@ class IndicadorCargando extends React.PureComponent {
           style={{ opacity: opacity, backgroundColor: backgroundColor }}
         />
         <CircularProgress color="primary" />
+        {texto && <Typography className={classes.texto} variant="body1">{texto}</Typography>}
       </div>
     );
   }
@@ -52,6 +55,10 @@ const styles = theme => ({
   visible: {
     opacity: 1,
     pointerEvents: "auto"
+  },
+  texto: {
+    position: 'absolute',
+    marginTop: '30px',
   }
 });
 

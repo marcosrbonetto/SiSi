@@ -37,7 +37,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.modoInvitado = this.props.loggedUser.token == window.Config.TOKEN_INVITADO;
     let paraMobile = !isWidthUp(limite, props.width);
 
     this.state = {
@@ -117,7 +116,6 @@ class App extends React.Component {
 
           {/* Drawer */}
           <MiDrawer
-            modoInvitado={this.modoInvitado}
             width={width}
             paginaActual={paginaActual}
             paraMobile={this.state.paraMobile}
@@ -131,7 +129,7 @@ class App extends React.Component {
           <div className={classNames(classes.main)}>
             <div className={classes.separadorToolbar} />
             <div ref="mainContent" className={classes.content}>
-              <Route path="/" render={() => { return Content(this.modoInvitado) }} />
+              <Route path="/" render={() => { return Content() }} />
             </div>
           </div>
         </div>
@@ -147,7 +145,7 @@ class App extends React.Component {
   }
 }
 
-const Content = (modoInvitado) => {
+const Content = () => {
   return (
     <div className={styles.switchWrapper}>
       <AnimatedSwitch
@@ -157,9 +155,6 @@ const Content = (modoInvitado) => {
         className={"switch-wrapper"}
       >
         {Menu.map((item, index) => {
-          
-          if (modoInvitado && item.mostrarUserInvitado == false ||
-            (!modoInvitado && item.mostrarUserVV == false)) return null;
 
           return (
             <Route
@@ -169,6 +164,7 @@ const Content = (modoInvitado) => {
               component={item.component}
             />
           );
+          
         })}
       </AnimatedSwitch>
     </div>

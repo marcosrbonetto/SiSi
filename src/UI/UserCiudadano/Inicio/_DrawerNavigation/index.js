@@ -44,7 +44,7 @@ class MiDrawer extends React.Component {
   };
 
   render() {
-    const { classes, open, paraMobile, modoInvitado } = this.props;
+    const { classes, open, paraMobile } = this.props;
 
     return (
       <SwipeableDrawer
@@ -74,9 +74,7 @@ class MiDrawer extends React.Component {
 
         <List component="nav" className="navMenu">
           {Menu.map((item, index) => {
-            if (item.mostrarEnMenu == false ||
-              (modoInvitado && item.mostrarUserInvitado == false) ||
-              (!modoInvitado && item.mostrarUserVV == false)) return null;
+            if (item.mostrarEnMenu == false) return null;
 
             return (
               <DrawerItem

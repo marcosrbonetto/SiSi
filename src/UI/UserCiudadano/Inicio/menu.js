@@ -1,7 +1,7 @@
-import Home from "@UI/Paginas/Home/index";
-import ExperienciaLaboral from "@UI/Paginas/ExperienciaLaboral/index";
-import EstudiosRealizados from "@UI/Paginas/EstudiosRealizados/index";
-import Programas from "@UI/Paginas/Programas/index";
+import Home from "@UI/UserCiudadano/Paginas/Home/index";
+import ExperienciaLaboral from "@UI/UserCiudadano/Paginas/ExperienciaLaboral/index";
+import EstudiosRealizados from "@UI/UserCiudadano/Paginas/EstudiosRealizados/index";
+import Programas from "@UI/UserCiudadano/Paginas/Programas/index";
 
 
 const Menu = [

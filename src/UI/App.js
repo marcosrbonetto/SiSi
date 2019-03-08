@@ -30,7 +30,8 @@ import { IconButton, Icon } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 //Mis componentes
-import Inicio from "./Inicio";
+import InicioCiudadano from "./UserCiudadano/Inicio";
+import InicioGestor from "./UserGestor/Inicio";
 import Pagina404 from "@UI/_Pagina404";
 import IndicadorCargando from "@UI/_Componentes/IndicadorCargando"
 import MiSoporteUsuario from "@UI/_Componentes/MiSoporteUsuario"
@@ -253,7 +254,8 @@ class App extends React.Component {
           className={"switch-wrapper"}
         >
           <Route exact path="/" component={null} />
-          <Route path={`${base}/Inicio`} component={login ? Inicio : null} />
+          {/*<Route path={`${base}/Inicio`} component={login ? InicioCiudadano : null} />*/}
+          <Route path={`${base}/Inicio`} component={login ? InicioGestor : null} />
           <Route component={login ? Pagina404 : null} />
         </AnimatedSwitch>
       </main>
