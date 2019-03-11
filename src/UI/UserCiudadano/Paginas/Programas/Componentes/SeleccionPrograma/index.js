@@ -221,7 +221,7 @@ class SeleccionCurso extends React.PureComponent {
     if (inputValue == '')
       return stateArrayCursos;
     else
-      return _.filter(stateArrayCursos, (item) => { return item.nombre.indexOf(inputValue) != -1 });
+      return _.filter(stateArrayCursos, (item) => { return (item.nombre + " - " +item.lugar).toLowerCase().indexOf(inputValue.toLowerCase()) != -1 });
   }
 
   onClickCurso = (event) => {
@@ -234,7 +234,7 @@ class SeleccionCurso extends React.PureComponent {
     if (cursoSeleccionado) {
       this.setState({
         dialogoOpenInfoCurso: true,
-        dialogTituloCurso: cursoSeleccionado.nombre,
+        dialogTituloCurso: cursoSeleccionado.nombre + ' - ' + cursoSeleccionado.lugar,
         dialogInformacionCurso: cursoSeleccionado.observaciones || '¿Esta seguro que desea preinscribirse a este curso?',
         cursoSeleccionado: cursoSeleccionado
       });
@@ -311,7 +311,7 @@ class SeleccionCurso extends React.PureComponent {
           this.setState({
             cargandoVisible: false,
             dialogoOpenInfoPreInscripcion: true,
-            cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombre}</span> || '',
+            cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombre} en {datos.return.curso.lugar}</span> || '',
             enfilaDeEspera: datos.return && datos.return.filaDeEspera,
             cursoSeleccionado: undefined
           });
@@ -400,7 +400,7 @@ class SeleccionCurso extends React.PureComponent {
                   onClick={this.onClickCurso}
                   idCurso={curso.id}>
                   <ListItemText
-                    primary={curso.nombre}
+                    primary={curso.nombre + " - " + curso.lugar}
                     secondary={curso.subtitulo ? curso.subtitulo : null}
                   />
                 </ListItem>

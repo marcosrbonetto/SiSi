@@ -11,6 +11,7 @@ const styles = theme => ({
   centerItems: {
     display: 'flex',
     alignItems: 'center',
+    margin: '6px auto'
   },
   limpiarSelect: {
     marginTop: '16px',
@@ -72,6 +73,10 @@ const styles = theme => ({
   },
   imgMuni: {
     float: 'right'
+  },
+  buttonDescargaReporte: {
+    display: 'flex',
+    justifyContent: 'flex-end'
   }
 });
 

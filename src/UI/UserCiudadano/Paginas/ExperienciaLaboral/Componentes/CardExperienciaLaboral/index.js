@@ -68,6 +68,7 @@ class CardExperienciaLaboral extends React.PureComponent {
               <b>Descripción:</b> {cardData.descripcion || '-'}<br />
               <b>Contacto:</b> {cardData.contacto || '-'}<br />
               <b>CUIT:</b> {cardData.cuit || '-'}<br />
+              <b>Cargo/Actividad:</b> {cardData.cargo || '-'}<br />
               <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
               <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}
             </Typography>

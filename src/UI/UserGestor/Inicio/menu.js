@@ -2,7 +2,7 @@ import Home from "@UI/UserGestor/Paginas/Home/index";
 
 const Menu = [
   {
-    url: "/Inicio",
+    url: "/InicioGestor",
     exact: true,
     mostrarEnMenu: true,
     component: Home,

@@ -80,6 +80,15 @@ class FormExperienciaLaboral extends React.PureComponent {
           mensajeError: 'Este campo es opcional y debe contener 11 números.'
         },
         {
+          id: 'InputCargoActividadEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,150}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+        },
+        {
           id: 'InputFechaInicioEmpresa',
           value: new Date(),
           initValue: new Date(),
@@ -95,7 +104,7 @@ class FormExperienciaLaboral extends React.PureComponent {
           disabled: true,
           error: false,
           required: false
-        },
+        }
       ]
     };
   }
@@ -171,6 +180,7 @@ class FormExperienciaLaboral extends React.PureComponent {
     const InputDescripcionEmpresa = _.find(formInputs, { id: 'InputDescripcionEmpresa' });
     const InputDatosContactoEmpresa = _.find(formInputs, { id: 'InputDatosContactoEmpresa' });
     const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
+    const InputCargoActividadEmpresa = _.find(formInputs, { id: 'InputCargoActividadEmpresa' });
     const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
     const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
 
@@ -179,6 +189,7 @@ class FormExperienciaLaboral extends React.PureComponent {
       descripcion: InputDescripcionEmpresa.value,
       contacto: InputDatosContactoEmpresa.value,
       cuit: InputCuitEmpresa.value,
+      cargo: InputCargoActividadEmpresa.value,
       fechaInicio: !InputFechaInicioEmpresa.disabled ? dateToString(InputFechaInicioEmpresa.value, 'DD/MM/YYYY') : null,
       fechaFinalizacion: !InputFechaFinEmpresa.disabled ? dateToString(InputFechaFinEmpresa.value, 'DD/MM/YYYY') : null,
     };
@@ -216,6 +227,7 @@ class FormExperienciaLaboral extends React.PureComponent {
     const InputDescripcionEmpresa = _.find(formInputs, { id: 'InputDescripcionEmpresa' });
     const InputDatosContactoEmpresa = _.find(formInputs, { id: 'InputDatosContactoEmpresa' });
     const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
+    const InputCargoActividadEmpresa = _.find(formInputs, { id: 'InputCargoActividadEmpresa' });
     const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
     const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
 
@@ -292,6 +304,21 @@ class FormExperienciaLaboral extends React.PureComponent {
                   mensajeError={InputCuitEmpresa && InputCuitEmpresa.mensajeError || 'Campo erroneo'}
                   label={'CUIT de la empresa'}
                   placeholder={'(Opcional) Si lo conoces, ingrese el CUIT de la empresa...'}
+                />
+              </Grid>
+              <br /><br /><br />
+              <Grid item xs={12} sm={12}>
+                <MiInput
+                  onChange={this.onChangeInput}
+                  onFocusOut={this.onFocusOutInput}
+                  id={'InputCargoActividadEmpresa'}
+                  tipoInput={'input'}
+                  type={'text'}
+                  value={InputCargoActividadEmpresa && InputCargoActividadEmpresa.value || ''}
+                  error={InputCargoActividadEmpresa && InputCargoActividadEmpresa.error || false}
+                  mensajeError={InputCargoActividadEmpresa && InputCargoActividadEmpresa.mensajeError || 'Campo erroneo'}
+                  label={'Cargo / Actividad'}
+                  placeholder={'Ingrese el cargo y la actividad que realizaba en la empresa...'}
                 />
               </Grid>
               <br /><br /><br />

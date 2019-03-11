@@ -11,7 +11,7 @@ import classNames from "classnames";
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent';
 import { actualizarExperienciasLaborales } from '@Redux/Actions/usuario';
-import { mostrarAlerta, mostrarMensaje, stringToDate } from "@Utils/functions";
+import { mostrarAlerta, mostrarMensaje, stringToDate, dateToString } from "@Utils/functions";
 
 //Material UI
 import Icon from '@material-ui/core/Icon';
@@ -48,8 +48,11 @@ class DatosExperienciaLaboral extends React.PureComponent {
     super(props);
 
     const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;    
-    listaExperienciaLaboral.map((item) => {
-      const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+    listaExperienciaLaboral.map((item, index) => {
+      const randomId = "id_"+index+"_"+(new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+
+      item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';
+      item.fechaFinalizacion = item.fechaFinalizacion ? dateToString(new Date(item.fechaFinalizacion), 'DD/MM/YYYY') : '';
       item.id = randomId;
     });
 

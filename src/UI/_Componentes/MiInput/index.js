@@ -191,7 +191,8 @@ class MiInput extends React.Component {
 const styles = theme => ({
   classContainer: {
     display: 'flex',
-    padding: '0px 4px'
+    padding: '0px 4px',
+    width: '100%'
   },
   formControl: {
     margin: '0px'

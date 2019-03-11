@@ -22,7 +22,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import { dateToString } from "@Utils/functions";
 
-import {arrayTipoEstudios, arrayMedidaDeTiempo} from '@DatosEstaticos/EstudiosRealizados'
+import {arrayTipoEstudios} from '@DatosEstaticos/EstudiosRealizados'
 
 const mapStateToProps = state => {
   return {
@@ -60,7 +60,6 @@ class CardEstudiosRealizados extends React.PureComponent {
     const { classes, cardData } = this.props;
 
     var tipoEstudio = _.find(arrayTipoEstudios, { value: cardData.tipoEstudio });
-    var medidaDeTiempo = _.find(arrayMedidaDeTiempo, { value: cardData.medidaDeTiempo });
 
     return (
       <React.Fragment>
@@ -75,10 +74,9 @@ class CardEstudiosRealizados extends React.PureComponent {
               <b>Tipo:</b> {tipoEstudio && tipoEstudio.label || '-'}<br />
               <b>Descripción:</b> {cardData.descripcion || '-'}<br />
               <b>Lugar de Cursado:</b> {cardData.lugarDeCursado || '-'}<br />
-              <b>Duración:</b> {cardData.duracion || '-'} {medidaDeTiempo && medidaDeTiempo.label || '-'}<br />
+              <b>Duración:</b> {cardData.duracion || '-'}<br />
               <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
               <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}<br />
-              <b>Url Certificado</b> <a href={cardData.urlCertificado || '#'} target="_blank">Link</a><br />
             </Typography>
         </MiCard>
       </React.Fragment>

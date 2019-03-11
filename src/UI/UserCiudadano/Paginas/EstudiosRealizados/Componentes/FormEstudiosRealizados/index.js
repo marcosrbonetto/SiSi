@@ -22,7 +22,7 @@ import { onInputChangeValidateForm, onInputFocusOutValidateForm, validateForm } 
 import MiControledDialog from "@Componentes/MiControledDialog";
 import CardEstudiosRealizados from '@ComponentesEstudiosRealizados/CardEstudiosRealizados'
 
-import {arrayTipoEstudios, arrayMedidaDeTiempo} from '@DatosEstaticos/EstudiosRealizados.js'
+import {arrayTipoEstudios} from '@DatosEstaticos/EstudiosRealizados.js'
 
 const mapStateToProps = state => {
   return {
@@ -83,18 +83,10 @@ class FormEstudiosRealizados extends React.PureComponent {
           id: 'InputDuracionEstudio',
           value: 0,
           initValue: 0,
-          valiateCondition: /^[0-9]{0,4}$/,
+          valiateCondition: /^.{0,150}$/,
           error: false,
           required: true,
-          mensajeError: 'Este campo es obligatorio.'
-        },
-        {
-          id: 'InputMedidaTiempoEstudio',
-          value: 1,
-          initValue: 1,
-          error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio.'
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
         },
         {
           id: 'InputFechaInicioEstudio',
@@ -112,15 +104,6 @@ class FormEstudiosRealizados extends React.PureComponent {
           disabled: true,
           error: false,
           required: false
-        },
-        {
-          id: 'InputURLCertificadoEstudio',
-          value: '',
-          initValue: '',
-          valiateCondition: /^.{0,500}$/,
-          error: false,
-          required: false,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 500 catacteres.'
         }
       ]
     };
@@ -198,10 +181,8 @@ class FormEstudiosRealizados extends React.PureComponent {
     const InputDescripcionEstudio = _.find(formInputs, { id: 'InputDescripcionEstudio' });
     const InputLugarCursadoEstudio = _.find(formInputs, { id: 'InputLugarCursadoEstudio' });
     const InputDuracionEstudio = _.find(formInputs, { id: 'InputDuracionEstudio' });
-    const InputMedidaTiempoEstudio = _.find(formInputs, { id: 'InputMedidaTiempoEstudio' });
     const InputFechaInicioEstudio = _.find(formInputs, { id: 'InputFechaInicioEstudio' });
     const InputFechaFinEstudio = _.find(formInputs, { id: 'InputFechaFinEstudio' });
-    const InputURLCertificadoEstudio = _.find(formInputs, { id: 'InputURLCertificadoEstudio' });
 
     const nuevaExpLab = {
       tipoEstudio: InputTipoEstudio.value,
@@ -209,10 +190,8 @@ class FormEstudiosRealizados extends React.PureComponent {
       descripcion: InputDescripcionEstudio.value,
       lugarDeCursado: InputLugarCursadoEstudio.value,
       duracion: InputDuracionEstudio.value,
-      medidaDeTiempo: InputMedidaTiempoEstudio.value,
       fechaInicio: !InputFechaInicioEstudio.disabled ? dateToString(InputFechaInicioEstudio.value, 'DD/MM/YYYY') : null,
       fechaFinalizacion: !InputFechaFinEstudio.disabled ? dateToString(InputFechaFinEstudio.value, 'DD/MM/YYYY') : null,
-      urlCertificado: InputURLCertificadoEstudio.value,
     };
 
     return nuevaExpLab;
@@ -249,10 +228,8 @@ class FormEstudiosRealizados extends React.PureComponent {
     const InputDescripcionEstudio = _.find(formInputs, { id: 'InputDescripcionEstudio' });
     const InputLugarCursadoEstudio = _.find(formInputs, { id: 'InputLugarCursadoEstudio' });
     const InputDuracionEstudio = _.find(formInputs, { id: 'InputDuracionEstudio' });
-    const InputMedidaTiempoEstudio = _.find(formInputs, { id: 'InputMedidaTiempoEstudio' });
     const InputFechaInicioEstudio = _.find(formInputs, { id: 'InputFechaInicioEstudio' });
     const InputFechaFinEstudio = _.find(formInputs, { id: 'InputFechaFinEstudio' });
-    const InputURLCertificadoEstudio = _.find(formInputs, { id: 'InputURLCertificadoEstudio' });
 
     return (
       <React.Fragment>
@@ -330,24 +307,9 @@ class FormEstudiosRealizados extends React.PureComponent {
                 placeholder={'Describa el lugar cursado...'}
               />
             </Grid>
-            <br /><br /><br /><br />
-            <Grid item xs={12} sm={12}>
-              <MiInput
-                onChange={this.onChangeInput}
-                onFocusOut={this.onFocusOutInput}
-                id={'InputURLCertificadoEstudio'}
-                tipoInput={'input'}
-                type={'text'}
-                value={InputURLCertificadoEstudio && InputURLCertificadoEstudio.value || ''}
-                error={InputURLCertificadoEstudio && InputURLCertificadoEstudio.error || false}
-                mensajeError={InputURLCertificadoEstudio && InputURLCertificadoEstudio.mensajeError || 'Campo erroneo'}
-                label={'URL Certificado'}
-                placeholder={'Copie la URL del Certificado...'}
-              />
-            </Grid>
             <br /><br /><br />
             <Grid container>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <MiInput
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
@@ -358,23 +320,7 @@ class FormEstudiosRealizados extends React.PureComponent {
                   error={InputDuracionEstudio && InputDuracionEstudio.error || false}
                   mensajeError={InputDuracionEstudio && InputDuracionEstudio.mensajeError || 'Campo erroneo'}
                   label={'Duracion'}
-                  placeholder={'Cantidad...'}
-                  maxLength={4}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <MiInput
-                  onChange={this.onChangeInput}
-                  onFocusOut={this.onFocusOutInput}
-                  id={'InputMedidaTiempoEstudio'}
-                  tipoInput={'select'}
-                  label={''}
-                  error={InputMedidaTiempoEstudio && InputMedidaTiempoEstudio.error || false}
-                  mensajeError={InputMedidaTiempoEstudio && InputMedidaTiempoEstudio.mensajeError || ''}
-                  withDisabled={true}
-                  disabled={InputMedidaTiempoEstudio && InputMedidaTiempoEstudio.disabled != undefined ? InputMedidaTiempoEstudio.disabled : true}
-                  value={1}
-                  itemsSelect={arrayMedidaDeTiempo}
+                  placeholder={'Cantidad de horas/dias...'}
                 />
               </Grid>
             </Grid>

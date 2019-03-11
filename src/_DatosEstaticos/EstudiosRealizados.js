@@ -1,31 +1,25 @@
-export const arrayTipoEstudios = [{
+export const arrayTipoEstudios = [
+{
   value: 1,
-  label: 'Curso'
+  label: 'Carrera de Grado'
 },
 {
   value: 2,
-  label: 'Carrera'
+  label: 'Postgrado / Maestria'
 },
 {
   value: 3,
+  label: 'Diplomatura / Tecnicatura'
+},
+{
+  value: 4,
+  label: 'Doctorado'
+},
+{
+  value: 5,
+  label: 'Curso'
+},
+{
+  value: 6,
   label: 'Congreso'
 }];
-
-export const arrayMedidaDeTiempo = [
-  {
-    value: 1,
-    label: 'Hora/s'
-  },
-  {
-    value: 2,
-    label: 'Día/s'
-  },
-  {
-    value: 3,
-    label: 'Mes/es'
-  },
-  {
-    value: 4,
-    label: 'Año/s'
-  }
-];
