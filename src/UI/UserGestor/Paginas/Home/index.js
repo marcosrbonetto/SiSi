@@ -83,6 +83,9 @@ class Home extends React.PureComponent {
           value: 2
         }
       ],
+      valueInputCUIT: '',
+      valueInputNombre: '',
+      valueInputLugar: '',
       rowList: [],
       dialogConfirmacion: false,
       dialogCancelacion: false,
@@ -122,9 +125,29 @@ class Home extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    Rules_Gestor.getPreinsciptos(token, {
+    let filters = {};
 
-    }).then((datos) => {
+    if(this.state.programaFiltroSeleccionado != -1) {
+      filters['idPrograma'] = this.state.programaFiltroSeleccionado;
+    }
+
+    if(this.state.cursoFiltroSeleccionado != -1) {
+      filters['idCurso'] = this.state.cursoFiltroSeleccionado;
+    }
+
+    if(this.state.valueInputNombre != '') {
+      filters['nombre'] = this.state.valueInputNombre;
+    }
+
+    if(this.state.valueInputCUIT != '') {
+      filters['cuit'] = this.state.valueInputCUIT;
+    }
+
+    if(this.state.valueInputLugar != '') {
+      filters['lugar'] = this.state.valueInputLugar;
+    }
+
+    Rules_Gestor.getPreinsciptos(token, filters).then((datos) => {
       this.props.mostrarCargando(false);
       if (!datos.ok) {
         mostrarAlerta('Ocurrió un error al intentar obtener los preinscriptos.');
@@ -340,6 +363,28 @@ class Home extends React.PureComponent {
     })
   }
 
+  onChangeInputCUIT = (event) => {
+    this.setState({
+      valueInputCUIT: event.target.value
+    })
+  }
+
+  onChangeInputNombre = (event) => {
+    this.setState({
+      valueInputNombre: event.target.value
+    })
+  }
+
+  onChangeInputLugar = (event) => {
+    this.setState({
+      valueInputLugar: event.target.value
+    })
+  }
+
+  handleBuscarPreinscriptos = () => {
+    this.cargarPreinscriptos();
+  }
+
   render() {
     const { classes } = this.props;
     const {
@@ -351,7 +396,10 @@ class Home extends React.PureComponent {
       dialogImpresionReporte,
       arrayProgramas,
       arrayCursos,
-      arrayReporte
+      arrayReporte,
+      valueInputLugar,
+      valueInputCUIT,
+      valueInputNombre
     } = this.state;
 
     let programasInReporte = [];
@@ -388,11 +436,12 @@ class Home extends React.PureComponent {
                         id={'InputLugar'}
                         tipoInput={'input'}
                         type={'text'}
-                        value={''}
+                        value={valueInputLugar}
                         error={false}
                         mensajeError={false}
                         label={'Buscar por Lugar'}
                         placeholder={'Ingrese el lugar del curso...'}
+                        onChange={this.onChangeInputLugar}
                       />
                     </Grid>
                   </Grid>
@@ -402,14 +451,15 @@ class Home extends React.PureComponent {
                   <Grid container>
                     <Grid item xs={12} sm={12} className={classes.centerItems}>
                       <MiInput
-                        id={'InputCUIL'}
+                        id={'InputCUIT'}
                         tipoInput={'input'}
                         type={'text'}
-                        value={''}
+                        value={valueInputCUIT}
                         error={false}
                         mensajeError={false}
-                        label={'Buscar por CUIL'}
-                        placeholder={'Ingrese el CUIL del preinscripto...'}
+                        label={'Buscar por CUIT'}
+                        placeholder={'Ingrese el CUIT del preinscripto...'}
+                        onChange={this.onChangeInputCUIT}
                       />
                     </Grid>
                     <Grid item xs={12} sm={12} className={classes.centerItems}>
@@ -417,11 +467,12 @@ class Home extends React.PureComponent {
                         id={'Apellido/Nombre'}
                         tipoInput={'input'}
                         type={'text'}
-                        value={''}
+                        value={valueInputNombre}
                         error={false}
                         mensajeError={false}
                         label={'Buscar por Apellido/Nombre'}
                         placeholder={'Ingrese el Apellido/Nombre del preinscripto...'}
+                        onChange={this.onChangeInputNombre}
                       />
                     </Grid>
                     <Grid item xs={12} sm={12} className={classes.centerItems}>
@@ -430,6 +481,7 @@ class Home extends React.PureComponent {
                           variant="contained"
                           color="primary"
                           className={classes.buttonActions}
+                          onClick={this.handleBuscarPreinscriptos}
                         >Aplicar Filtros</Button>
                       </section>
                     </Grid>
@@ -523,7 +575,7 @@ class Home extends React.PureComponent {
                     <table className={classNames(classes.tablasReporte, "tablasReporte")}>
                       <thead>
                         <tr>
-                          <th>CUIL</th>
+                          <th>CUIT</th>
                           <th>Apellido/Nombre</th>
                           <th>Email</th>
                           <th>Fecha Preinsc.</th>
