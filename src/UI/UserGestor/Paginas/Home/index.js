@@ -23,7 +23,7 @@ import Button from "@material-ui/core/Button";
 import DeleteIcon from '@material-ui/icons/Delete';
 
 //MisComponentes
-import MiCard from "@Componentes/MiCard";
+import MiCard from "@Componentes/MiNewCard";
 import MiTabla from "@Componentes/MiTabla";
 import MiControledDialog from "@Componentes/MiControledDialog";
 import MiSelect from "@Componentes/MiSelect";
@@ -33,8 +33,8 @@ import MiInput from "@Componentes/MiInput";
 import ReportePDF from '@ComponentesHome/ReportePDF';
 import { Typography } from "@material-ui/core";
 
-import Rules_Preinscripcion from "@Rules/Rules_Preinscripcion";
-import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
+import Rules_Gestor from "@Rules/Rules_Gestor";
+import { mostrarAlerta, mostrarMensaje, dateToString } from "@Utils/functions";
 
 const mapStateToProps = state => {
   return {
@@ -55,6 +55,8 @@ const mapDispatchToProps = dispatch => ({
 class Home extends React.PureComponent {
   constructor(props) {
     super(props);
+
+    this.idUsuarioAEliminar = null;
 
     this.state = {
       programaFiltroSeleccionado: -1,
@@ -81,56 +83,112 @@ class Home extends React.PureComponent {
           value: 2
         }
       ],
-      rowList: [
-        {
-          imgPerfil: <Avatar src="https://servicios2.cordoba.gov.ar/cordobafiles/archivo/f_qdag0f9irgka9xj2l6mbll69gxmhlghezkmkj2mykg1pj0uuhwogqiqfic_c327l9gmyk9tutz1fuq0rc3_z2byq5gcg2j5tjpqcn6jid4x2rlv2nsaa2it7s64d7m2k4h7e_xegt2w8p79uvk4jj42a7uvrcfm1cn8jpq31o4raxvsv8ktwtsa_q6iqbxeop56c_zee/3" />,
-          dniCuil: '20355266169',
-          apellidoNombre: 'Dotta, Adrian',
-          email: 'adridotta@gmail.com',
-          programa: 'SI ESTUDIO +24',
-          curso: 'Carpinteria',
-          acciones: <React.Fragment>
-            {/* <Button onClick={this.onDialogOpenImpresionReporte} size="small" color="secondary" className={props.classes.iconoAceptar}>
-              <i class="material-icons">check</i>
-            </Button> */}
-            <Button onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={props.classes.iconoEliminar}>
-              <DeleteIcon />
-            </Button>
-          </React.Fragment>,
-          data: {
-            idPrograma: 1,
-            idCurso: 2
-          }
-        },
-        {
-          imgPerfil: <Avatar src="https://servicios2.cordoba.gov.ar/cordobafiles/archivo/f_qdag0f9irgka9xj2l6mbll69gxmhlghezkmkj2mykg1pj0uuhwogqiqfic_c327l9gmyk9tutz1fuq0rc3_z2byq5gcg2j5tjpqcn6jid4x2rlv2nsaa2it7s64d7m2k4h7e_xegt2w8p79uvk4jj42a7uvrcfm1cn8jpq31o4raxvsv8ktwtsa_q6iqbxeop56c_zee/3" />,
-          dniCuil: '20345122156',
-          apellidoNombre: 'Garcia, German',
-          email: 'ggarcia@gmail.com',
-          programa: 'SI ESTUDIO +24',
-          curso: 'Metalurgia',
-          acciones: <React.Fragment>
-            {/* <Button onClick={this.onDialogOpenConfirmacion} size="small" color="secondary" className={props.classes.iconoAceptar}>
-              <i class="material-icons">check</i>
-            </Button> */}
-            <Button onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={props.classes.iconoEliminar}>
-              <DeleteIcon />
-            </Button>
-          </React.Fragment>,
-          data: {
-            idPrograma: 2,
-            idCurso: 2
-          }
-        }
-      ],
+      rowList: [],
       dialogConfirmacion: false,
       dialogCancelacion: false,
       dialogImpresionReporte: false,
-      arrayReporte: []
+      arrayReporte: [],
     };
   }
 
   componentWillMount() {
+    this.cargarProgramasCursos();
+    this.cargarPreinscriptos();
+  }
+
+  cargarProgramasCursos = () => {
+    // this.props.mostrarCargando(true);
+    // const token = this.props.loggedUser.token;
+
+    // Rules_Programas.getProgramas(token)
+    //   .then((datos) => {
+    //     this.props.mostrarCargando(false);
+    //     if (!datos.ok) {
+    //       mostrarAlerta('Ocurrió un error al intentar obtener los programas.');
+    //       return false;
+    //     }
+
+    //     this.setState({
+    //       listaProgramas: datos.return
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     mostrarAlerta('Ocurrió un error al intentar obtener los programas.');
+    //     console.error('Error Servicio "Rules_Preinscripcion.getProgramas": ' + error);
+    //   });
+  }
+
+  cargarPreinscriptos = () => {
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    Rules_Gestor.getPreinsciptos(token, {
+      
+    }).then((datos) => {
+      this.props.mostrarCargando(false);
+      if (!datos.ok) {
+        mostrarAlerta('Ocurrió un error al intentar obtener los preinscriptos.');
+        return false;
+      }
+
+      let listaPreinscriptos = [];
+
+      // {
+      //   "idUsuario": 0,
+      //   "nombre": "string",
+      //   "apellido": "string",
+      //   "cuit": "string",
+      //   "email": "string",
+      //   "fechaPreinscricion": "2019-03-11T14:26:14.556Z",
+      //   "tieneEmpresa": true,
+      //   "nombreEmpresa": "string",
+      //   "cuitEmpresa": "string",
+      //   "domicilioEmpresa": "string",
+      //   "descripcionEmpresa": "string",
+      //   "filaDeEspera": true,
+      //   "idCurso": 0,
+      //   "idPrograma": 0
+      // }
+
+      datos.return.map((preinscripto) => {
+        const idPrograma = parseInt(preinscripto.idPrograma);
+        const nombrePrograma = _.find(this.props.arrayProgramas, { value: idPrograma });
+        
+        const idCurso = parseInt(preinscripto.idCurso);
+        const nombreCurso = _.find(this.props.arrayCursos, { value: idCurso });
+
+        listaPreinscriptos.push({
+          cuit: preinscripto.cuit,
+          apellidoNombre: preinscripto.apellido + ', ' + preinscripto.nombre,
+          email: preinscripto.email,
+          programa: nombrePrograma ? nombrePrograma.label : '-',
+          curso: nombreCurso ? nombreCurso.label : '-',
+          fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
+          filaDeEspera: preinscripto.filaDeEspera ? 'Si' : 'No',
+          acciones: <React.Fragment>
+            {/* <Button onClick={this.onDialogOpenConfirmacion} size="small" color="secondary" className={props.classes.iconoAceptar}>
+              <i class="material-icons">check</i>
+            </Button> */}
+            <Button idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+              <DeleteIcon />
+            </Button>
+          </React.Fragment>,
+          data: {
+            idUsuario: preinscripto.idUsuario,
+            idPrograma: preinscripto.idPrograma,
+            idCurso: preinscripto.idCurso
+          }
+        });
+      });
+
+      this.setState({
+        rowList: listaPreinscriptos
+      });
+    })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar obtener los preinscriptos.');
+        console.error('Error Servicio "Rules_Gestor.getPreinsciptos": ' + error);
+      });
 
   }
 
@@ -170,37 +228,58 @@ class Home extends React.PureComponent {
     })
   }
 
-  onDialogOpenCancelacion = () => {
+  onDialogOpenCancelacion = (event) => {
+    const idUsuario = event.currentTarget.attributes.idUsuario.value;
+    if(!idUsuario) return false;
+    this.idUsuarioAEliminar = idUsuario;
+
     this.setState({
       dialogCancelacion: true
     })
   }
 
   onDialogCloseCancelacion = () => {
+    this.idUsuarioAEliminar = null;
+
     this.setState({
       dialogCancelacion: false
     })
   }
 
   desinscripcionAceptada = () => {
+    if(!this.idUsuarioAEliminar) return false;
+
+    const idUsuario = this.idUsuarioAEliminar;
+
     this.onDialogCloseCancelacion();
-    return false;
+
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    Rules_Preinscripcion.deletePreinscripcion(token)
+    Rules_Gestor.deletePreinscripcion(token, idUsuario)
       .then((datos) => {
-        this.props.mostrarCargando(false);
+        
         if (!datos.ok) {
-          mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
+          this.props.mostrarCargando(false);
+          mostrarAlerta('Ocurrió un error al intentar desinscribir al usuario.');
           return false;
         }
 
-        mostrarMensaje('Se ha desinscripto exitosamente!');
+        let rowList = _.cloneDeep(this.state.rowList);
+        _.remove(rowList, function(item) {
+          return item.data.idUsuario == idUsuario;
+        });
+
+        this.setState({
+          rowList: rowList
+        })
+
+        this.props.mostrarCargando(false);
+        mostrarMensaje('Se ha desinscripto al usuario exitosamente!');
       })
       .catch((error) => {
-        mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
-        console.error('Error Servicio "Rules_Preinscripcion.deletePreinscripcion": ' + error);
+        mostrarAlerta('Ocurrió un error al intentar desinscribir al usuario.');
+        console.error('Error Servicio "Rules_Gestor.deletePreinscripcion": ' + error);
       });
   }
 
@@ -283,7 +362,7 @@ class Home extends React.PureComponent {
           <Grid item xs={12} sm={12}>
             <MiCard titulo="Filtros">
 
-              <Grid container  spacing={16}>
+              <Grid container spacing={16}>
                 <Grid item xs={12} sm={6}>
                   <Grid container>
                     <Grid item xs={12} sm={12} className={classes.centerItems}>
@@ -303,6 +382,18 @@ class Home extends React.PureComponent {
                         fullWidth={true}
                         options={_.filter(arrayCursos, (o) => { return o.idPrograma == programaFiltroSeleccionado || programaFiltroSeleccionado == -1 })} />
                       {cursoFiltroSeleccionado != -1 && <Icon className={classes.limpiarSelect} onClick={this.handleQuitarFiltroCursos}>clear</Icon>}
+                    </Grid>
+                    <Grid item xs={12} sm={12} className={classes.centerItems}>
+                      <MiInput
+                        id={'InputLugar'}
+                        tipoInput={'input'}
+                        type={'text'}
+                        value={''}
+                        error={false}
+                        mensajeError={false}
+                        label={'Buscar por Lugar'}
+                        placeholder={'Ingrese el lugar del curso...'}
+                      />
                     </Grid>
                   </Grid>
                 </Grid>
@@ -331,18 +422,6 @@ class Home extends React.PureComponent {
                         mensajeError={false}
                         label={'Buscar por Apellido/Nombre'}
                         placeholder={'Ingrese el Apellido/Nombre del preinscripto...'}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={12} className={classes.centerItems}>
-                      <MiInput
-                        id={'InputEmail'}
-                        tipoInput={'input'}
-                        type={'text'}
-                        value={''}
-                        error={false}
-                        mensajeError={false}
-                        label={'Buscar por Email'}
-                        placeholder={'Ingrese el Email del preinscripto...'}
                       />
                     </Grid>
                   </Grid>
@@ -375,15 +454,16 @@ class Home extends React.PureComponent {
               <MiTabla
                 pagination={false}
                 columns={[
-                  { id: 'imgPerfil', type: 'custom', numeric: false, disablePadding: true, noSort: true, label: '' },
-
-                  { id: 'dniCuil', type: 'date', numeric: false, disablePadding: false, label: 'DNI / CUIL' },
+                  { id: 'cuit', type: 'string', numeric: false, disablePadding: false, label: 'CUIT' },
 
                   { id: 'apellidoNombre', type: 'string', numeric: false, disablePadding: false, label: 'Apellido Nombre' },
-                  { id: 'email', type: 'date', numeric: false, disablePadding: false, label: 'Email' },
+                  { id: 'email', type: 'string', numeric: false, disablePadding: false, label: 'Email' },
 
-                  { id: 'programa', type: 'date', numeric: false, disablePadding: false, label: 'Programa' },
-                  { id: 'curso', type: 'date', numeric: false, disablePadding: false, label: 'Curso' },
+                  { id: 'programa', type: 'string', numeric: false, disablePadding: false, label: 'Programa' },
+                  { id: 'curso', type: 'string', numeric: false, disablePadding: false, label: 'Curso' },
+
+                  { id: 'fechaPreinscricion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Preinsc.' },
+                  { id: 'filaDeEspera', type: 'string', numeric: false, disablePadding: false, label: 'En Espera' },
 
                   { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
@@ -416,7 +496,7 @@ class Home extends React.PureComponent {
           titulo={'Imprimir'}
         >
           {/* imgPerfil: <Avatar src="https://servicios2.cordoba.gov.ar/cordobafiles/archivo/f_qdag0f9irgka9xj2l6mbll69gxmhlghezkmkj2mykg1pj0uuhwogqiqfic_c327l9gmyk9tutz1fuq0rc3_z2byq5gcg2j5tjpqcn6jid4x2rlv2nsaa2it7s64d7m2k4h7e_xegt2w8p79uvk4jj42a7uvrcfm1cn8jpq31o4raxvsv8ktwtsa_q6iqbxeop56c_zee/3" />,
-          dniCuil: '20355266169',
+          cuit: '20355266169',
           apellidoNombre: 'Dotta, Adrian',
           email: 'adridotta@gmail.com',
           programa: 'SI ESTUDIO +24',
@@ -427,30 +507,36 @@ class Home extends React.PureComponent {
             <Typography variant="headline">Reporte SiSi Presencial</Typography>
             {(arrayReporte.length > 0 && arrayReporte.map((grupo) => {
               const idPrograma = parseInt(grupo.idPrograma);
-              const nombrePrograma = _.find(arrayProgramas, { value: idPrograma }).label;
+              const itemPrograma = _.find(arrayProgramas, { value: idPrograma });
+              const nombrePrograma = itemPrograma ? itemPrograma.label : '';
 
               return <React.Fragment>
                 {nombrePrograma && <Typography variant="title" className={classNames(classes.tituloPrograma, "tituloPrograma")}>{nombrePrograma}</Typography>}
                 {grupo.cursos.map((curso) => {
                   const idCurso = parseInt(curso.idCurso);
-                  const nombreCurso = _.find(arrayCursos, { value: idCurso }).label;
+                  const itemCurso = _.find(arrayCursos, { value: idCurso });
+                  const nombreCurso = itemCurso ? itemCurso.label : '';
 
                   return <React.Fragment>
                     {nombreCurso && <Typography variant="title" className={classNames(classes.tituloCurso, "tituloCurso")}>{nombreCurso}</Typography>}
                     <table className={classNames(classes.tablasReporte, "tablasReporte")}>
                       <thead>
                         <tr>
-                          <th>DNI/CUIL</th>
+                          <th>CUIL</th>
                           <th>Apellido/Nombre</th>
                           <th>Email</th>
+                          <th>Fecha Preinsc.</th>
+                          <th>En Espera</th>
                         </tr>
                       </thead>
                       <tbody>
                         {curso.preinscriptos.map((preinscriptos) => {
                           return <tr>
-                            <td>{preinscriptos.dniCuil}</td>
+                            <td>{preinscriptos.cuit}</td>
                             <td>{preinscriptos.apellidoNombre}</td>
                             <td>{preinscriptos.email}</td>
+                            <td>{preinscriptos.fechaPreinscricion}</td>
+                            <td>{preinscriptos.filaDeEspera}</td>
                           </tr>;
                         })}
                       </tbody>
