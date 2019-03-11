@@ -293,7 +293,7 @@ class MiTabla extends React.PureComponent {
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
-        const { classes, columns } = this.props;
+        const { classes, columns, classPaper } = this.props;
         const { rows, order, orderBy, selected, rowsPerPage: rowsPerPageRender, page } = this.state;
         let { orderType } = this.state;
         let emptyRows = rowsPerPageRender - Math.min(rowsPerPageRender, rows.length - page * rowsPerPageRender);
@@ -315,7 +315,7 @@ class MiTabla extends React.PureComponent {
         }
 
         return (
-            <Paper className={classes.root}>
+            <Paper className={classNames(classes.root, classPaper)}>
                 <div className={classes.tableWrapper}>
                     <Table aria-labelledby="tableTitle" className={classes.fontSize}>
                         <EnhancedTableHead

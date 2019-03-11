@@ -26,7 +26,9 @@ const styles = theme => ({
   },
   containerBotonera: {
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    width: '100%',
+    marginTop: '8px',
   },
   iconoAceptar: {
     background: theme.color.ok.main,
@@ -77,6 +79,9 @@ const styles = theme => ({
   buttonDescargaReporte: {
     display: 'flex',
     justifyContent: 'flex-end'
+  },
+  contentTable: {
+    marginTop: '14px'
   }
 });
 

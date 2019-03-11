@@ -123,7 +123,7 @@ class Home extends React.PureComponent {
     const token = this.props.loggedUser.token;
 
     Rules_Gestor.getPreinsciptos(token, {
-      
+
     }).then((datos) => {
       this.props.mostrarCargando(false);
       if (!datos.ok) {
@@ -153,7 +153,7 @@ class Home extends React.PureComponent {
       datos.return.map((preinscripto) => {
         const idPrograma = parseInt(preinscripto.idPrograma);
         const nombrePrograma = _.find(this.props.arrayProgramas, { value: idPrograma });
-        
+
         const idCurso = parseInt(preinscripto.idCurso);
         const nombreCurso = _.find(this.props.arrayCursos, { value: idCurso });
 
@@ -230,7 +230,7 @@ class Home extends React.PureComponent {
 
   onDialogOpenCancelacion = (event) => {
     const idUsuario = event.currentTarget.attributes.idUsuario.value;
-    if(!idUsuario) return false;
+    if (!idUsuario) return false;
     this.idUsuarioAEliminar = idUsuario;
 
     this.setState({
@@ -247,7 +247,7 @@ class Home extends React.PureComponent {
   }
 
   desinscripcionAceptada = () => {
-    if(!this.idUsuarioAEliminar) return false;
+    if (!this.idUsuarioAEliminar) return false;
 
     const idUsuario = this.idUsuarioAEliminar;
 
@@ -258,7 +258,7 @@ class Home extends React.PureComponent {
 
     Rules_Gestor.deletePreinscripcion(token, idUsuario)
       .then((datos) => {
-        
+
         if (!datos.ok) {
           this.props.mostrarCargando(false);
           mostrarAlerta('Ocurrió un error al intentar desinscribir al usuario.');
@@ -266,7 +266,7 @@ class Home extends React.PureComponent {
         }
 
         let rowList = _.cloneDeep(this.state.rowList);
-        _.remove(rowList, function(item) {
+        _.remove(rowList, function (item) {
           return item.data.idUsuario == idUsuario;
         });
 
@@ -424,18 +424,18 @@ class Home extends React.PureComponent {
                         placeholder={'Ingrese el Apellido/Nombre del preinscripto...'}
                       />
                     </Grid>
+                    <Grid item xs={12} sm={12} className={classes.centerItems}>
+                      <section className={classes.containerBotonera}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          className={classes.buttonActions}
+                        >Aplicar Filtros</Button>
+                      </section>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-
-              <br />
-              <section className={classes.containerBotonera}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.buttonActions}
-                >Aplicar Filtros</Button>
-              </section>
 
             </MiCard>
           </Grid>
@@ -452,6 +452,7 @@ class Home extends React.PureComponent {
               </Button>
               </div>
               <MiTabla
+                classPaper={classes.contentTable}
                 pagination={false}
                 columns={[
                   { id: 'cuit', type: 'string', numeric: false, disablePadding: false, label: 'CUIT' },
