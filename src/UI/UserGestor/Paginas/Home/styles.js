@@ -50,13 +50,17 @@ const styles = theme => ({
       background: '#929090'
     }
   },
+  tituloReporte: {
+    fontSize: '1.8em',
+  },
   tituloPrograma: {
     borderBottom: '2px solid #000',
     marginBottom: '4px',
     fontSize: '1.5em',
   },
   tituloCurso: {
-    margin: '5px 0px'
+    margin: '5px 0px',
+    fontSize: '1em',
   },
   containerReporte: {
     width: '210mm'
