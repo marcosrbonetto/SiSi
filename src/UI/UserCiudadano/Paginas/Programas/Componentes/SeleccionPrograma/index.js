@@ -221,7 +221,7 @@ class SeleccionCurso extends React.PureComponent {
     if (inputValue == '')
       return stateArrayCursos;
     else
-      return _.filter(stateArrayCursos, (item) => { return (item.nombre + " - " +item.lugar).toLowerCase().indexOf(inputValue.toLowerCase()) != -1 });
+      return _.filter(stateArrayCursos, (item) => { return (item.nombre + (item.lugar && " - " + item.lugar)).toLowerCase().indexOf(inputValue.toLowerCase()) != -1 });
   }
 
   onClickCurso = (event) => {
@@ -251,7 +251,7 @@ class SeleccionCurso extends React.PureComponent {
 
       this.setState({
         dialogoOpenInfoCurso: true,
-        dialogTituloCurso: cursoSeleccionado.nombre + ' - ' + cursoSeleccionado.lugar,
+        dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar && ' - ' + cursoSeleccionado.lugar),
         dialogSubTituloCurso: (cursoSeleccionado.dia ? cursoSeleccionado.dia + " - " : '')+""+(cursoSeleccionado.horario ? cursoSeleccionado.horario : ''),
         dialogInformacionCurso: informacionCurso,
         cursoSeleccionado: cursoSeleccionado
@@ -434,7 +434,7 @@ class SeleccionCurso extends React.PureComponent {
                   onClick={this.onClickCurso}
                   idCurso={curso.id}>
                   <ListItemText
-                    primary={curso.nombre + " - " + curso.lugar}
+                    primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
                     secondary={(curso.dia ? curso.dia + " - " : '')+""+(curso.horario ? curso.horario : '')}
                   />
                 </ListItem>
