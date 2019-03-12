@@ -110,7 +110,8 @@ class Home extends React.PureComponent {
             programa.cursos.map((curso) => {
               const itemCurso = {
                 idPrograma: curso.idPrograma,
-                label: curso.nombre + ' - ' + curso.lugar,
+                label: curso.nombre,
+                lugar: curso.lugar && curso.lugar != '' ? curso.lugar : '-',
                 value: curso.id
               };
 
@@ -188,17 +189,17 @@ class Home extends React.PureComponent {
       datos.return.map((preinscripto) => {
 
         const idPrograma = parseInt(preinscripto.idPrograma);
-        const nombrePrograma = _.find(this.state.arrayProgramas, { value: idPrograma });
+        const programa = _.find(this.state.arrayProgramas, { value: idPrograma });
 
         const idCurso = parseInt(preinscripto.idCurso);
-        const nombreCurso = _.find(this.state.arrayCursos, { value: idCurso });
+        const curso = _.find(this.state.arrayCursos, { value: idCurso });
 
         listaPreinscriptos.push({
           cuit: preinscripto.cuit,
           apellidoNombre: preinscripto.apellido + ', ' + preinscripto.nombre,
-          email: preinscripto.email,
-          programa: nombrePrograma ? nombrePrograma.label : '-',
-          curso: nombreCurso ? nombreCurso.label : '-',
+          programa: programa ? programa.label : '-',
+          curso: curso ? curso.label : '-',
+          lugar: curso ? (curso.lugar && curso.lugar != '' ? curso.lugar : '-') : '-',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
           filaDeEspera: preinscripto.filaDeEspera ? 'Si' : 'No',
           acciones: <React.Fragment>
@@ -212,7 +213,8 @@ class Home extends React.PureComponent {
           data: {
             idUsuario: preinscripto.idUsuario,
             idPrograma: preinscripto.idPrograma,
-            idCurso: preinscripto.idCurso
+            idCurso: preinscripto.idCurso,
+            email: preinscripto.email,
           }
         });
       });
@@ -524,10 +526,10 @@ class Home extends React.PureComponent {
                   { id: 'cuit', type: 'string', numeric: false, disablePadding: false, label: 'CUIT' },
 
                   { id: 'apellidoNombre', type: 'string', numeric: false, disablePadding: false, label: 'Apellido Nombre' },
-                  { id: 'email', type: 'string', numeric: false, disablePadding: false, label: 'Email' },
 
                   { id: 'programa', type: 'string', numeric: false, disablePadding: false, label: 'Programa' },
                   { id: 'curso', type: 'string', numeric: false, disablePadding: false, label: 'Curso' },
+                  { id: 'lugar', type: 'string', numeric: false, disablePadding: false, label: 'Lugar' },
 
                   { id: 'fechaPreinscricion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Preinsc.' },
                   { id: 'filaDeEspera', type: 'string', numeric: false, disablePadding: false, label: 'En Espera' },
@@ -594,6 +596,7 @@ class Home extends React.PureComponent {
                           <th>Email</th>
                           <th>Fecha Preinsc.</th>
                           <th>En Espera</th>
+                          <th>Lugar</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -601,9 +604,10 @@ class Home extends React.PureComponent {
                           return <tr>
                             <td>{preinscriptos.cuit}</td>
                             <td>{preinscriptos.apellidoNombre}</td>
-                            <td>{preinscriptos.email}</td>
+                            <td>{preinscriptos.data.email}</td>
                             <td>{preinscriptos.fechaPreinscricion}</td>
                             <td>{preinscriptos.filaDeEspera}</td>
+                            <td>{preinscriptos.lugar}</td>
                           </tr>;
                         })}
                       </tbody>
