@@ -368,7 +368,9 @@ class SeleccionCurso extends React.PureComponent {
       textoBoton,
       textoBotonDialog,
       textoInformativo,
+      tituloPrograma,
       classTituloCurso,
+      classTituloPrograma,
       classTextoInformativo,
       loggedUser
     } = this.props;
@@ -400,8 +402,8 @@ class SeleccionCurso extends React.PureComponent {
       <React.Fragment>
         <IndicadorCargando visible={cargandoVisible} />
         <MiCard
-          informacionAlerta={tituloCurso}
-          classInformacionAlerta={classTituloCurso}
+          informacionAlerta={tituloPrograma}
+          classInformacionAlerta={classTituloPrograma}
           seccionBotones={{
             align: 'center',
             content: <Button variant="contained" className={classes.buttonSiSi} onClick={this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>

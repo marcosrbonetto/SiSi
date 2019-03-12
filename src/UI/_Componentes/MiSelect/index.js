@@ -157,7 +157,7 @@ class MiSelect extends React.Component {
         />
 
         <Dialog fullScreen={fullScreen} open={this.state.open} onClose={this.onClose}>
-          <DialogContent style={{ padding: 0, display: "flex", flexDirection: "column" }}>
+          <DialogContent style={{ minWidth: '500px', padding: 0, display: "flex", flexDirection: "column" }}>
             <div style={{ minHeight: "fit-content", padding: "16px" }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <TextField
