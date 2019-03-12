@@ -189,7 +189,7 @@ class SeleccionCurso extends React.PureComponent {
         this.props.mostrarCargando(false);
 
         if (!datos.ok) {
-          mostrarAlerta('Ocurrió un error al intentar desinscribirte.');
+          mostrarAlerta(datos.error);
           return false;
         }
 
@@ -232,10 +232,28 @@ class SeleccionCurso extends React.PureComponent {
     var cursoSeleccionado = _.find(cursos, { id: idCurso });
 
     if (cursoSeleccionado) {
+
+      let informacionCurso = '¿Esta seguro que desea preinscribirse a este curso?';
+      
+      if(cursoSeleccionado.descripcion1 != null || cursoSeleccionado.descripcion2 != null) {
+        informacionCurso = <React.Fragment>
+          {cursoSeleccionado.descripcion1 != null &&
+          <React.Fragment><b>¿Qué aprenderás?</b><br/>
+          {cursoSeleccionado.descripcion1}</React.Fragment>}
+          
+          {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br/><br/></React.Fragment>}
+
+          {cursoSeleccionado.descripcion2 != null &&
+          <React.Fragment><b>¿Qué podrás hacer?</b><br/>
+          {cursoSeleccionado.descripcion2}</React.Fragment>}
+        </React.Fragment>;
+      }
+
       this.setState({
         dialogoOpenInfoCurso: true,
         dialogTituloCurso: cursoSeleccionado.nombre + ' - ' + cursoSeleccionado.lugar,
-        dialogInformacionCurso: cursoSeleccionado.observaciones || '¿Esta seguro que desea preinscribirse a este curso?',
+        dialogSubTituloCurso: (cursoSeleccionado.dia ? cursoSeleccionado.dia + " - " : '')+""+(cursoSeleccionado.horario ? cursoSeleccionado.horario : ''),
+        dialogInformacionCurso: informacionCurso,
         cursoSeleccionado: cursoSeleccionado
       });
     }
@@ -302,16 +320,31 @@ class SeleccionCurso extends React.PureComponent {
               cargandoVisible: false,
               cursoSeleccionado: undefined
             });
-            mostrarAlerta('Ocurrió un error al intentar preinscribirte.');
+            mostrarAlerta(datos.error);
             return false;
           }
 
           this.props.actualizarPreinscipcion(datos.return);
 
+
+          let cursoPreinscripto = '';
+          if(datos.return && datos.return.curso) {
+            let lugar = '';
+            let diaHorario = '';
+
+            if(datos.return.curso.lugar)
+              lugar = <React.Fragment> en {datos.return.curso.lugar}</React.Fragment>;
+
+              if(datos.return.curso.dia)
+              diaHorario = <React.Fragment> el {datos.return.curso.dia} {datos.return.curso.horario}</React.Fragment>;
+
+            cursoPreinscripto = <React.Fragment>a <br/><span style={{fontWeight: '100'}}>{datos.return.curso.nombre}{lugar}{diaHorario}</span><br/></React.Fragment>;
+          }
+
           this.setState({
             cargandoVisible: false,
             dialogoOpenInfoPreInscripcion: true,
-            cursoPreinscripto: datos.return && datos.return.curso && <span>a {datos.return.curso.nombre} en {datos.return.curso.lugar}</span> || '',
+            cursoPreinscripto: cursoPreinscripto,
             enfilaDeEspera: datos.return && datos.return.filaDeEspera,
             cursoSeleccionado: undefined
           });
@@ -346,6 +379,7 @@ class SeleccionCurso extends React.PureComponent {
       inputBuscador,
       dialogoOpenInfoCurso,
       dialogTituloCurso,
+      dialogSubTituloCurso,
       dialogInformacionCurso,
       dialogoOpenInfoPreInscripcion,
       cursoPreinscripto,
@@ -401,7 +435,7 @@ class SeleccionCurso extends React.PureComponent {
                   idCurso={curso.id}>
                   <ListItemText
                     primary={curso.nombre + " - " + curso.lugar}
-                    secondary={curso.subtitulo ? curso.subtitulo : null}
+                    secondary={(curso.dia ? curso.dia + " - " : '')+""+(curso.horario ? curso.horario : '')}
                   />
                 </ListItem>
               })
@@ -420,6 +454,7 @@ class SeleccionCurso extends React.PureComponent {
           onDialogoOpen={this.onDialogoOpenInfoCurso}
           onDialogoClose={this.onDialogoCloseInfoCurso}
           titulo={'Cursos del programa ' + dialogTituloCurso}
+          subtitulo={dialogSubTituloCurso}
           botonera={
             <div className={classes.containerBotonera}>
               <Divider />

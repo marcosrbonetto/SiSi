@@ -60,6 +60,7 @@ class MiControledDialog extends React.PureComponent {
   render() {
     let { classes,
       titulo,
+      subtitulo,
       textoLink,
       textoInformativo,
       classTextoLink,
@@ -89,7 +90,7 @@ class MiControledDialog extends React.PureComponent {
           }}
         >
           {titulo && <DialogTitle id="scroll-dialog-title">
-            {titulo}
+            {titulo}{subtitulo && <React.Fragment><br/><span className={classes.subtitulo}>{subtitulo}</span></React.Fragment>}
             {textoInformativo &&
               <Tooltip
                 disableFocusListener disableTouchListener
@@ -168,6 +169,9 @@ const styles = theme => ({
     color: '#0f8fea',
     verticalAlign: 'middle',
     cursor: 'pointer'
+  },
+  subtitulo: {
+    fontSize: '0.6em'
   }
 });
 

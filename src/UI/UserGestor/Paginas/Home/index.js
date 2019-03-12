@@ -200,6 +200,7 @@ class Home extends React.PureComponent {
           programa: programa ? programa.label : '-',
           curso: curso ? curso.label : '-',
           lugar: curso ? (curso.lugar && curso.lugar != '' ? curso.lugar : '-') : '-',
+          horario: curso ? (curso.dia && curso.dia != '' ? curso.dia + ' ' + curso.horario : '-') : '-',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
           filaDeEspera: preinscripto.filaDeEspera ? 'Si' : 'No',
           acciones: <React.Fragment>
@@ -530,6 +531,7 @@ class Home extends React.PureComponent {
                   { id: 'programa', type: 'string', numeric: false, disablePadding: false, label: 'Programa' },
                   { id: 'curso', type: 'string', numeric: false, disablePadding: false, label: 'Curso' },
                   { id: 'lugar', type: 'string', numeric: false, disablePadding: false, label: 'Lugar' },
+                  { id: 'horario', type: 'string', numeric: false, disablePadding: false, label: 'Horario' },
 
                   { id: 'fechaPreinscricion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Preinsc.' },
                   { id: 'filaDeEspera', type: 'string', numeric: false, disablePadding: false, label: 'En Espera' },
@@ -597,6 +599,7 @@ class Home extends React.PureComponent {
                           <th>Fecha Preinsc.</th>
                           <th>En Espera</th>
                           <th>Lugar</th>
+                          <th>Horario</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -608,6 +611,7 @@ class Home extends React.PureComponent {
                             <td>{preinscriptos.fechaPreinscricion}</td>
                             <td>{preinscriptos.filaDeEspera}</td>
                             <td>{preinscriptos.lugar}</td>
+                            <td>{preinscriptos.horario}</td>
                           </tr>;
                         })}
                       </tbody>
