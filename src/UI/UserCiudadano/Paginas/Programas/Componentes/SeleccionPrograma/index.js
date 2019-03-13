@@ -178,6 +178,10 @@ class SeleccionCurso extends React.PureComponent {
     });
   }
 
+  handleFinalizar = () => {
+    window.location.reload();
+  }
+
   onDialogoEliminarPreInscripcion = () => {
     this.onDialogoClose();
 
@@ -589,7 +593,7 @@ class SeleccionCurso extends React.PureComponent {
           }
           {!enfilaDeEspera &&
             <React.Fragment>
-              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoPreInscripcion}>Finalizar</Button>
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleFinalizar}>Finalizar</Button>
             </React.Fragment>
           }
         </MiControledDialog>

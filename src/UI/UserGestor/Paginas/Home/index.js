@@ -100,7 +100,7 @@ class Home extends React.PureComponent {
         let arrayCursos = [];
         datos.return.map((programa) => {
           const itemPrograma = {
-            label: programa.nombre,
+            label: programa.nombre + ' - ' + programa.descripcion,
             value: programa.id
           };
 
@@ -110,8 +110,10 @@ class Home extends React.PureComponent {
             programa.cursos.map((curso) => {
               const itemCurso = {
                 idPrograma: curso.idPrograma,
-                label: curso.nombre,
+                label: curso.nombre + ' - ' + curso.lugar,
                 lugar: curso.lugar && curso.lugar != '' ? curso.lugar : '-',
+                dia: curso.dia,
+                horario: curso.horario,
                 value: curso.id
               };
 

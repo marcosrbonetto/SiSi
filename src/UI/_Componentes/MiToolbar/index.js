@@ -198,7 +198,7 @@ class MiToolbar extends React.Component {
             </Button>
           </div>*/}
 
-          <IconButton
+          {/* <IconButton
             aria-label="More"
             //aria-owns={open ? 'long-menu' : undefined}
             aria-haspopup="true"
@@ -235,7 +235,7 @@ class MiToolbar extends React.Component {
                 return <a href={urlRedirect} target="_blank"><Avatar title={item.nombre} alt={item.nombre} src={item.urlIcono} className={classes.bigAvatar} /></a>;
               })}
               </MiCard>
-          </Popover>
+          </Popover> */}
         </Toolbar>
 
         {this.state.datosUsuario && <Menu

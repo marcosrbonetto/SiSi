@@ -5,7 +5,7 @@ const ENTORNO = LOCAL;
 
 //WS Tributario
 const URL_WS_SISI_LOCAL = "https://srv-dev04.cordoba.local/WSSiSi";
-const URL_WS_SISI_TEST = "https://srv-dev04.cordoba.local/WSSiSi_Bridge";
+const URL_WS_SISI_TEST = "https://srv-dev04.cordoba.local/WSSiSi";
 const URL_WS_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/WSSiSi_Bridge";
 let URL_WS_TRIBUTARIO = URL_WS_SISI_DEPLOY;
 

@@ -48,10 +48,18 @@ class Programas extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.estudioAlcanzadoNoConfig = !props.loggedUser.datos.estudioAlcanzadoId;
+    //this.estudioAlcanzadoNoConfig = !props.loggedUser.datos.estudioAlcanzadoId;
+    const tienePreInscripcion = props.loggedUser.datos.preinscripcion;
+
+    let textoPreinscripcion = '-';
+    if(tienePreInscripcion) {
+      const cursoPreinscripcion = props.loggedUser.datos.preinscripcion.curso;
+      textoPreinscripcion = cursoPreinscripcion.nombre + ' en ' + cursoPreinscripcion.lugar + ' el ' + cursoPreinscripcion.dia + ' ' + cursoPreinscripcion.horario;
+    }
 
     this.state = {
-      tienePreInscripcion: props.loggedUser.datos.preinscripcion ? true : false,
+      tienePreInscripcion: tienePreInscripcion ? true : false,
+      preinscripcion:  tienePreInscripcion ? textoPreinscripcion : null,
       dialogoOpen: false,
       listaProgramas: undefined
     };
@@ -132,19 +140,19 @@ class Programas extends React.PureComponent {
       });
   }
 
-  onClickModifDatosAdicionales = () => {
-    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra';
-  }
+  // onClickModifDatosAdicionales = () => {
+  //   window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra';
+  // }
 
   render() {
     const { classes } = this.props;
-    const { tienePreInscripcion, dialogoOpen, listaProgramas } = this.state;
+    const { tienePreInscripcion, dialogoOpen, listaProgramas, preinscripcion } = this.state;
 
     return (
       <div className={classes.mainContainer}>
         <Grid container spacing={16} justify="center">
 
-          {(this.estudioAlcanzadoNoConfig &&
+          {/* {(this.estudioAlcanzadoNoConfig &&
             <Grid item xs={12} sm={6} className={classes.seccionCenter}>
               <Typography variant="body2" gutterBottom className={classes.informacion} style={{ textAlign: 'center' }}>
                 Para poder mostrar los programas disponibles para usted, debe completar los datos adicionales de su perfil de Vecino Virtual.</Typography><br/>
@@ -154,14 +162,14 @@ class Programas extends React.PureComponent {
                   {'Completar Datos Adicionales'}
                 </Button>
             </Grid>)
-            ||
+            || */}
             <React.Fragment>
               {tienePreInscripcion &&
                 <Grid item xs={12} sm={6} className={classes.containerTienePreInscripcion}>
                   <img src={Logo_SiSi} width={150} height={84} className={classes.imgSiSi} /><br /><br />
                   <Typography variant="body2" gutterBottom className={classes.informacion}>
                     Ya estas Preinscripto a<br />
-                    <b>SERVICIOS Y COMERCIO - PELUQUERÍA INTEGRAL</b><br />
+                    <b>{preinscripcion}</b><br />
                     Por lo que no vas a poder inscribirte a otro programa</Typography>
                   <br />
                   <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoOpen}>Desinscribirme</Button>
@@ -195,7 +203,8 @@ class Programas extends React.PureComponent {
                         De acuerdo a su estado actual, no se presentan programas disponibles par usted.</Typography>
                     </Grid>}
                 </React.Fragment>}
-            </React.Fragment>}
+            </React.Fragment>
+            {/*}*/}
         </Grid>
 
         <MiControledDialog

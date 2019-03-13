@@ -49,6 +49,8 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
     const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;    
     listaExperienciaLaboral.map((item, index) => {
+      if(item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
+
       const randomId = "id_"+index+"_"+(new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
 
       item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';

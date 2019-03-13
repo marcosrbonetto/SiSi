@@ -136,6 +136,12 @@ class App extends React.Component {
               Rules_Usuario.getInfoUsuario(token)
                 .then(datos => {
 
+                  const estudioAlcanzadoNoConfig = !datos.estudioAlcanzadoId;
+                  if(estudioAlcanzadoNoConfig) {
+                    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosExtra';
+                    return false;
+                  }
+
                   this.props.login({
                     datos: datos,
                     token: token
