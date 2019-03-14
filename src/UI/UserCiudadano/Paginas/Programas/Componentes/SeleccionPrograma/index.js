@@ -413,7 +413,7 @@ class SeleccionCurso extends React.PureComponent {
     const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
     const InputContactoEmpresa = _.find(formInputs, { id: 'InputContactoEmpresa' });
 
-    const arrayCursosXTag = Object.keys(cursosXTag);
+    const arrayCursosXTag = _.orderBy(Object.keys(cursosXTag),[],['asc']);
 
     return (
       <React.Fragment>
