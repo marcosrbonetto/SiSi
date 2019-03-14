@@ -54,7 +54,16 @@ class Programas extends React.PureComponent {
     let textoPreinscripcion = '-';
     if(tienePreInscripcion) {
       const cursoPreinscripcion = props.loggedUser.datos.preinscripcion.curso;
-      textoPreinscripcion = cursoPreinscripcion.nombre + ' en ' + cursoPreinscripcion.lugar + ' el ' + cursoPreinscripcion.dia + ' ' + cursoPreinscripcion.horario;
+      let lugar = '';
+      let diaHorario = '';
+
+      if (cursoPreinscripcion.lugar)
+        lugar = ' en '+ cursoPreinscripcion.lugar;
+
+      if (cursoPreinscripcion.dia)
+        diaHorario = ' el '+ cursoPreinscripcion.dia +' '+ cursoPreinscripcion.horario;
+
+      textoPreinscripcion = cursoPreinscripcion.nombre + lugar + diaHorario;
     }
 
     this.state = {

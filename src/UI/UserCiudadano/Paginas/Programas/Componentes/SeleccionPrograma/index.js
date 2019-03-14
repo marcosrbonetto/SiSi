@@ -57,19 +57,27 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-class SeleccionCurso extends React.PureComponent {
+class SeleccionPrograma extends React.PureComponent {
   constructor(props) {
     super(props);
 
     const arrayCursos = props.arrayCursos || [];
-
-    const cursosXTag = _.groupBy(arrayCursos, (o) => { return o.tag });
+    let infoCurso;
+    let cursosXTag;
+    if(arrayCursos.length == 1) {
+      infoCurso = this.getInfoCurso(arrayCursos[0]);
+    } else {
+      cursosXTag = _.groupBy(arrayCursos, (o) => { return o.tag });
+      if (cursosXTag.null && Object.keys(cursosXTag).length == 1) cursosXTag = null;
+    }
 
     this.state = {
       dialogoOpen: false,
       dialogoOpenInfoCurso: false,
-      dialogTituloCurso: null,
-      dialogInformacionCurso: null,
+      dialogTituloCurso: infoCurso ? infoCurso.dialogTituloCurso : null,
+      dialogSubTituloCurso: infoCurso ? infoCurso.dialogSubTituloCurso : null,
+      dialogInformacionCurso: infoCurso ? infoCurso.dialogInformacionCurso : null,
+      cursoSeleccionado: infoCurso ? infoCurso.cursoSeleccionado : undefined,
       dialogoOpenInfoPreInscripcion: false,
       inputBuscador: '',
       cursos: arrayCursos,
@@ -78,7 +86,6 @@ class SeleccionCurso extends React.PureComponent {
       cursoPreinscripto: '',
       enfilaDeEspera: false,
       cargandoVisible: false,
-      cursoSeleccionado: undefined,
       checkEmpresa: 'noEmpresa',
       formInputs: [
         {
@@ -233,16 +240,30 @@ class SeleccionCurso extends React.PureComponent {
     if (inputValue == '')
       return stateArrayCursos;
     else
-      return _.filter(stateArrayCursos, (item) => { return (item.nombre + (item.lugar && " - " + item.lugar)).toLowerCase().indexOf(inputValue.toLowerCase()) != -1 });
+      return _.filter(stateArrayCursos, (item) => { return (item.nombre + (item.lugar ? " - " + item.lugar : '')).toLowerCase().indexOf(inputValue.toLowerCase()) != -1 });
   }
 
   onClickCurso = (event) => {
     var idCurso = event.currentTarget.attributes.idCurso.value;
+
     idCurso = !isNaN(idCurso) ? parseInt(idCurso) : idCurso;
     var cursos = this.state.cursos;
 
     var cursoSeleccionado = _.find(cursos, { id: idCurso });
 
+    const infoCurso = this.getInfoCurso(cursoSeleccionado);
+
+    this.setState({
+      dialogoOpenInfoCurso: infoCurso.dialogoOpenInfoCurso,
+      dialogTituloCurso: infoCurso.dialogTituloCurso,
+      dialogSubTituloCurso: infoCurso.dialogSubTituloCurso,
+      dialogInformacionCurso: infoCurso.dialogInformacionCurso,
+      cursoSeleccionado: infoCurso.cursoSeleccionado,
+    });
+  }
+
+  getInfoCurso = (cursoSeleccionado) => {
+    
     if (cursoSeleccionado) {
 
       let informacionCurso = '¿Esta seguro que desea preinscribirse a este curso?';
@@ -261,13 +282,15 @@ class SeleccionCurso extends React.PureComponent {
         </React.Fragment>;
       }
 
-      this.setState({
+      return {
         dialogoOpenInfoCurso: true,
-        dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar && ' - ' + cursoSeleccionado.lugar),
+        dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar ? ' - ' + cursoSeleccionado.lugar : ''),
         dialogSubTituloCurso: (cursoSeleccionado.dia ? cursoSeleccionado.dia + " - " : '') + "" + (cursoSeleccionado.horario ? cursoSeleccionado.horario : ''),
         dialogInformacionCurso: informacionCurso,
         cursoSeleccionado: cursoSeleccionado
-      });
+      };
+    } else {
+      return false;
     }
   }
 
@@ -280,8 +303,6 @@ class SeleccionCurso extends React.PureComponent {
       const curso = this.state.cursoSeleccionado;
       const checkEmpresa = this.state.checkEmpresa;
       const formInputs = this.state.formInputs;
-      const cursoSeleccionado = this.state.cursoSeleccionado;
-      const esSiTrabajo = cursoSeleccionado && cursoSeleccionado.necesitaEmpresa;
 
       if (!curso) {
         this.setState({
@@ -289,9 +310,9 @@ class SeleccionCurso extends React.PureComponent {
         });
         return false;
       }
-
+      debugger;
       let body = {
-        "idCurso": esSiTrabajo ? window.Config.ID_SI_TRABAJO : curso.id,
+        "idCurso": curso.id,
         "tieneEmpresa": false,
         "nombreEmpresa": '',
         "cuitEmpresa": '',
@@ -307,6 +328,9 @@ class SeleccionCurso extends React.PureComponent {
 
         if (formHayError) {
           mostrarAlerta('Se han encontrado campos erroneos.');
+          this.setState({
+            cargandoVisible: false,
+          });
           return false;
         }
 
@@ -317,7 +341,7 @@ class SeleccionCurso extends React.PureComponent {
 
         body = {
           "idCurso": curso.id,
-          "tieneEmpresa": false,
+          "tieneEmpresa": true,
           "nombreEmpresa": InputNombreEmpresa.value || '',
           "cuitEmpresa": InputCuitEmpresa.value || '',
           "domicilioEmpresa": InputContactoEmpresa.value || '',
@@ -413,7 +437,7 @@ class SeleccionCurso extends React.PureComponent {
     const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
     const InputContactoEmpresa = _.find(formInputs, { id: 'InputContactoEmpresa' });
 
-    const arrayCursosXTag = _.orderBy(Object.keys(cursosXTag),[],['asc']);
+    const arrayCursosXTag = cursosXTag ? _.orderBy(Object.keys(cursosXTag), [], ['asc']) : [];
 
     return (
       <React.Fragment>
@@ -423,7 +447,7 @@ class SeleccionCurso extends React.PureComponent {
           classInformacionAlerta={classTituloPrograma}
           seccionBotones={{
             align: 'center',
-            content: <Button variant="contained" className={classes.buttonSiSi} onClick={cursoSeleccionado && cursoSeleccionado.necesitaEmpresa ? this.onDialogoOpenInfoCurso : this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
+            content: <Button variant="contained" className={classes.buttonSiSi} onClick={listaCursos.length == 1 ? this.onDialogoOpenInfoCurso : this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
           }}
         >
           <Typography variant="subheading" className={classTextoInformativo}>{textoInformativo}</Typography>
@@ -466,7 +490,7 @@ class SeleccionCurso extends React.PureComponent {
                               onClick={this.onClickCurso}
                               idCurso={curso.id}>
                               <ListItemText
-                                primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
+                                primary={curso.nombre + (curso.lugar ? " - " + curso.lugar : '')}
                                 secondary={(curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')}
                               />
                             </ListItem>
@@ -493,7 +517,7 @@ class SeleccionCurso extends React.PureComponent {
                       onClick={this.onClickCurso}
                       idCurso={curso.id}>
                       <ListItemText
-                        primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
+                        primary={curso.nombre + (curso.lugar ? " - " + curso.lugar : '')}
                         secondary={(curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')}
                       />
                     </ListItem>
@@ -514,7 +538,7 @@ class SeleccionCurso extends React.PureComponent {
           open={dialogoOpenInfoCurso}
           onDialogoOpen={this.onDialogoOpenInfoCurso}
           onDialogoClose={this.onDialogoCloseInfoCurso}
-          titulo={'Cursos del programa ' + dialogTituloCurso}
+          titulo={'Curso del programa ' + dialogTituloCurso}
           subtitulo={dialogSubTituloCurso}
           botonera={
             <div className={classes.containerBotonera}>
@@ -737,10 +761,13 @@ const styles = theme => ({
   },
   containerPanelCategoria: {
     marginBottom: '10px'
+  },
+  lista:  {
+    width: '100%'
   }
 });
 
-let componente = SeleccionCurso;
+let componente = SeleccionPrograma;
 componente = connect(
   mapStateToProps,
   mapDispatchToProps
