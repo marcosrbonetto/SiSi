@@ -310,7 +310,7 @@ class SeleccionPrograma extends React.PureComponent {
         });
         return false;
       }
-      debugger;
+      
       let body = {
         "idCurso": curso.id,
         "tieneEmpresa": false,
