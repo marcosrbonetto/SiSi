@@ -16,8 +16,7 @@ import Button from "@material-ui/core/Button";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Popover from "@material-ui/core/Popover";
 
-import MiNotificacion from "@Componentes/MiNotificacion";
-import MiCard from "@Componentes/MiCard";
+import MiMenuApps from "@Componentes/MiMenuApps";
 
 //REDUX
 import { connect } from "react-redux";
@@ -236,6 +235,8 @@ class MiToolbar extends React.Component {
               })}
               </MiCard>
           </Popover> */}
+
+          <MiMenuApps token={this.props.loggedUser.token} />
         </Toolbar>
 
         {this.state.datosUsuario && <Menu
