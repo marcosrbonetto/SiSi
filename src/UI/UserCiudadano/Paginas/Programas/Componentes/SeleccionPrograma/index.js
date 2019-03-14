@@ -24,6 +24,11 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 //Mis Componentes
 import MiCard from "@Componentes/MiNewCard";
 import MiInput from "@Componentes/MiInput";
@@ -58,6 +63,8 @@ class SeleccionCurso extends React.PureComponent {
 
     const arrayCursos = props.arrayCursos || [];
 
+    const cursosXTag = _.groupBy(arrayCursos, (o) => { return o.tag });
+
     this.state = {
       dialogoOpen: false,
       dialogoOpenInfoCurso: false,
@@ -67,6 +74,7 @@ class SeleccionCurso extends React.PureComponent {
       inputBuscador: '',
       cursos: arrayCursos,
       listaCursos: arrayCursos,
+      cursosXTag: cursosXTag,
       cursoPreinscripto: '',
       enfilaDeEspera: false,
       cargandoVisible: false,
@@ -238,25 +246,25 @@ class SeleccionCurso extends React.PureComponent {
     if (cursoSeleccionado) {
 
       let informacionCurso = '¿Esta seguro que desea preinscribirse a este curso?';
-      
-      if(cursoSeleccionado.descripcion1 != null || cursoSeleccionado.descripcion2 != null) {
+
+      if (cursoSeleccionado.descripcion1 != null || cursoSeleccionado.descripcion2 != null) {
         informacionCurso = <React.Fragment>
           {cursoSeleccionado.descripcion1 != null &&
-          <React.Fragment><b>¿Qué aprenderás?</b><br/>
-          {cursoSeleccionado.descripcion1}</React.Fragment>}
-          
-          {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br/><br/></React.Fragment>}
+            <React.Fragment><b>¿Qué aprenderás?</b><br />
+              {cursoSeleccionado.descripcion1}</React.Fragment>}
+
+          {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br /><br /></React.Fragment>}
 
           {cursoSeleccionado.descripcion2 != null &&
-          <React.Fragment><b>¿Qué podrás hacer?</b><br/>
-          {cursoSeleccionado.descripcion2}</React.Fragment>}
+            <React.Fragment><b>¿Qué podrás hacer?</b><br />
+              {cursoSeleccionado.descripcion2}</React.Fragment>}
         </React.Fragment>;
       }
 
       this.setState({
         dialogoOpenInfoCurso: true,
         dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar && ' - ' + cursoSeleccionado.lugar),
-        dialogSubTituloCurso: (cursoSeleccionado.dia ? cursoSeleccionado.dia + " - " : '')+""+(cursoSeleccionado.horario ? cursoSeleccionado.horario : ''),
+        dialogSubTituloCurso: (cursoSeleccionado.dia ? cursoSeleccionado.dia + " - " : '') + "" + (cursoSeleccionado.horario ? cursoSeleccionado.horario : ''),
         dialogInformacionCurso: informacionCurso,
         cursoSeleccionado: cursoSeleccionado
       });
@@ -334,17 +342,17 @@ class SeleccionCurso extends React.PureComponent {
 
 
           let cursoPreinscripto = '';
-          if(datos.return && datos.return.curso) {
+          if (datos.return && datos.return.curso) {
             let lugar = '';
             let diaHorario = '';
 
-            if(datos.return.curso.lugar)
+            if (datos.return.curso.lugar)
               lugar = <React.Fragment> en {datos.return.curso.lugar}</React.Fragment>;
 
-              if(datos.return.curso.dia)
+            if (datos.return.curso.dia)
               diaHorario = <React.Fragment> el {datos.return.curso.dia} {datos.return.curso.horario}</React.Fragment>;
 
-            cursoPreinscripto = <React.Fragment>a <br/><span style={{fontWeight: '100'}}>{datos.return.curso.nombre}{lugar}{diaHorario}</span><br/></React.Fragment>;
+            cursoPreinscripto = <React.Fragment>a <br /><span style={{ fontWeight: '100' }}>{datos.return.curso.nombre}{lugar}{diaHorario}</span><br /></React.Fragment>;
           }
 
           this.setState({
@@ -384,6 +392,7 @@ class SeleccionCurso extends React.PureComponent {
     const {
       dialogoOpen,
       listaCursos,
+      cursosXTag,
       inputBuscador,
       dialogoOpenInfoCurso,
       dialogTituloCurso,
@@ -404,6 +413,8 @@ class SeleccionCurso extends React.PureComponent {
     const InputCuitEmpresa = _.find(formInputs, { id: 'InputCuitEmpresa' });
     const InputContactoEmpresa = _.find(formInputs, { id: 'InputContactoEmpresa' });
 
+    const arrayCursosXTag = Object.keys(cursosXTag);
+
     return (
       <React.Fragment>
         <IndicadorCargando visible={cargandoVisible} />
@@ -422,41 +433,79 @@ class SeleccionCurso extends React.PureComponent {
           open={dialogoOpen}
           onDialogoOpen={this.onDialogoOpen}
           onDialogoClose={this.onDialogoClose}
-          titulo={'Cursos'}
+          titulo={arrayCursosXTag && arrayCursosXTag.length > 0 ? 'Categorias / Cursos' : 'Cursos'}
         >
           <div key="headerContent">
-            <MiInput
-              onChange={this.onChangeInputBusqueda}
-              icono={'search'}
-              tipoInput={'input'}
-              type={'text'}
-              value={inputBuscador}
-              placeholder={'Buscar cursos...'}
-            />
+            {!(arrayCursosXTag && arrayCursosXTag.length) &&
+              <MiInput
+                onChange={this.onChangeInputBusqueda}
+                icono={'search'}
+                tipoInput={'input'}
+                type={'text'}
+                value={inputBuscador}
+                placeholder={'Buscar cursos...'}
+              />}
           </div>
           <div key="mainContent">
-            <List className={classes.lista}>
-              {
-                listaCursos && listaCursos.length &&
-                listaCursos.map((curso) => {
-                  return <ListItem
-                    className={classes.itemLista}
-                    onClick={this.onClickCurso}
-                    idCurso={curso.id}>
+            {(arrayCursosXTag && arrayCursosXTag.length &&
+              <section className={classes.containerPanelCategoria}>
+                {arrayCursosXTag.map((categoria, index) => {
+                  const cursos = cursosXTag[categoria];
+
+                  return <ExpansionPanel className={classes.panelCategoria}>
+                    <ExpansionPanelSummary className={classes.containerTituloCategoria} expandIcon={<ExpandMoreIcon className={classes.iconoCategoria} />}>
+                      <Typography className={classes.tituloCategoria}>{categoria}</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails className={classes.containerListaCursos}>
+                      <List className={classes.lista}>
+                        {
+                          cursos && cursos.length &&
+                          cursos.map((curso) => {
+                            return <ListItem
+                              className={classes.itemLista}
+                              onClick={this.onClickCurso}
+                              idCurso={curso.id}>
+                              <ListItemText
+                                primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
+                                secondary={(curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')}
+                              />
+                            </ListItem>
+                          })
+                          ||
+                          <ListItem className={classes.itemLista}>
+                            <ListItemText
+                              primary={'No se encontraron cursos'}
+                            />
+                          </ListItem>
+                        }
+                      </List>
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>
+                })}
+              </section>
+            ) ||
+              <List className={classes.lista}>
+                {
+                  listaCursos && listaCursos.length &&
+                  listaCursos.map((curso) => {
+                    return <ListItem
+                      className={classes.itemLista}
+                      onClick={this.onClickCurso}
+                      idCurso={curso.id}>
+                      <ListItemText
+                        primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
+                        secondary={(curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')}
+                      />
+                    </ListItem>
+                  })
+                  ||
+                  <ListItem className={classes.itemLista}>
                     <ListItemText
-                      primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
-                      secondary={(curso.dia ? curso.dia + " - " : '')+""+(curso.horario ? curso.horario : '')}
+                      primary={'No se encontraron cursos'}
                     />
                   </ListItem>
-                })
-                ||
-                <ListItem className={classes.itemLista}>
-                  <ListItemText
-                    primary={'No se encontraron cursos'}
-                  />
-                </ListItem>
-              }
-            </List>
+                }
+              </List>}
           </div>
           <div key="footerContent"></div>
         </MiControledDialog>
@@ -556,15 +605,15 @@ class SeleccionCurso extends React.PureComponent {
                     <br />
                     <div className={classes.containerInfoEmpresa}>
                       <i className={classNames('material-icons', classes.classIconoInfo)}>info</i>
-                      <Typography variant="body2">Para sugerir una empresa es OBLIGATORIO llenar la siguiente planilla en papel y acercarla al Centro de Empleo y Capacitación (Galería Cinerama Av. Colon 335 subsuelo) de 8:30 a 14:30 hs</Typography>                     
+                      <Typography variant="body2">Para sugerir una empresa es OBLIGATORIO llenar la siguiente planilla en papel y acercarla al Centro de Empleo y Capacitación (Galería Cinerama Av. Colon 335 subsuelo) de 8:30 a 14:30 hs</Typography>
                     </div>
-                    
+
                     <Button
                       href={'https://drive.google.com/file/d/1V1PZUlkCHhXhZhvQh_AKEjD4gszEESOF/view'}
                       target="_blank"
                       className={classes.buttonDescargaPlanilla}
-                      >
-                        Descargar Planilla
+                    >
+                      Descargar Planilla
                       </Button>
                   </React.Fragment>
                 }
@@ -626,9 +675,6 @@ const styles = theme => ({
       background: '#e4e4e4'
     }
   },
-  lista: {
-    minHeight: '350px'
-  },
   containerBotonera: {
     width: '100%',
     display: 'flex',
@@ -671,6 +717,26 @@ const styles = theme => ({
     color: theme.color.ok.main,
     textDecoration: 'underline',
     marginLeft: '24px'
+  },
+  panelCategoria: {
+    background: theme.color.ok.main,
+    borderRadius: '4px !important',
+  },
+  iconoCategoria: {
+    color: '#fff'
+  },
+  tituloCategoria: {
+    color: '#fff'
+  },
+  containerListaCursos: {
+    background: '#fff'
+  },
+  containerTituloCategoria: {
+    marginTop: '8px',
+    borderRadius: '4px !important',
+  },
+  containerPanelCategoria: {
+    marginBottom: '10px'
   }
 });
 
