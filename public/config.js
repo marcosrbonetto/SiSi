@@ -52,7 +52,8 @@ var Config = {
     "f_zq38nzky73iwxm6fz4m812vx68ggr28xgokqfwx7zf9ws7rd6_s7mn985gcqtehf6vpicq_chqiv3_e9rdlsjal4pmw_uhnu9318riap_p07eoe5cd_q4z65kw304ataczwaihsic6t4lo0bh18qi81k86x6qlv_7z5q2ew6w1n8gbu772sdcd3e8mcnuw31ku8wtkkd",
   URL_MI_PERFIL: "https://servicios2.cordoba.gov.ar/VecinoVirtual/Utils/MiPerfil",
   TOKEN_INVITADO: 'INVITADO',
-  EMAIL_SOPORTE: 'soporte@cordoba.gov.ar'
+  EMAIL_SOPORTE: 'soporte@cordoba.gov.ar',
+  ID_SI_TRABAJO: 334
 };
 
 module.exports = Config;

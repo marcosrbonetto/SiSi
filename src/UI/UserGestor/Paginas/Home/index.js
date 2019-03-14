@@ -633,9 +633,9 @@ class Home extends React.PureComponent {
             onDialogoAccept: this.desinscripcionAceptada,
             onDialogoCancel: this.onDialogCloseCancelacion,
           }}
-          titulo={'Cancelación de Eliminación'}
+          titulo={'Desinscripción'}
         >
-          ¿Esta segura que desea cancelar la preinscripción del usuario seleccionado?
+          ¿Esta segura que desea desinscribir el usuario seleccionado?
         </MiControledDialog>
       </section>
     );

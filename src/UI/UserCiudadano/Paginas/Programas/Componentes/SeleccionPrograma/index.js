@@ -272,6 +272,8 @@ class SeleccionCurso extends React.PureComponent {
       const curso = this.state.cursoSeleccionado;
       const checkEmpresa = this.state.checkEmpresa;
       const formInputs = this.state.formInputs;
+      const cursoSeleccionado = this.state.cursoSeleccionado;
+      const esSiTrabajo = cursoSeleccionado && cursoSeleccionado.necesitaEmpresa;
 
       if (!curso) {
         this.setState({
@@ -281,7 +283,7 @@ class SeleccionCurso extends React.PureComponent {
       }
 
       let body = {
-        "idCurso": curso.id,
+        "idCurso": esSiTrabajo ? window.Config.ID_SI_TRABAJO : curso.id,
         "tieneEmpresa": false,
         "nombreEmpresa": '',
         "cuitEmpresa": '',
@@ -410,7 +412,7 @@ class SeleccionCurso extends React.PureComponent {
           classInformacionAlerta={classTituloPrograma}
           seccionBotones={{
             align: 'center',
-            content: <Button variant="contained" className={classes.buttonSiSi} onClick={this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
+            content: <Button variant="contained" className={classes.buttonSiSi} onClick={cursoSeleccionado && cursoSeleccionado.necesitaEmpresa ? this.onDialogoOpenInfoCurso : this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
           }}
         >
           <Typography variant="subheading" className={classTextoInformativo}>{textoInformativo}</Typography>
@@ -422,37 +424,41 @@ class SeleccionCurso extends React.PureComponent {
           onDialogoClose={this.onDialogoClose}
           titulo={'Cursos'}
         >
-          <MiInput
-            onChange={this.onChangeInputBusqueda}
-            icono={'search'}
-            tipoInput={'input'}
-            type={'text'}
-            value={inputBuscador}
-            placeholder={'Buscar cursos...'}
-          />
-
-          <List className={classes.lista}>
-            {
-              listaCursos && listaCursos.length &&
-              listaCursos.map((curso) => {
-                return <ListItem
-                  className={classes.itemLista}
-                  onClick={this.onClickCurso}
-                  idCurso={curso.id}>
+          <div key="headerContent">
+            <MiInput
+              onChange={this.onChangeInputBusqueda}
+              icono={'search'}
+              tipoInput={'input'}
+              type={'text'}
+              value={inputBuscador}
+              placeholder={'Buscar cursos...'}
+            />
+          </div>
+          <div key="mainContent">
+            <List className={classes.lista}>
+              {
+                listaCursos && listaCursos.length &&
+                listaCursos.map((curso) => {
+                  return <ListItem
+                    className={classes.itemLista}
+                    onClick={this.onClickCurso}
+                    idCurso={curso.id}>
+                    <ListItemText
+                      primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
+                      secondary={(curso.dia ? curso.dia + " - " : '')+""+(curso.horario ? curso.horario : '')}
+                    />
+                  </ListItem>
+                })
+                ||
+                <ListItem className={classes.itemLista}>
                   <ListItemText
-                    primary={curso.nombre + (curso.lugar && " - " + curso.lugar)}
-                    secondary={(curso.dia ? curso.dia + " - " : '')+""+(curso.horario ? curso.horario : '')}
+                    primary={'No se encontraron cursos'}
                   />
                 </ListItem>
-              })
-              ||
-              <ListItem className={classes.itemLista}>
-                <ListItemText
-                  primary={'No se encontraron cursos'}
-                />
-              </ListItem>
-            }
-          </List>
+              }
+            </List>
+          </div>
+          <div key="footerContent"></div>
         </MiControledDialog>
 
         <MiControledDialog

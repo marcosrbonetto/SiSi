@@ -150,7 +150,7 @@ class Home extends React.PureComponent {
 
               <div>
                 <Typography variant="body1" className={classes.titulo}>
-                  Programa
+                  Si Estudio, Si Trabajo
                 </Typography>
                 <Typography variant="body1">
                   {programa}
