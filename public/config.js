@@ -3,11 +3,17 @@ const TEST = 2;
 const LOCAL = 3;
 const ENTORNO = LOCAL;
 
-//WS Tributario
+//Url Root
+const URL_ROOT_SISI_LOCAL = "http://localhost:3000/#";
+const URL_ROOT_SISI_TEST = "http://localhost:3000/#";
+const URL_ROOT_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/AutogestionTributaria/#";
+let URL_ROOT_SISI = URL_ROOT_SISI_DEPLOY;
+
+//WS SISI
 const URL_WS_SISI_LOCAL = "https://srv-dev04.cordoba.local/WSSiSi";
 const URL_WS_SISI_TEST = "https://srv-dev04.cordoba.local/WSSiSi";
 const URL_WS_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/WSSiSi_Bridge";
-let URL_WS_TRIBUTARIO = URL_WS_SISI_DEPLOY;
+let URL_WS_SISI = URL_WS_SISI_DEPLOY;
 
 //Url Login
 const URL_LOGIN_LOCAL = "https://servicios2.cordoba.gov.ar/VecinoVirtual/Login/#/Login/SiSiPresencialLocal";
@@ -19,29 +25,33 @@ let URL_LOGIN = URL_LOGIN_DEPLOY;
 switch (ENTORNO) {
   case DEPLOY:
     {
-      URL_WS_TRIBUTARIO = URL_WS_SISI_DEPLOY;
+      URL_WS_SISI = URL_WS_SISI_DEPLOY;
       URL_LOGIN = URL_LOGIN_DEPLOY;
+      URL_ROOT_SISI = URL_ROOT_SISI_DEPLOY;
     }
     break;
 
   case TEST:
     {
-      URL_WS_TRIBUTARIO = URL_WS_SISI_TEST;
+      URL_WS_SISI = URL_WS_SISI_TEST;
       URL_LOGIN = URL_LOGIN_TEST;
+      URL_ROOT_SISI = URL_ROOT_SISI_TEST;
     }
     break;
 
   case LOCAL:
     {
-      URL_WS_TRIBUTARIO = URL_WS_SISI_LOCAL;
+      URL_WS_SISI = URL_WS_SISI_LOCAL;
       URL_LOGIN = URL_LOGIN_LOCAL;
+      URL_ROOT_SISI = URL_ROOT_SISI_LOCAL;
     }
     break;
 }
 
 var Config = {
+  URL_ROOT: URL_ROOT_SISI, 
   BASE_URL: "/SiSi",
-  BASE_URL_WS: URL_WS_TRIBUTARIO,
+  BASE_URL_WS: URL_WS_SISI,
   VV_URL_WS: "https://servicios2.cordoba.gov.ar/WSVecinoVirtual_Bridge",
   WS_CORDOBA_GEO: "https://servicios2.cordoba.gov.ar/CordobaGeoApi",
   URL_LOGIN: URL_LOGIN,

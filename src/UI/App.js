@@ -138,7 +138,13 @@ class App extends React.Component {
 
                   const estudioAlcanzadoNoConfig = !datos.estudioAlcanzadoId;
                   if(estudioAlcanzadoNoConfig) {
-                    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosExtra';
+                    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosExtra&seccionMensaje=Debe completar los datos de esta sección para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + window.Config.URL_ROOT + '/Inicio';
+                    return false;
+                  }
+
+                  const numeroTramiteNoConfig = !datos.validacionNumeroTramite;
+                  if(numeroTramiteNoConfig) {
+                    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosValidacion&seccionMensaje=Debe completar los datos de esta sección para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + window.Config.URL_ROOT + '/Inicio';
                     return false;
                   }
 
