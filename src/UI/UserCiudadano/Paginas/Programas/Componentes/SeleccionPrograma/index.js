@@ -267,34 +267,26 @@ class SeleccionPrograma extends React.PureComponent {
     if (cursoSeleccionado) {
 
       let informacionCurso = '¿Esta seguro que desea preinscribirse a este curso?';
+      const hayDescripcion1 = cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion1 != '';
+      const hayDescripcion2 = cursoSeleccionado.descripcion2 != null && cursoSeleccionado.descripcion2 != '';
 
-      if (cursoSeleccionado.descripcion1 != null || cursoSeleccionado.descripcion2 != null) {
+      if (hayDescripcion1 || hayDescripcion2) {
 
         if (cursoSeleccionado.idPrograma != 10) {
-          informacionCurso = <React.Fragment>
-            {cursoSeleccionado.descripcion1 != null &&
-              <React.Fragment>{cursoSeleccionado.descripcion1}</React.Fragment>}
-
-            {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br /><br /></React.Fragment>}
-
-            {cursoSeleccionado.descripcion2 != null &&
-              <React.Fragment>{cursoSeleccionado.descripcion2}</React.Fragment>}
-          </React.Fragment>;
+          informacionCurso = `<span>\
+            ${hayDescripcion1 ? cursoSeleccionado.descripcion1 : ''}
+            ${hayDescripcion1 && hayDescripcion2 ? '<span><br /><br /></span>' : ''}
+            ${hayDescripcion2 ? cursoSeleccionado.descripcion2 : ''}
+          </span>`;
         } else {
-          informacionCurso = <React.Fragment>
-            {cursoSeleccionado.descripcion1 != null &&
-              <React.Fragment><b>¿Qué aprenderás?</b><br />
-                {cursoSeleccionado.descripcion1}</React.Fragment>}
-
-            {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br /><br /></React.Fragment>}
-
-            {cursoSeleccionado.descripcion2 != null &&
-              <React.Fragment><b>¿Qué podrás hacer?</b><br />
-                {cursoSeleccionado.descripcion2}</React.Fragment>}
-          </React.Fragment>;
+          informacionCurso = `<span>\
+            ${hayDescripcion1 ? `<span><b>¿Qué aprenderás?</b><br />${cursoSeleccionado.descripcion1}</span>` : ''}\
+            ${hayDescripcion1 && hayDescripcion2 ? '<span><br /><br /></span>' : ''}\
+            ${hayDescripcion2 ? `<span><b>¿Qué podrás hacer?</b><br />${cursoSeleccionado.descripcion2}</span>` : ''}\
+          </span>`;
         }
       }
-
+      
       return {
         dialogoOpenInfoCurso: true,
         dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar ? ' - ' + cursoSeleccionado.lugar : ''),
@@ -452,6 +444,8 @@ class SeleccionPrograma extends React.PureComponent {
 
     const arrayCursosXTag = cursosXTag ? _.orderBy(Object.keys(cursosXTag), [], ['asc']) : [];
 
+    const dialogInformacionCursoHTML = dialogInformacionCurso ? <div dangerouslySetInnerHTML={{ __html: dialogInformacionCurso }} /> : '';
+
     return (
       <React.Fragment>
         <IndicadorCargando visible={cargandoVisible} />
@@ -566,6 +560,7 @@ class SeleccionPrograma extends React.PureComponent {
           <div key="mainContent">
             {(cursoSeleccionado && cursoSeleccionado.necesitaEmpresa &&
               <React.Fragment>
+                {dialogInformacionCursoHTML}
                 <b>¿Desea sugerir una empresa?</b>
                 <RadioGroup
                   value={checkEmpresa}
@@ -656,7 +651,7 @@ class SeleccionPrograma extends React.PureComponent {
                 }
               </React.Fragment>
             )
-              || dialogInformacionCurso}
+              || dialogInformacionCursoHTML}
           </div>
         </MiControledDialog>
 
