@@ -1,7 +1,11 @@
 const styles = theme => {
-    return {
-     
-    };
+  return {
+    classSubLabel: {
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+    }
   };
-  
-  export default styles;
+};
+
+export default styles;

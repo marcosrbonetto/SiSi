@@ -102,7 +102,7 @@ module.exports = {
       "@ComponentesExperienciaLaboral": "UI/UserCiudadano/Paginas/ExperienciaLaboral/Componentes",
       "@ComponentesEstudiosRealizados": "UI/UserCiudadano/Paginas/EstudiosRealizados/Componentes",
       "@ComponentesProgramas": "UI/UserCiudadano/Paginas/Programas/Componentes",
-      "@ComponentesHome": "UI/UserGestor/Paginas/Home/Componentes",
+      "@ComponentesPreinscripciones": "UI/UserGestor/Paginas/Preinscripciones/Componentes",
       "@UI": "UI",
       "@ReduxSrc": "_Redux/Src"
     },

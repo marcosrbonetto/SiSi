@@ -210,7 +210,7 @@ class MiSelect extends React.Component {
   }
 
   _rowRenderer = ({ index, isScrolling, key, style }) => {
-    const { options, value, placeholder, listRowHeight } = this.props;
+    const { options, value, placeholder, listRowHeight, classes } = this.props;
     const { busqueda } = this.state;
 
     const opciones = this.generarOpciones(options || [], placeholder);
@@ -219,7 +219,7 @@ class MiSelect extends React.Component {
 
     const data = opcionesFiltradas[index];
 
-    return <Item style={style} label={data.label} value={data.value} onClick={this.onClick} key={key} height={listRowHeight} />;
+    return <Item classes={classes} style={style} label={data.label} subLabel={data.subLabel} value={data.value} onClick={this.onClick} key={key} height={listRowHeight} />;
   };
 }
 
@@ -233,9 +233,17 @@ class Item extends React.PureComponent {
   };
 
   render() {
+    const { classes } = this.props;
+
     return (
       <ListItem button onClick={this.onClick} selected={this.props.selected} style={{ height: this.props.height }} style={this.props.style}>
-        <ListItemText primary={this.props.label} />
+        <ListItemText
+          primary={this.props.label}
+          secondary={this.props.subLabel}
+          classes={{
+            secondary: classes.classSubLabel
+          }}
+        />
       </ListItem>
     );
   }

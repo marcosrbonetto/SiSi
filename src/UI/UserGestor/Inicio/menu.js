@@ -1,13 +1,22 @@
-import Home from "@UI/UserGestor/Paginas/Home/index";
+import Preinscripciones from "@UI/UserGestor/Paginas/Preinscripciones/index";
+import Cursos from "@UI/UserGestor/Paginas/Cursos/index";
 
 const Menu = [
   {
-    url: "/InicioGestor",
+    url: "/InicioGestor/Cursos",
     exact: true,
     mostrarEnMenu: true,
-    component: Home,
-    nombre: "Si Estudio, Si Trabajo",
-    titulo: "Si Estudio, Si Trabajo",
+    component: Cursos,
+    nombre: "Cursos",
+    titulo: "Cursos",
+  },
+  {
+    url: "/InicioGestor/Preinscripciones",
+    exact: true,
+    mostrarEnMenu: true,
+    component: Preinscripciones,
+    nombre: "Preinscripciones",
+    titulo: "Preinscripciones",
   }
 ];
 

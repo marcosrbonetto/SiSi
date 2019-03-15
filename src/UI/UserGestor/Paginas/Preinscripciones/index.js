@@ -30,7 +30,7 @@ import MiSelect from "@Componentes/MiSelect";
 import MiInput from "@Componentes/MiInput";
 
 //Reporte
-import ReportePDF from '@ComponentesHome/ReportePDF';
+import ReportePDF from '@ComponentesPreinscripciones/ReportePDF';
 import { Typography } from "@material-ui/core";
 
 import Rules_Gestor from "@Rules/Rules_Gestor";
@@ -100,7 +100,8 @@ class Home extends React.PureComponent {
         let arrayCursos = [];
         datos.return.map((programa) => {
           const itemPrograma = {
-            label: programa.nombre + ' - ' + programa.descripcion,
+            label: programa.nombre,
+            subLabel: programa.descripcion,
             value: programa.id
           };
 
