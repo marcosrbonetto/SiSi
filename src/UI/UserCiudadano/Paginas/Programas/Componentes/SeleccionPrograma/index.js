@@ -64,7 +64,7 @@ class SeleccionPrograma extends React.PureComponent {
     const arrayCursos = props.arrayCursos || [];
     let infoCurso;
     let cursosXTag;
-    if(arrayCursos.length == 1) {
+    if (arrayCursos.length == 1) {
       infoCurso = this.getInfoCurso(arrayCursos[0]);
     } else {
       cursosXTag = _.groupBy(arrayCursos, (o) => { return o.tag });
@@ -263,23 +263,36 @@ class SeleccionPrograma extends React.PureComponent {
   }
 
   getInfoCurso = (cursoSeleccionado) => {
-    
+
     if (cursoSeleccionado) {
 
       let informacionCurso = '¿Esta seguro que desea preinscribirse a este curso?';
 
       if (cursoSeleccionado.descripcion1 != null || cursoSeleccionado.descripcion2 != null) {
-        informacionCurso = <React.Fragment>
-          {cursoSeleccionado.descripcion1 != null &&
-            <React.Fragment><b>¿Qué aprenderás?</b><br />
-              {cursoSeleccionado.descripcion1}</React.Fragment>}
 
-          {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br /><br /></React.Fragment>}
+        if (cursoSeleccionado.idPrograma != 10) {
+          informacionCurso = <React.Fragment>
+            {cursoSeleccionado.descripcion1 != null &&
+              <React.Fragment>{cursoSeleccionado.descripcion1}</React.Fragment>}
 
-          {cursoSeleccionado.descripcion2 != null &&
-            <React.Fragment><b>¿Qué podrás hacer?</b><br />
-              {cursoSeleccionado.descripcion2}</React.Fragment>}
-        </React.Fragment>;
+            {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br /><br /></React.Fragment>}
+
+            {cursoSeleccionado.descripcion2 != null &&
+              <React.Fragment>{cursoSeleccionado.descripcion2}</React.Fragment>}
+          </React.Fragment>;
+        } else {
+          informacionCurso = <React.Fragment>
+            {cursoSeleccionado.descripcion1 != null &&
+              <React.Fragment><b>¿Qué aprenderás?</b><br />
+                {cursoSeleccionado.descripcion1}</React.Fragment>}
+
+            {cursoSeleccionado.descripcion1 != null && cursoSeleccionado.descripcion2 != null && <React.Fragment><br /><br /></React.Fragment>}
+
+            {cursoSeleccionado.descripcion2 != null &&
+              <React.Fragment><b>¿Qué podrás hacer?</b><br />
+                {cursoSeleccionado.descripcion2}</React.Fragment>}
+          </React.Fragment>;
+        }
       }
 
       return {
@@ -310,7 +323,7 @@ class SeleccionPrograma extends React.PureComponent {
         });
         return false;
       }
-      
+
       let body = {
         "idCurso": curso.id,
         "tieneEmpresa": false,
@@ -762,7 +775,7 @@ const styles = theme => ({
   containerPanelCategoria: {
     marginBottom: '10px'
   },
-  lista:  {
+  lista: {
     width: '100%'
   }
 });

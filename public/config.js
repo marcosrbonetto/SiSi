@@ -1,7 +1,7 @@
 const DEPLOY = 1;
 const TEST = 2;
 const LOCAL = 3;
-const ENTORNO = LOCAL;
+const ENTORNO = TEST;
 
 //Url Root
 const URL_ROOT_SISI_LOCAL = "http://localhost:3000/#";
@@ -11,7 +11,7 @@ let URL_ROOT_SISI = URL_ROOT_SISI_DEPLOY;
 
 //WS SISI
 const URL_WS_SISI_LOCAL = "https://srv-dev04.cordoba.local/WSSiSi";
-const URL_WS_SISI_TEST = "https://srv-dev04.cordoba.local/WSSiSi";
+const URL_WS_SISI_TEST = "https://srv-dev04.cordoba.local/WSSiSi_Bridge";
 const URL_WS_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/WSSiSi_Bridge";
 let URL_WS_SISI = URL_WS_SISI_DEPLOY;
 
