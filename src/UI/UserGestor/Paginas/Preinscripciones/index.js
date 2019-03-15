@@ -525,7 +525,7 @@ class Home extends React.PureComponent {
               </div>
               <MiTabla
                 classPaper={classes.contentTable}
-                pagination={false}
+                pagination={true}
                 columns={[
                   { id: 'cuit', type: 'string', numeric: false, disablePadding: false, label: 'CUIT' },
 
@@ -544,7 +544,7 @@ class Home extends React.PureComponent {
                 rows={rowList || []}
                 order={'asc'}
                 orderBy={'apellido'}
-                rowsPerPage={25}
+                rowsPerPage={5}
               />
             </MiCard>
           </Grid>

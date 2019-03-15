@@ -98,14 +98,26 @@ class Cursos extends React.PureComponent {
 
           if (programa.cursos != null && programa.cursos.length > 0) {
             programa.cursos.map((curso) => {
+
+              let cantPreinscriptos = 0;
+              let cantEnEspera = 0;
+              if(curso.preinscripciones instanceof Array && curso.preinscripciones.length > 0){
+                curso.preinscripciones.map((preinscripto) => {
+                  if(preinscripto.filaDeEspera)
+                    cantEnEspera++;
+                  else
+                    cantPreinscriptos++;
+                });
+              }
+
               const itemCurso = {
                 nombre: curso.nombre,
-                lugar: curso.lugar != '' ? curso.lugar : '-',
-                horario: curso.dia + ' ' + curso.horario,
+                lugar: curso.lugar != '' ? curso.lugar : '',
+                horario: (curso.dia && curso.dia + ' ' + curso.horario) || '',
                 programa: programa.nombre,
                 categoria: curso.tag,
-                cupo: (curso.preinscripciones instanceof Array ? curso.preinscripciones.length : 0) + '/' + curso.cupo,
-                listaEspera: curso.cupoListaDeEspera,
+                cupo: cantPreinscriptos + '/' + curso.cupo,
+                listaEspera: cantEnEspera + '/' + curso.cupoListaDeEspera,
                 acciones: <React.Fragment>
                   <Button idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
                     <DeleteIcon />
@@ -187,7 +199,7 @@ class Cursos extends React.PureComponent {
       const filtroNombre = this.state.valueInputNombre;
       const filtroLugar = this.state.valueInputLugar;
 
-      if (idPrograma != -1 && filtroNombre != '' && filtroLugar != '') {
+      if (idPrograma == -1 && filtroNombre == '' && filtroLugar == '') {
         return true;
       } else {
         return (idPrograma != -1 && curso.data.idPrograma == idPrograma) ||
