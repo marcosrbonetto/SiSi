@@ -123,17 +123,7 @@ class Cursos extends React.PureComponent {
                 // cupo: cantPreinscriptos + '/' + curso.cupo,
                 // listaEspera: cantEnEspera + '/' + curso.cupoListaDeEspera,
                 estado: curso.fechaBaja != null ? 'Cerrado' : 'Activo',
-                acciones: <React.Fragment>
-                  {curso.fechaBaja != null ?
-                <Button title="Activar" idCurso={curso.id} onClick={this.onDialogOpenActivarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-                <LockIcon title="Activar" />
-              </Button>  
-                :
-                <Button title="Cerrar" idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-                <LockOpenIcon title="Cerrar" />
-              </Button>
-                }
-                </React.Fragment>,
+                acciones: this.getActionsButtons(curso),
                 data: {
                   ...curso
                 }
@@ -158,6 +148,20 @@ class Cursos extends React.PureComponent {
         mostrarAlerta('Ocurrió un error al intentar obtener los programas y cursos.');
         console.error('Error Servicio "Rules_Gestor.getProgramasYCursos": ' + error);
       });
+  }
+
+  getActionsButtons = (curso) => {
+    return <React.Fragment version={new Date().getTime()}>
+      {curso.fechaBaja != null ?
+        <Button title="Activar" idCurso={curso.id} onClick={this.onDialogOpenActivarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+          <LockIcon title="Activar" />
+        </Button>
+        :
+        <Button title="Cerrar" idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+          <LockOpenIcon title="Cerrar" />
+        </Button>
+      }
+    </React.Fragment>;
   }
 
   handleSelectFiltroPrograma = (item) => {
@@ -231,9 +235,9 @@ class Cursos extends React.PureComponent {
       if (idPrograma == -1 && filtroNombre == '' && filtroLugar == '') {
         return true;
       } else {
-        return (idPrograma != -1 && curso.data.idPrograma == idPrograma) ||
-          (filtroNombre != '' && curso.data.nombre && curso.data.nombre.toLowerCase().indexOf(filtroNombre.toLowerCase()) != -1) ||
-          (filtroLugar != '' && curso.data.lugar && curso.data.lugar.toLowerCase().indexOf(filtroLugar.toLowerCase()) != -1);
+        return (idPrograma != -1 && curso.data.idPrograma == idPrograma) &&
+          (filtroNombre != '' ? (curso.data.nombre && curso.data.nombre.toLowerCase().indexOf(filtroNombre.toLowerCase()) != -1) : true) &&
+          (filtroLugar != '' ? (curso.data.lugar && curso.data.lugar.toLowerCase().indexOf(filtroLugar.toLowerCase()) != -1) : true);
       }
     });
 
@@ -244,7 +248,7 @@ class Cursos extends React.PureComponent {
 
   cierreCursoAceptado = () => {
     if (!this.idCursoACerrar) return false;
-    
+
     const idCurso = this.idCursoACerrar;
 
     this.onDialogCloseCerrarCurso();
@@ -262,11 +266,12 @@ class Cursos extends React.PureComponent {
         }
 
         let rowList = _.cloneDeep(this.state.rowList);
-        let curso = _.find(rowList, (o) => o.data.id == idCurso );
+        let curso = _.find(rowList, (o) => o.data.id == idCurso);
 
-        if(curso) {
+        if (curso) {
           curso.data.fechaBaja = new Date().toLocaleDateString();
           curso.estado = 'Cerrado';
+          curso.acciones = this.getActionsButtons(curso.data);
         }
 
         this.setState({
@@ -284,7 +289,7 @@ class Cursos extends React.PureComponent {
 
   activarCursoAceptado = () => {
     if (!this.idCursoAActivar) return false;
-    
+
     const idCurso = this.idCursoAActivar;
 
     this.onDialogCloseActivarCurso();
@@ -302,11 +307,12 @@ class Cursos extends React.PureComponent {
         }
 
         let rowList = _.cloneDeep(this.state.rowList);
-        let curso = _.find(rowList, (o) => o.data.id == idCurso );
+        let curso = _.find(rowList, (o) => o.data.id == idCurso);
 
-        if(curso) {
+        if (curso) {
           curso.data.fechaBaja = null;
           curso.estado = 'Activo';
+          curso.acciones = this.getActionsButtons(curso.data);
         }
 
         this.setState({
