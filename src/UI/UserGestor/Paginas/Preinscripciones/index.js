@@ -21,6 +21,10 @@ import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
 import CancelIcon from '@material-ui/icons/Cancel';
+import Typography from '@material-ui/core/Typography';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
@@ -28,10 +32,10 @@ import MiTabla from "@Componentes/MiTabla";
 import MiControledDialog from "@Componentes/MiControledDialog";
 import MiSelect from "@Componentes/MiSelect";
 import MiInput from "@Componentes/MiInput";
+import { onInputChangeValidateForm, onInputFocusOutValidateForm, validateForm } from "@Componentes/MiInput";
 
 //Reporte
 import ReportePDF from '@ComponentesPreinscripciones/ReportePDF';
-import { Typography } from "@material-ui/core";
 
 import Rules_Gestor from "@Rules/Rules_Gestor";
 import { mostrarAlerta, mostrarMensaje, dateToString } from "@Utils/functions";
@@ -57,11 +61,14 @@ class Home extends React.PureComponent {
     super(props);
 
     this.idUsuarioAEliminar = null;
+    this.idUsuarioAPreinscribir = null;
 
     this.state = {
       programaFiltroSeleccionado: -1,
+      programaFiltroSeleccionadoPreinscripcion: -1,
       arrayProgramas: [],
       cursoFiltroSeleccionado: -1,
+      cursoFiltroSeleccionadoPreinscripcion: -1,
       arrayCursos: [],
       valueInputCUIT: '',
       valueInputNombre: '',
@@ -69,8 +76,49 @@ class Home extends React.PureComponent {
       rowList: [],
       dialogConfirmacion: false,
       dialogCancelacion: false,
+      dialogPreinscripcion: false,
       dialogImpresionReporte: false,
       arrayReporte: [],
+      checkEmpresa: 'noEmpresa',
+      formInputsEmpresa: [
+        {
+          id: 'InputNombreEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,50}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 50 catacteres.'
+        },
+        {
+          id: 'InputDescripcionEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,150}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+        },
+        {
+          id: 'InputCuitEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^[0-9]{11}$/,
+          error: false,
+          required: false,
+          mensajeError: 'Este campo es opcional y debe contener 11 números.'
+        },
+        {
+          id: 'InputContactoEmpresa',
+          value: '',
+          initValue: '',
+          valiateCondition: /^.{0,20}$/,
+          error: false,
+          required: true,
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+        },
+      ],
+      cursoSeleccionado: undefined,
     };
   }
 
@@ -94,7 +142,7 @@ class Home extends React.PureComponent {
           return false;
         }
 
-        if(datos.return == null || datos.return.length == 0) return false;
+        if (datos.return == null || datos.return.length == 0) return false;
 
         let arrayProgramas = [];
         let arrayCursos = [];
@@ -107,15 +155,24 @@ class Home extends React.PureComponent {
 
           arrayProgramas.push(itemPrograma);
 
-          if(programa.cursos != null && programa.cursos.length > 0) {
+          if (programa.cursos != null && programa.cursos.length > 0) {
             programa.cursos.map((curso) => {
               const itemCurso = {
                 idPrograma: curso.idPrograma,
-                label: curso.nombre + ' - ' + curso.lugar,
+                label: curso.nombre + (curso.lugar && curso.lugar != '' ? ' - ' + curso.lugar : ''),
                 lugar: curso.lugar && curso.lugar != '' ? curso.lugar : '-',
                 dia: curso.dia,
                 horario: curso.horario,
-                value: curso.id
+                value: curso.id,
+                data: {
+                  ...curso,
+                  idPrograma: curso.idPrograma,
+                  programa: programa.nombre,
+                  idCurso: curso.id,
+                  curso: curso.nombre + (curso.lugar && curso.lugar != '' ? ' - ' + curso.lugar : ''),
+                  lugar: curso.lugar && curso.lugar != '' ? curso.lugar : '-',
+                  horario: curso ? (curso.dia && curso.dia != '' ? curso.dia + ' ' + curso.horario : '-') : '-',
+                }
               };
 
               arrayCursos.push(itemCurso);
@@ -128,7 +185,7 @@ class Home extends React.PureComponent {
           arrayCursos: arrayCursos
         });
 
-        if(callback instanceof Function)
+        if (callback instanceof Function)
           callback();
       })
       .catch((error) => {
@@ -143,23 +200,23 @@ class Home extends React.PureComponent {
 
     let filters = {};
 
-    if(this.state.programaFiltroSeleccionado != -1) {
+    if (this.state.programaFiltroSeleccionado != -1) {
       filters['idPrograma'] = this.state.programaFiltroSeleccionado;
     }
 
-    if(this.state.cursoFiltroSeleccionado != -1) {
+    if (this.state.cursoFiltroSeleccionado != -1) {
       filters['idCurso'] = this.state.cursoFiltroSeleccionado;
     }
 
-    if(this.state.valueInputNombre != '') {
+    if (this.state.valueInputNombre != '') {
       filters['nombre'] = this.state.valueInputNombre;
     }
 
-    if(this.state.valueInputCUIT != '') {
+    if (this.state.valueInputCUIT != '') {
       filters['cuit'] = this.state.valueInputCUIT;
     }
 
-    if(this.state.valueInputLugar != '') {
+    if (this.state.valueInputLugar != '') {
       filters['lugar'] = this.state.valueInputLugar;
     }
 
@@ -206,9 +263,9 @@ class Home extends React.PureComponent {
           horario: curso ? (curso.dia && curso.dia != '' ? curso.dia + ' ' + curso.horario : '-') : '-',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
           acciones: <React.Fragment>
-            {/* <Button onClick={this.onDialogOpenConfirmacion} size="small" color="secondary" className={props.classes.iconoAceptar}>
-              <i class="material-icons">check</i>
-            </Button> */}
+            <Button onClick={this.onDialogOpenPreinscripcion} idUsuario={preinscripto.idUsuario} size="small" color="secondary" className={this.props.classes.iconoAceptar}>
+              <i class="material-icons">edit</i>
+            </Button>
             <Button title="Desinscribir" idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
               <CancelIcon title="Desinscribir" />
             </Button>
@@ -218,6 +275,9 @@ class Home extends React.PureComponent {
             idPrograma: preinscripto.idPrograma,
             idCurso: preinscripto.idCurso,
             email: preinscripto.email,
+            apellido: preinscripto.apellido,
+            nombre: preinscripto.nombre,
+            cuit: preinscripto.cuit,
           }
         });
       });
@@ -404,24 +464,237 @@ class Home extends React.PureComponent {
     this.cargarPreinscriptos();
   }
 
+
+  onDialogOpenPreinscripcion = (event) => {
+    const idUsuario = event.currentTarget.attributes.idUsuario.value;
+    if (!idUsuario) return false;
+    this.idUsuarioAPreinscribir = idUsuario;
+
+    this.setState({
+      dialogPreinscripcion: true
+    })
+  }
+
+  onDialogClosePreinscripcion = () => {
+    this.idUsuarioAPreinscribir = null;
+
+    this.setState({
+      dialogPreinscripcion: false
+    })
+  }
+
+  handleChangeCheckEmpresa = (event) => {
+    this.setState({ checkEmpresa: event.target.value });
+  }
+
+  handleSelectFiltroProgramaPreinscripcion = (item) => {
+    this.setState({
+      programaFiltroSeleccionadoPreinscripcion: item.value,
+      cursoFiltroSeleccionadoPreinscripcion: -1,
+      cursoSeleccionado: undefined
+    })
+  }
+
+  handleQuitarFiltroProgramaPreinscripcion = () => {
+    this.setState({
+      programaFiltroSeleccionadoPreinscripcion: -1,
+      cursoFiltroSeleccionadoPreinscripcion: -1,
+      cursoSeleccionado: undefined
+    })
+  }
+
+  handleSelectFiltroCursosPreinscripcion = (item) => {
+    const cursoSeleccionado = _.find(this.state.arrayCursos, (o) => o.data.id == item.value);
+
+    this.setState({
+      cursoFiltroSeleccionadoPreinscripcion: item.value,
+      cursoSeleccionado: cursoSeleccionado.data
+    })
+  }
+
+  handleQuitarFiltroCursosPreinscripcion = () => {
+    this.setState({
+      cursoFiltroSeleccionadoPreinscripcion: -1,
+      cursoSeleccionado: undefined
+    })
+  }
+
+  onChangeInput = (value, type, input, props) => {
+
+    const newformInputs = onInputChangeValidateForm(this.state.formInputsEmpresa, { value, type, input, props });
+
+    this.setState({
+      formInputsEmpresa: newformInputs
+    });
+  }
+
+  onFocusOutInput = (input, props) => {
+
+    const newformInputs = onInputFocusOutValidateForm(this.state.formInputsEmpresa, { input, props });
+
+    this.setState({
+      formInputsEmpresa: newformInputs
+    });
+  }
+
+  validateForm = () => {
+
+    const resultValidation = validateForm(this.state.formInputsEmpresa);
+
+    this.setState({
+      formInputsEmpresa: resultValidation.formInputs
+    });
+
+    return resultValidation.formHayError;
+  }
+
+  preinscripcionAceptada = () => {
+    this.props.mostrarCargando(true);
+
+    if (this.state.programaFiltroSeleccionadoPreinscripcion == -1 ||
+      this.state.cursoFiltroSeleccionadoPreinscripcion == -1) {
+      mostrarAlerta('Debe seleccionar un programa y un curso.');
+      return false;
+    }
+
+    if (!this.idUsuarioAPreinscribir || !this.state.cursoSeleccionado) return false;
+
+    const idUsuario = this.idUsuarioAPreinscribir;
+    this.idUsuarioAPreinscribir = null;
+    
+    let rowList = _.cloneDeep(this.state.rowList);
+    const usuario = _.find(rowList, (o) => o.data.idUsuario == idUsuario);
+    const curso = this.state.cursoSeleccionado;
+
+    if (!usuario) return false;
+
+    let body = {
+      "idCurso": curso.id,
+      "tieneEmpresa": false,
+      "nombreEmpresa": "",
+      "cuitEmpresa": "",
+      "domicilioEmpresa": "",
+      "descripcionEmpresa": "",
+      "idUsuario": idUsuario,
+      "nombre": usuario.data.nombre,
+      "apellido": usuario.data.apellido,
+      "cuit": usuario.data.cuit,
+      "email": usuario.data.email
+    };
+
+    if (curso &&
+      curso.necesitaEmpresa &&
+      this.state.checkEmpresa == 'siEmpresa') {
+
+      const formHayError = this.validateForm();
+
+      if (formHayError) {
+        mostrarAlerta('Se han encontrado campos erroneos.');
+        this.props.mostrarCargando(false);
+        return false;
+      }
+
+      const formInputsEmpresa = this.state.formInputsEmpresa;
+
+      const InputNombreEmpresa = _.find(formInputsEmpresa, { id: 'InputNombreEmpresa' });
+      const InputDescripcionEmpresa = _.find(formInputsEmpresa, { id: 'InputDescripcionEmpresa' });
+      const InputCuitEmpresa = _.find(formInputsEmpresa, { id: 'InputCuitEmpresa' });
+      const InputContactoEmpresa = _.find(formInputsEmpresa, { id: 'InputContactoEmpresa' });
+
+      body = {
+        "idCurso": curso.id,
+        "tieneEmpresa": true,
+        "nombreEmpresa": InputNombreEmpresa.value || '',
+        "cuitEmpresa": InputCuitEmpresa.value || '',
+        "domicilioEmpresa": InputContactoEmpresa.value || '',
+        "descripcionEmpresa": InputDescripcionEmpresa.value || '',
+        "idUsuario": idUsuario,
+        "nombre": usuario.data.nombre,
+        "apellido": usuario.data.apellido,
+        "cuit": usuario.data.cuit,
+        "email": usuario.data.email
+      };
+    }
+
+    this.onDialogClosePreinscripcion();
+
+    const token = this.props.loggedUser.token;
+    Rules_Gestor.reInscribir(token, body)
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          this.setState({
+            cursoSeleccionado: undefined,
+            programaFiltroSeleccionadoPreinscripcion: -1,
+            cursoFiltroSeleccionadoPreinscripcion: -1,
+          });
+          mostrarAlerta(datos.error);
+          return false;
+        }
+
+        usuario.programa = curso.programa;
+        usuario.curso = curso.curso;
+        usuario.lugar = curso.lugar;
+        usuario.horario = curso.horario;
+
+        usuario.data = {
+          ...usuario.data,
+          idPrograma: curso.idPrograma,
+          idCurso: curso.idCurso,
+        };
+
+        this.setState({
+          cursoSeleccionado: undefined,
+          programaFiltroSeleccionadoPreinscripcion: -1,
+          cursoFiltroSeleccionadoPreinscripcion: -1,
+          rowList: rowList
+        });
+
+        mostrarMensaje('Preinscripción actualizada exitosamente.');
+      
+      })
+      .catch((error) => {
+        this.props.mostrarCargando(false);
+        this.setState({
+          cursoSeleccionado: undefined,
+          programaFiltroSeleccionadoPreinscripcion: -1,
+          cursoFiltroSeleccionadoPreinscripcion: -1,
+        });
+        mostrarAlerta('Ocurrió un error al intentar preinscribir al usuario.');
+        console.error('Error Servicio "Rules_Gestor.reInscribir": ' + error);
+      });
+  }
+
   render() {
     const { classes } = this.props;
     const {
       programaFiltroSeleccionado,
+      programaFiltroSeleccionadoPreinscripcion,
       cursoFiltroSeleccionado,
+      cursoFiltroSeleccionadoPreinscripcion,
       rowList,
       dialogConfirmacion,
       dialogCancelacion,
+      dialogPreinscripcion,
       dialogImpresionReporte,
       arrayProgramas,
       arrayCursos,
       arrayReporte,
       valueInputLugar,
       valueInputCUIT,
-      valueInputNombre
+      valueInputNombre,
+      checkEmpresa,
+      formInputsEmpresa,
+      cursoSeleccionado
     } = this.state;
 
     let programasInReporte = [];
+
+    //Set inputs
+    const InputNombreEmpresa = _.find(formInputsEmpresa, { id: 'InputNombreEmpresa' });
+    const InputDescripcionEmpresa = _.find(formInputsEmpresa, { id: 'InputDescripcionEmpresa' });
+    const InputCuitEmpresa = _.find(formInputsEmpresa, { id: 'InputCuitEmpresa' });
+    const InputContactoEmpresa = _.find(formInputsEmpresa, { id: 'InputContactoEmpresa' });
 
     return (
       <section className={classes.mainContainer}>
@@ -632,6 +905,130 @@ class Home extends React.PureComponent {
           titulo={'Desinscripción'}
         >
           ¿Esta segura que desea desinscribir el usuario seleccionado?
+        </MiControledDialog>
+
+        <MiControledDialog
+          open={dialogPreinscripcion}
+          onDialogoOpen={this.onDialogOpenPreinscripcion}
+          onDialogoClose={this.onDialogClosePreinscripcion}
+          buttonOptions={{
+            onDialogoAccept: this.preinscripcionAceptada,
+            onDialogoCancel: this.onDialogClosePreinscripcion,
+          }}
+          titulo={'Preinscripción'}
+        >
+          <Grid container spacing={16}>
+            <Grid item xs={12} sm={6} className={classes.centerItems}>
+              <MiSelect
+                onChange={this.handleSelectFiltroProgramaPreinscripcion}
+                value={programaFiltroSeleccionadoPreinscripcion}
+                label="Programas"
+                fullWidth={true}
+                options={arrayProgramas} />
+              {programaFiltroSeleccionadoPreinscripcion != -1 && <Icon className={classes.limpiarSelect} onClick={this.handleQuitarFiltroProgramaPreinscripcion}>clear</Icon>}
+            </Grid>
+            <Grid item xs={12} sm={6} className={classes.centerItems}>
+              <MiSelect
+                onChange={this.handleSelectFiltroCursosPreinscripcion}
+                value={cursoFiltroSeleccionadoPreinscripcion}
+                label="Cursos"
+                fullWidth={true}
+                options={_.filter(arrayCursos, (o) => { return o.idPrograma == programaFiltroSeleccionadoPreinscripcion })} />
+              {cursoFiltroSeleccionadoPreinscripcion != -1 && <Icon className={classes.limpiarSelect} onClick={this.handleQuitarFiltroCursosPreinscripcion}>clear</Icon>}
+            </Grid>
+
+            {cursoSeleccionado && cursoSeleccionado.necesitaEmpresa &&
+              <Grid item xs={12} sm={12}>
+                <b>¿Desea sugerir una empresa?</b>
+                <RadioGroup
+                  value={checkEmpresa}
+                  onChange={this.handleChangeCheckEmpresa}
+                >
+                  <FormControlLabel style={{ height: '26px' }} value={'noEmpresa'} control={<Radio color="primary" />} label="No deseo sugerir una empresa" />
+                  <FormControlLabel style={{ height: '26px' }} value={'siEmpresa'} control={<Radio color="primary" />} label="Deseo sugerir una empresa" />
+                </RadioGroup>
+                <br />
+                {checkEmpresa == 'siEmpresa' &&
+                  <React.Fragment>
+                    <Grid container>
+                      <Grid item xs={12} sm={12}>
+                        <MiInput
+                          onChange={this.onChangeInput}
+                          onFocusOut={this.onFocusOutInput}
+                          id={'InputNombreEmpresa'}
+                          tipoInput={'input'}
+                          type={'text'}
+                          value={InputNombreEmpresa && InputNombreEmpresa.value || ''}
+                          error={InputNombreEmpresa && InputNombreEmpresa.error || false}
+                          mensajeError={InputNombreEmpresa && InputNombreEmpresa.mensajeError || 'Campo erroneo'}
+                          label={'Nombre de la empresa'}
+                          placeholder={'Ingrese el nombre de la empresa...'}
+                        />
+                      </Grid>
+                      <br /><br /><br />
+                      <Grid item xs={12} sm={12}>
+                        <MiInput
+                          onChange={this.onChangeInput}
+                          onFocusOut={this.onFocusOutInput}
+                          id={'InputDescripcionEmpresa'}
+                          tipoInput={'input'}
+                          type={'text'}
+                          value={InputDescripcionEmpresa && InputDescripcionEmpresa.value || ''}
+                          error={InputDescripcionEmpresa && InputDescripcionEmpresa.error || false}
+                          mensajeError={InputDescripcionEmpresa && InputDescripcionEmpresa.mensajeError || 'Campo erroneo'}
+                          label={'Descripción de la empresa'}
+                          placeholder={'Describa la actividad de la empresa...'}
+                        />
+                      </Grid>
+                      <br /><br /><br />
+                      <Grid container>
+                        <Grid item xs={12} sm={6}>
+                          <MiInput
+                            onChange={this.onChangeInput}
+                            onFocusOut={this.onFocusOutInput}
+                            id={'InputCuitEmpresa'}
+                            tipoInput={'input'}
+                            type={'text'}
+                            value={InputCuitEmpresa && InputCuitEmpresa.value || ''}
+                            error={InputCuitEmpresa && InputCuitEmpresa.error || false}
+                            mensajeError={InputCuitEmpresa && InputCuitEmpresa.mensajeError || 'Campo erroneo'}
+                            label={'CUIT de la empresa'}
+                            placeholder={'(Opcional) Si lo conoces, ingrese el CUIT de la empresa...'}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <MiInput
+                            onChange={this.onChangeInput}
+                            onFocusOut={this.onFocusOutInput}
+                            id={'InputContactoEmpresa'}
+                            tipoInput={'input'}
+                            type={'text'}
+                            value={InputContactoEmpresa && InputContactoEmpresa.value || ''}
+                            error={InputContactoEmpresa && InputContactoEmpresa.error || false}
+                            mensajeError={InputContactoEmpresa && InputContactoEmpresa.mensajeError || 'Campo erroneo'}
+                            label={'Contacto de la empresa'}
+                            placeholder={'Ingrese el contacto Cde la empresa...'}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <br />
+                    <div className={classes.containerInfoEmpresa}>
+                      <i className={classNames('material-icons', classes.classIconoInfo)}>info</i>
+                      <Typography variant="body2">Para sugerir una empresa es OBLIGATORIO llenar la siguiente planilla en papel y acercarla al Centro de Empleo y Capacitación (Galería Cinerama Av. Colon 335 subsuelo) de 8:30 a 14:30 hs</Typography>
+                    </div>
+
+                    <Button
+                      href={'https://drive.google.com/file/d/1V1PZUlkCHhXhZhvQh_AKEjD4gszEESOF/view'}
+                      target="_blank"
+                      className={classes.buttonDescargaPlanilla}
+                    >
+                      Descargar Planilla
+                      </Button>
+                  </React.Fragment>
+                }
+              </Grid>}
+          </Grid>
         </MiControledDialog>
       </section>
     );

@@ -86,7 +86,16 @@ const styles = theme => ({
   },
   contentTable: {
     marginTop: '14px'
-  }
+  },
+  containerInfoEmpresa: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+  buttonDescargaPlanilla: {
+    color: theme.color.ok.main,
+    textDecoration: 'underline',
+    marginLeft: '24px'
+  },
 });
 
 
