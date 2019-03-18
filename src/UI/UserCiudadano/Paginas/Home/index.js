@@ -97,7 +97,7 @@ class Home extends React.PureComponent {
     const experienciasLaborales = tieneExperienciasLaborales && 'Actualmente posee ' +datosUsuario.experienciasLaborales.length+ ' experencias laborales cargadas.' || 'No ha cargado experiencias laborales';
     
     const tieneEstudiosRealizados = datosUsuario.estudios.length > 0;
-    const estudiosRealizados = tieneEstudiosRealizados && 'Actualmente posee ' +datosUsuario.estudios.length+ ' estudios realizados cargadas.' || 'No ha cargado estudios realizados';
+    const estudiosRealizados = tieneEstudiosRealizados && 'Actualmente posee ' +datosUsuario.estudios.length+ ' estudios realizados cargados.' || 'No ha cargado estudios realizados';
     
     return (
       <div className={classes.mainContainer}>
@@ -106,7 +106,7 @@ class Home extends React.PureComponent {
             <img src={Logo_SiSi} width={150} height={84} /><br /><br />
             <Typography variant="body2" gutterBottom className={classes.informacion}>
               Bienvenido a tu perfil del programa Sí Estudio Sí Trabajo. Desde acá podés gestionar tus datos, experiencia, programa al que querés participar.<br /><br />
-              Son 60.000 cursos gratuitos de formación profesional virtuales, 3.000 capacitaciones presenciales remuneradas para jóvenes de 18 a 24 años, 1.000 cursos presenciales gratuitos para mayores de 24 años sin empleo y 2.000 prácticas laborales remuneradas.<br /><br />
+              Son 100.000 cursos gratuitos de formación profesional virtuales, 5.000 capacitaciones presenciales remuneradas para jóvenes de 18 a 24 años (curso introducción al trabajo), 5.000 cursos presenciales gratuitos para mayores de 24 años sin empleo y 10.000 prácticas laborales remuneradas para jovenes de 18 a 24 años.<br /><br />
               En Córdoba decimos Si Estudio Si Trabajo y queremos que vos seas protagonista.</Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -184,7 +184,7 @@ class Home extends React.PureComponent {
 
               <div>
                 <Typography variant="body1" className={classes.titulo}>
-                  Estidios realizados
+                  Estudios realizados
                 </Typography>
                 <Typography variant="body1">
                   {estudiosRealizados}

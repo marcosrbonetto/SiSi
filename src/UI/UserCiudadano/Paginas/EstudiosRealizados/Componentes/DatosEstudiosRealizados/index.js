@@ -49,9 +49,9 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
     let listaEstudiosRealizados = props.loggedUser.datos.estudios;
     listaEstudiosRealizados.map((item, index) => {
-      if(item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
-      
-      const randomId = "id_"+index+"_"+(new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+      if (item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
+
+      const randomId = "id_" + index + "_" + (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
 
       item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';
       item.fechaFinalizacion = item.fechaFinalizacion ? dateToString(new Date(item.fechaFinalizacion), 'DD/MM/YYYY') : '';
@@ -64,7 +64,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
   }
 
   componentWillMount() {
-    
+
   }
 
   agregarEstudiosRealizados = (EstudiosRealizadosAgregada) => {
@@ -85,8 +85,8 @@ class DatosEstudiosRealizados extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
     const estudiosRealizados = this.state.listaEstudiosRealizados;
-    
-    Rules_EstudiosRealizados.insertEstudiosRealizados(token,estudiosRealizados)
+
+    Rules_EstudiosRealizados.insertEstudiosRealizados(token, estudiosRealizados)
       .then((datos) => {
         this.props.mostrarCargando(false);
         if (!datos.ok) {
@@ -129,11 +129,11 @@ class DatosEstudiosRealizados extends React.PureComponent {
           }}
         >
 
-          <MiInput
+          {listaEstudiosRealizados.length == 0 && <MiInput
             tipoInput={'checkbox'}
             label={'No tengo ningún estudio realizado'}
             checked={true}
-          />
+          />}
 
           <FormEstudiosRealizados
             handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}

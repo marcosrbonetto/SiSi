@@ -333,7 +333,7 @@ class FormExperienciaLaboral extends React.PureComponent {
                     value={InputFechaInicioEmpresa && InputFechaInicioEmpresa.value || new Date()}
                     error={InputFechaInicioEmpresa && InputFechaInicioEmpresa.error || false}
                     mensajeError={InputFechaInicioEmpresa && InputFechaInicioEmpresa.mensajeError || 'Campo erroneo'}
-                    withDisabled={true}
+                    withDisabled={false}
                     disabled={InputFechaInicioEmpresa && InputFechaInicioEmpresa.disabled != undefined ? InputFechaInicioEmpresa.disabled : true}
                   />
                 </Grid>

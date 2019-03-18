@@ -336,7 +336,7 @@ class FormEstudiosRealizados extends React.PureComponent {
                   value={InputFechaInicioEstudio && InputFechaInicioEstudio.value || new Date()}
                   error={InputFechaInicioEstudio && InputFechaInicioEstudio.error || false}
                   mensajeError={InputFechaInicioEstudio && InputFechaInicioEstudio.mensajeError || 'Campo erroneo'}
-                  withDisabled={true}
+                  withDisabled={false}
                   disabled={InputFechaInicioEstudio && InputFechaInicioEstudio.disabled != undefined ? InputFechaInicioEstudio.disabled : true}
                 />
               </Grid>

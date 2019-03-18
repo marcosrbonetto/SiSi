@@ -267,7 +267,7 @@ class App extends React.Component {
         >
           <Route exact path="/" component={null} />
           {/*<Route path={`${base}/Inicio`} component={login ? InicioCiudadano : null} />*/}
-          <Route path={`${base}/InicioGestor`} component={login ? InicioGestor : null} />
+          {/*<Route path={`${base}/InicioGestor`} component={login ? InicioGestor : null} />*/}
           <Route path={`${base}/Inicio`} component={login ? InicioCiudadano : null} />
           <Route component={login ? Pagina404 : null} />
         </AnimatedSwitch>

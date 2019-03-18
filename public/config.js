@@ -6,7 +6,7 @@ const ENTORNO = LOCAL;
 //Url Root
 const URL_ROOT_SISI_LOCAL = "http://localhost:3000/#";
 const URL_ROOT_SISI_TEST = "http://localhost:3000/#";
-const URL_ROOT_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/AutogestionTributaria/#";
+const URL_ROOT_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/SiSiPresencial/#";
 let URL_ROOT_SISI = URL_ROOT_SISI_DEPLOY;
 
 //WS SISI

@@ -129,11 +129,11 @@ class DatosExperienciaLaboral extends React.PureComponent {
           }}
         >
 
-          <MiInput
+          {listaExperienciaLaboral.length == 0 && <MiInput
             tipoInput={'checkbox'}
             label={'No tengo experiencia laboral'}
             checked={true}
-          />
+          />}
 
           <FormExperienciaLaboral
             handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
