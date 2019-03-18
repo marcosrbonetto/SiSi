@@ -20,7 +20,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import CancelIcon from '@material-ui/icons/Cancel';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import LockIcon from '@material-ui/icons/Lock';
 
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
@@ -52,7 +53,8 @@ class Cursos extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.idUsuarioAEliminar = null;
+    this.idCursoACerrar = null;
+    this.idCursoAActivar = null;
 
     this.state = {
       programaFiltroSeleccionado: -1,
@@ -61,7 +63,9 @@ class Cursos extends React.PureComponent {
       arrayCursos: [],
       valueInputNombre: '',
       valueInputLugar: '',
-      rowList: []
+      rowList: [],
+      dialogCerrarCurso: false,
+      dialogActivarCurso: false,
     };
   }
 
@@ -118,11 +122,17 @@ class Cursos extends React.PureComponent {
                 categoria: curso.tag,
                 // cupo: cantPreinscriptos + '/' + curso.cupo,
                 // listaEspera: cantEnEspera + '/' + curso.cupoListaDeEspera,
-                estado: curso.fechaBaja != null ? 'Cerrado' : 'Abierto',
+                estado: curso.fechaBaja != null ? 'Cerrado' : 'Activo',
                 acciones: <React.Fragment>
-                  <Button idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-                    <CancelIcon />
-                  </Button>
+                  {curso.fechaBaja != null ?
+                <Button title="Activar" idCurso={curso.id} onClick={this.onDialogOpenActivarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+                <LockIcon title="Activar" />
+              </Button>  
+                :
+                <Button title="Cerrar" idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+                <LockOpenIcon title="Cerrar" />
+              </Button>
+                }
                 </React.Fragment>,
                 data: {
                   ...curso
@@ -174,10 +184,28 @@ class Cursos extends React.PureComponent {
   }
 
   onDialogCloseCerrarCurso = () => {
-    this.idCursoAEliminar = null;
+    this.idCursoACerrar = null;
 
     this.setState({
       dialogCerrarCurso: false
+    })
+  }
+
+  onDialogOpenActivarCurso = (event) => {
+    const idCurso = event.currentTarget.attributes.idCurso.value;
+    if (!idCurso) return false;
+    this.idCursoAActivar = idCurso;
+
+    this.setState({
+      dialogActivarCurso: true
+    })
+  }
+
+  onDialogCloseActivarCurso = () => {
+    this.idCursoAActivar = null;
+
+    this.setState({
+      dialogActivarCurso: false
     })
   }
 
@@ -234,13 +262,16 @@ class Cursos extends React.PureComponent {
         }
 
         let rowList = _.cloneDeep(this.state.rowList);
-        _.remove(rowList, function (item) {
-          return item.data.id == idCurso;
-        });
+        let curso = _.find(rowList, (o) => o.data.id == idCurso );
+
+        if(curso) {
+          curso.data.fechaBaja = new Date().toLocaleDateString();
+          curso.estado = 'Cerrado';
+        }
 
         this.setState({
           rowList: rowList
-        })
+        });
 
         this.props.mostrarCargando(false);
         mostrarMensaje('Se cerrado el curso exitosamente!');
@@ -251,11 +282,52 @@ class Cursos extends React.PureComponent {
       });
   }
 
+  activarCursoAceptado = () => {
+    if (!this.idCursoAActivar) return false;
+    
+    const idCurso = this.idCursoAActivar;
+
+    this.onDialogCloseActivarCurso();
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    Rules_Gestor.activarCurso(token, idCurso)
+      .then((datos) => {
+
+        if (!datos.ok) {
+          this.props.mostrarCargando(false);
+          mostrarAlerta('Ocurrió un error al intentar activar el curso.');
+          return false;
+        }
+
+        let rowList = _.cloneDeep(this.state.rowList);
+        let curso = _.find(rowList, (o) => o.data.id == idCurso );
+
+        if(curso) {
+          curso.data.fechaBaja = null;
+          curso.estado = 'Activo';
+        }
+
+        this.setState({
+          rowList: rowList
+        });
+
+        this.props.mostrarCargando(false);
+        mostrarMensaje('Se cerrado el curso exitosamente!');
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar activar el curso.');
+        console.error('Error Servicio "Rules_Gestor.activarCurso": ' + error);
+      });
+  }
+
   render() {
     const { classes } = this.props;
     const {
       programaFiltroSeleccionado,
       dialogCerrarCurso,
+      dialogActivarCurso,
       arrayProgramas,
       arrayCursos,
       rowList,
@@ -378,6 +450,19 @@ class Cursos extends React.PureComponent {
           titulo={'Cierre de curso'}
         >
           ¿Esta segura que desea cerrar el curso seleccionado?
+        </MiControledDialog>
+
+        <MiControledDialog
+          open={dialogActivarCurso}
+          onDialogoOpen={this.onDialogOpenActivarCurso}
+          onDialogoClose={this.onDialogCloseActivarCurso}
+          buttonOptions={{
+            onDialogoAccept: this.activarCursoAceptado,
+            onDialogoCancel: this.onDialogCloseActivarCurso,
+          }}
+          titulo={'Activación de curso'}
+        >
+          ¿Esta segura que desea activar el curso seleccionado?
         </MiControledDialog>
       </section>
     );

@@ -209,8 +209,8 @@ class Home extends React.PureComponent {
             {/* <Button onClick={this.onDialogOpenConfirmacion} size="small" color="secondary" className={props.classes.iconoAceptar}>
               <i class="material-icons">check</i>
             </Button> */}
-            <Button idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-              <CancelIcon />
+            <Button title="Desinscribir" idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+              <CancelIcon title="Desinscribir" />
             </Button>
           </React.Fragment>,
           data: {

@@ -20,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import CancelIcon from '@material-ui/icons/Cancel';
+import LockIcon from '@material-ui/icons/Lock';
 
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
@@ -89,11 +89,11 @@ class Programas extends React.PureComponent {
           const itemPrograma = {
             nombre: programa.nombre,
             descripcion: programa.descripcion != '' ? programa.descripcion : '',
-            acciones: <React.Fragment>
-              <Button idPrograma={programa.id} onClick={this.onDialogOpenCerrarPrograma} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-                <CancelIcon />
-              </Button>
-            </React.Fragment>,
+            // acciones: <React.Fragment>
+            //   <Button idPrograma={programa.id} onClick={this.onDialogOpenCerrarPrograma} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+            //     <LockIcon />
+            //   </Button>
+            // </React.Fragment>,
             data: {
               ...programa
             }
@@ -225,7 +225,7 @@ class Programas extends React.PureComponent {
 
                   { id: 'descripcion', type: 'string', numeric: false, disablePadding: false, label: 'Descripción' },
 
-                  { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
+                  // { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
                 rows={rowList || []}
                 order={'asc'}
