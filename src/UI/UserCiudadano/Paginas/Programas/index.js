@@ -209,7 +209,7 @@ class Programas extends React.PureComponent {
                     ||
                     <Grid item xs={12} sm={12} className={classes.seccionCenter}>
                       <Typography variant="body2" gutterBottom className={classes.informacion} style={{ textAlign: 'center' }}>
-                        De acuerdo a su estado actual, no se presentan programas disponibles par usted.</Typography>
+                        De acuerdo a su estado actual, no se presentan programas disponibles para usted.</Typography>
                     </Grid>}
                 </React.Fragment>}
             </React.Fragment>

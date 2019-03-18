@@ -20,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import DeleteIcon from '@material-ui/icons/Delete';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
@@ -91,7 +91,7 @@ class Programas extends React.PureComponent {
             descripcion: programa.descripcion != '' ? programa.descripcion : '',
             acciones: <React.Fragment>
               <Button idPrograma={programa.id} onClick={this.onDialogOpenCerrarPrograma} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-                <DeleteIcon />
+                <CancelIcon />
               </Button>
             </React.Fragment>,
             data: {

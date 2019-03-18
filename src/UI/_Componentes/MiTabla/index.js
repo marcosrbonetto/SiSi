@@ -17,6 +17,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
+import { debug } from "util";
 
 /*
 Props esperadas:
@@ -78,12 +79,14 @@ function getSorting(order, orderBy, orderType) {
 
 class EnhancedTableHead extends React.Component {
     createSortHandler = (property, colType) => event => {
+        if(this.props.sortTable == false) return false;
+        
         this.props.onRequestSort(event, property, colType);
     };
 
     render() {
         const { classes } = this.props;
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+        const { onSelectAllClick, order, orderBy, numSelected, rowCount, sortTable } = this.props;
         const check = this.props.check;
         const disabled = this.props.disabled;
 
@@ -293,7 +296,7 @@ class MiTabla extends React.PureComponent {
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
-        const { classes, columns, classPaper } = this.props;
+        const { classes, columns, classPaper, sortTable } = this.props;
         const { rows, order, orderBy, selected, rowsPerPage: rowsPerPageRender, page } = this.state;
         let { orderType } = this.state;
         let emptyRows = rowsPerPageRender - Math.min(rowsPerPageRender, rows.length - page * rowsPerPageRender);
@@ -319,6 +322,7 @@ class MiTabla extends React.PureComponent {
                 <div className={classes.tableWrapper}>
                     <Table aria-labelledby="tableTitle" className={classes.fontSize}>
                         <EnhancedTableHead
+                            sortTable={sortTable}
                             columns={columns}
                             numSelected={selected.length}
                             order={order}
@@ -350,11 +354,11 @@ class MiTabla extends React.PureComponent {
                                         columns={columns}
                                     />
                                 })) || <TableRow>
-                                    <TableCell colSpan={6}>{this.props.msgNoRows ? this.props.msgNoRows : 'No se encontraron registros'}</TableCell>
+                                    <TableCell colSpan={columns.length || 6}>{this.props.msgNoRows ? this.props.msgNoRows : 'No se encontraron registros'}</TableCell>
                                 </TableRow>}
                             {emptyRows > 0 && pagination && (
                                 <TableRow style={{ height: 45 * emptyRows }}>
-                                    <TableCell colSpan={6} />
+                                    <TableCell colSpan={columns.length || 6} />
                                 </TableRow>
                             )}
                         </TableBody>

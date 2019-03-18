@@ -6,12 +6,12 @@ import Home from "@UI/UserCiudadano/Paginas/Home/index";
 
 const Menu = [
   {
-    url: "/InicioGestor/Programas",
+    url: "/InicioGestor/Preinscripciones",
     exact: true,
     mostrarEnMenu: true,
-    component: Programas,
-    nombre: "Programas",
-    titulo: "Programas",
+    component: Preinscripciones,
+    nombre: "Preinscripciones",
+    titulo: "Preinscripciones",
   },
   {
     url: "/InicioGestor/Cursos",
@@ -22,12 +22,12 @@ const Menu = [
     titulo: "Cursos",
   },
   {
-    url: "/InicioGestor/Preinscripciones",
+    url: "/InicioGestor/Programas",
     exact: true,
     mostrarEnMenu: true,
-    component: Preinscripciones,
-    nombre: "Preinscripciones",
-    titulo: "Preinscripciones",
+    component: Programas,
+    nombre: "Programas",
+    titulo: "Programas",
   },
   {
     url: "/Inicio",

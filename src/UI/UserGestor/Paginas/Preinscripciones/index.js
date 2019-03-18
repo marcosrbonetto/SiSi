@@ -20,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import DeleteIcon from '@material-ui/icons/Delete';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
@@ -205,13 +205,12 @@ class Home extends React.PureComponent {
           lugar: curso ? (curso.lugar && curso.lugar != '' ? curso.lugar : '-') : '-',
           horario: curso ? (curso.dia && curso.dia != '' ? curso.dia + ' ' + curso.horario : '-') : '-',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
-          filaDeEspera: preinscripto.filaDeEspera ? 'Si' : 'No',
           acciones: <React.Fragment>
             {/* <Button onClick={this.onDialogOpenConfirmacion} size="small" color="secondary" className={props.classes.iconoAceptar}>
               <i class="material-icons">check</i>
             </Button> */}
             <Button idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-              <DeleteIcon />
+              <CancelIcon />
             </Button>
           </React.Fragment>,
           data: {
@@ -537,13 +536,11 @@ class Home extends React.PureComponent {
                   { id: 'horario', type: 'string', numeric: false, disablePadding: false, label: 'Horario' },
 
                   { id: 'fechaPreinscricion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Preinsc.' },
-                  { id: 'filaDeEspera', type: 'string', numeric: false, disablePadding: false, label: 'En Espera' },
 
                   { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
                 rows={rowList || []}
-                order={'asc'}
-                orderBy={'apellido'}
+                sortTable={false}
                 rowsPerPage={5}
               />
             </MiCard>

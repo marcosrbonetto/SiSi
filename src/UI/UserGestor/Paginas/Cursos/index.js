@@ -20,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import DeleteIcon from '@material-ui/icons/Delete';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
@@ -99,16 +99,16 @@ class Cursos extends React.PureComponent {
           if (programa.cursos != null && programa.cursos.length > 0) {
             programa.cursos.map((curso) => {
 
-              let cantPreinscriptos = 0;
-              let cantEnEspera = 0;
-              if(curso.preinscripciones instanceof Array && curso.preinscripciones.length > 0){
-                curso.preinscripciones.map((preinscripto) => {
-                  if(preinscripto.filaDeEspera)
-                    cantEnEspera++;
-                  else
-                    cantPreinscriptos++;
-                });
-              }
+              // let cantPreinscriptos = 0;
+              // let cantEnEspera = 0;
+              // if(curso.preinscripciones instanceof Array && curso.preinscripciones.length > 0){
+              //   curso.preinscripciones.map((preinscripto) => {
+              //     if(preinscripto.filaDeEspera)
+              //       cantEnEspera++;
+              //     else
+              //       cantPreinscriptos++;
+              //   });
+              // }
 
               const itemCurso = {
                 nombre: curso.nombre,
@@ -116,11 +116,12 @@ class Cursos extends React.PureComponent {
                 horario: (curso.dia && curso.dia + ' ' + curso.horario) || '',
                 programa: programa.nombre,
                 categoria: curso.tag,
-                cupo: cantPreinscriptos + '/' + curso.cupo,
-                listaEspera: cantEnEspera + '/' + curso.cupoListaDeEspera,
+                // cupo: cantPreinscriptos + '/' + curso.cupo,
+                // listaEspera: cantEnEspera + '/' + curso.cupoListaDeEspera,
+                estado: curso.fechaBaja != null ? 'Cerrado' : 'Abierto',
                 acciones: <React.Fragment>
                   <Button idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-                    <DeleteIcon />
+                    <CancelIcon />
                   </Button>
                 </React.Fragment>,
                 data: {
@@ -211,6 +212,43 @@ class Cursos extends React.PureComponent {
     this.setState({
       rowList: rowList
     })
+  }
+
+  cierreCursoAceptado = () => {
+    if (!this.idCursoACerrar) return false;
+    
+    const idCurso = this.idCursoACerrar;
+
+    this.onDialogCloseCerrarCurso();
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    Rules_Gestor.cerrarCurso(token, idCurso)
+      .then((datos) => {
+
+        if (!datos.ok) {
+          this.props.mostrarCargando(false);
+          mostrarAlerta('Ocurrió un error al intentar cerrar el curso.');
+          return false;
+        }
+
+        let rowList = _.cloneDeep(this.state.rowList);
+        _.remove(rowList, function (item) {
+          return item.data.id == idCurso;
+        });
+
+        this.setState({
+          rowList: rowList
+        })
+
+        this.props.mostrarCargando(false);
+        mostrarMensaje('Se cerrado el curso exitosamente!');
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar cerrar el curso.');
+        console.error('Error Servicio "Rules_Gestor.cerrarCurso": ' + error);
+      });
   }
 
   render() {
@@ -312,9 +350,11 @@ class Cursos extends React.PureComponent {
 
                   { id: 'categoria', type: 'string', numeric: false, disablePadding: false, label: 'Categoria' },
 
-                  { id: 'cupo', type: 'string', numeric: false, disablePadding: false, label: 'Cupo' },
+                  // { id: 'cupo', type: 'string', numeric: false, disablePadding: false, label: 'Cupo' },
 
-                  { id: 'listaEspera', type: 'string', numeric: false, disablePadding: false, label: 'Lista Espera' },
+                  // { id: 'listaEspera', type: 'string', numeric: false, disablePadding: false, label: 'Lista Espera' },
+
+                  { id: 'estado', type: 'string', numeric: false, disablePadding: false, label: 'Estado' },
 
                   { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
@@ -333,7 +373,7 @@ class Cursos extends React.PureComponent {
           onDialogoClose={this.onDialogCloseCerrarCurso}
           buttonOptions={{
             onDialogoAccept: this.cierreCursoAceptado,
-            onDialogoCancel: this.cierreCursoCancelado,
+            onDialogoCancel: this.onDialogCloseCerrarCurso,
           }}
           titulo={'Cierre de curso'}
         >
