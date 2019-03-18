@@ -3,6 +3,7 @@ import ExperienciaLaboral from "@UI/UserCiudadano/Paginas/ExperienciaLaboral/ind
 import EstudiosRealizados from "@UI/UserCiudadano/Paginas/EstudiosRealizados/index";
 import Programas from "@UI/UserCiudadano/Paginas/Programas/index";
 
+import Preinscripciones from "@UI/UserGestor/Paginas/Preinscripciones/index";
 
 const Menu = [
   {
@@ -36,6 +37,15 @@ const Menu = [
     component: EstudiosRealizados,
     nombre: "Estudios Realizados",
     titulo: "Estudios Realizados",
+  },
+  {
+    url: "/InicioGestor/Preinscripciones",
+    exact: true,
+    mostrarEnMenu: true,
+    component: Preinscripciones,
+    itemGestor: true,
+    nombre: "Modo Gestor",
+    titulo: "Modo Gestor",
   }
 ];
 

@@ -2,6 +2,8 @@ import Preinscripciones from "@UI/UserGestor/Paginas/Preinscripciones/index";
 import Cursos from "@UI/UserGestor/Paginas/Cursos/index";
 import Programas from "@UI/UserGestor/Paginas/Programas/index";
 
+import Home from "@UI/UserCiudadano/Paginas/Home/index";
+
 const Menu = [
   {
     url: "/InicioGestor/Programas",
@@ -26,6 +28,14 @@ const Menu = [
     component: Preinscripciones,
     nombre: "Preinscripciones",
     titulo: "Preinscripciones",
+  },
+  {
+    url: "/Inicio",
+    exact: true,
+    mostrarEnMenu: true,
+    component: Home,
+    nombre: "Modo Ciudadano",
+    titulo: "Modo Ciudadano",
   }
 ];
 

@@ -75,6 +75,9 @@ class MiDrawer extends React.Component {
         <List component="nav" className="navMenu">
           {Menu.map((item, index) => {
             if (item.mostrarEnMenu == false) return null;
+            
+            const esGestor = this.props.esGestor;
+            if(!esGestor && item.itemGestor) return null;
 
             return (
               <DrawerItem

@@ -10,7 +10,7 @@ const URL_ROOT_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/SiSiPresencial/#
 let URL_ROOT_SISI = URL_ROOT_SISI_DEPLOY;
 
 //WS SISI
-const URL_WS_SISI_LOCAL = "https://srv-dev04.cordoba.local/WSSiSi";
+const URL_WS_SISI_LOCAL = "https://srv-dev04.cordoba.local/WSSiSi_Bridge";
 const URL_WS_SISI_TEST = "https://srv-dev04.cordoba.local/WSSiSi_Bridge";
 const URL_WS_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/WSSiSi_Bridge";
 let URL_WS_SISI = URL_WS_SISI_DEPLOY;
@@ -50,7 +50,7 @@ switch (ENTORNO) {
 
 var Config = {
   URL_ROOT: URL_ROOT_SISI, 
-  BASE_URL: "/SiSi",
+  BASE_URL: "/SiSiPresencial",
   BASE_URL_WS: URL_WS_SISI,
   VV_URL_WS: "https://servicios2.cordoba.gov.ar/WSVecinoVirtual_Bridge",
   WS_CORDOBA_GEO: "https://servicios2.cordoba.gov.ar/CordobaGeoApi",

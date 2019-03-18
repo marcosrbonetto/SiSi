@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";
 
 //Mobile
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
@@ -137,36 +138,39 @@ class App extends React.Component {
                 .then(datos => {
 
                   const estudioAlcanzadoNoConfig = !datos.estudioAlcanzadoId;
-                  if(estudioAlcanzadoNoConfig) {
+                  if (estudioAlcanzadoNoConfig) {
                     window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosExtra&seccionMensaje=Debe completar los datos de esta sección para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + window.Config.URL_ROOT + '/Inicio';
                     return false;
                   }
 
                   const numeroTramiteNoConfig = !datos.validacionNumeroTramite;
-                  if(numeroTramiteNoConfig) {
+                  if (numeroTramiteNoConfig) {
                     window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosValidacion&seccionMensaje=Debe completar los datos de esta sección para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + window.Config.URL_ROOT + '/Inicio';
                     return false;
                   }
 
-                  this.props.login({
-                    datos: datos,
-                    token: token
-                  });
+                  this.getRolUser(token, (esGestor) => {
+                    this.props.login({
+                      datos: datos,
+                      token: token,
+                      esGestor: esGestor
+                    });
 
-                  //let url = "/";
-                  if (search) {
-                    let url = search.get("url") || "/";
-                    if (url == "/") url = "/Inicio";
-                    this.props.redireccionar(url);
-                  } else {
-                    console.log(this.props.location);
+                    //let url = "/";
+                    if (search) {
+                      let url = search.get("url") || "/";
+                      if (url == "/") url = "/Inicio";
+                      this.props.redireccionar(url);
+                    } else {
+                      console.log(this.props.location);
 
-                    if (this.props.location.pathname == "/") {
-                      this.props.redireccionar("/Inicio");
+                      if (this.props.location.pathname == "/") {
+                        this.props.redireccionar("/Inicio");
+                      }
                     }
-                  }
 
-                  this.onLogin();
+                    this.onLogin();
+                  });
                 })
                 .catch(() => {
                   this.props.logout();
@@ -198,6 +202,25 @@ class App extends React.Component {
     Promise.all([service]).then(() => {
       callback();
     });
+  }
+
+  getRolUser = (token, callback) => {
+    Rules_VecinoVirtual.getRol(token)
+      .then(datos => {
+        var result = undefined;
+        if (datos instanceof Array) {
+          result = _.find(datos, { id: 2162 });
+        }
+
+        if(result)
+          callback(true);
+        else
+          callback(false);
+      })
+      .catch(error => {
+        console.log(error);
+        callback(false);
+      });
   }
 
   onResize = () => {
@@ -266,9 +289,8 @@ class App extends React.Component {
           className={"switch-wrapper"}
         >
           <Route exact path="/" component={null} />
-          {/*<Route path={`${base}/Inicio`} component={login ? InicioCiudadano : null} />*/}
-          {/*<Route path={`${base}/InicioGestor`} component={login ? InicioGestor : null} />*/}
           <Route path={`${base}/Inicio`} component={login ? InicioCiudadano : null} />
+          <Route path={`${base}/InicioGestor`} component={login ? InicioGestor : null} />
           <Route component={login ? Pagina404 : null} />
         </AnimatedSwitch>
       </main>

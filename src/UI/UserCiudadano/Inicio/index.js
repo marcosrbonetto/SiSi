@@ -101,6 +101,8 @@ class App extends React.Component {
 
     let paginaActual = Menu[0];
 
+    const esGestor = this.props.loggedUser.esGestor;
+
     return (
       <React.Fragment>
         <div className={classes.root}>
@@ -116,6 +118,7 @@ class App extends React.Component {
 
           {/* Drawer */}
           <MiDrawer
+            esGestor={esGestor}
             width={width}
             paginaActual={paginaActual}
             paraMobile={this.state.paraMobile}
@@ -129,7 +132,7 @@ class App extends React.Component {
           <div className={classNames(classes.main)}>
             <div className={classes.separadorToolbar} />
             <div ref="mainContent" className={classes.content}>
-              <Route path="/" render={() => { return Content() }} />
+              <Route path="/" render={() => { return Content(esGestor) }} />
             </div>
           </div>
         </div>
@@ -145,7 +148,7 @@ class App extends React.Component {
   }
 }
 
-const Content = () => {
+const Content = (esGestor) => {
   return (
     <div className={styles.switchWrapper}>
       <AnimatedSwitch
@@ -155,6 +158,7 @@ const Content = () => {
         className={"switch-wrapper"}
       >
         {Menu.map((item, index) => {
+          if(!esGestor && item.itemGestor) return null;
 
           return (
             <Route

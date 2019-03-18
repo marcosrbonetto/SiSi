@@ -23,6 +23,8 @@ const reducer = (state = initialState, action) => {
         loggedUser['token'] = action.payload.token;
       if (action.payload.datos)
         loggedUser['datos'] = action.payload.datos;
+      if (action.payload.esGestor)
+        loggedUser['esGestor'] = action.payload.esGestor;
 
       return { ...state, loggedUser: loggedUser }
     }
