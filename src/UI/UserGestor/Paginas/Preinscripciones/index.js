@@ -597,7 +597,6 @@ class Home extends React.PureComponent {
                           <th>Apellido/Nombre</th>
                           <th>Email</th>
                           <th>Fecha Preinsc.</th>
-                          <th>En Espera</th>
                           <th>Lugar</th>
                           <th>Horario</th>
                         </tr>
@@ -609,7 +608,6 @@ class Home extends React.PureComponent {
                             <td>{preinscriptos.apellidoNombre}</td>
                             <td>{preinscriptos.data.email}</td>
                             <td>{preinscriptos.fechaPreinscricion}</td>
-                            <td>{preinscriptos.filaDeEspera}</td>
                             <td>{preinscriptos.lugar}</td>
                             <td>{preinscriptos.horario}</td>
                           </tr>;
