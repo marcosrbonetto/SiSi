@@ -96,10 +96,23 @@ class App extends React.Component {
     this.setState({ cargando: cargando });
   };
 
+  getItemMenuSelected () {
+    const path = this.props.location.pathname;
+    if(path) {
+      var items = _.filter(Menu, (o) => o.url.indexOf(path) != -1);
+
+      if(items.length > 0) {
+        return items[0];
+      }
+    }
+
+    return Menu[0];
+  }
+
   render() {
     const { classes, width, location } = this.props;
 
-    let paginaActual = Menu[0];
+    let paginaActual = this.getItemMenuSelected ();
 
     const esGestor = this.props.loggedUser.esGestor;
 

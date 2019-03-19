@@ -21,6 +21,12 @@ class MiDrawer extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      itemMenuSeleccionado: nextProps.paginaActual
+    })
+  }
+  
   handleDrawerClose = () => {
     this.props.onClose();
   };
