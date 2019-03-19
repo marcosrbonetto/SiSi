@@ -31,9 +31,11 @@ const styles = theme => ({
     margin: 10,
     width: 80,
     height: 80,
+    float: 'right'
   },
   usuario: {
-    fontSize: '1.4em'
+    fontSize: '1.5em',
+    marginBottom: '4px'
   },
   iconoDetalle: {
     color: theme.color.block.main,
