@@ -1,6 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
+import { push } from "connected-react-router";
+
 //Styles
 import styles from './styles'
 import { withStyles } from "@material-ui/core/styles";
@@ -41,7 +43,10 @@ const mapDispatchToProps = dispatch => ({
   },
   actualizarPreinscipcion: (data) => {
     dispatch(actualizarPreinscipcion(data));
-  }
+  },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class Programas extends React.PureComponent {
@@ -52,25 +57,29 @@ class Programas extends React.PureComponent {
     const tienePreInscripcion = props.loggedUser.datos.preinscripcion;
 
     let textoPreinscripcion = '-';
-    if(tienePreInscripcion) {
+    if (tienePreInscripcion) {
       const cursoPreinscripcion = props.loggedUser.datos.preinscripcion.curso;
       let lugar = '';
       let diaHorario = '';
 
       if (cursoPreinscripcion.lugar)
-        lugar = ' en '+ cursoPreinscripcion.lugar;
+        lugar = ' en ' + cursoPreinscripcion.lugar;
 
       if (cursoPreinscripcion.dia)
-        diaHorario = ' el '+ cursoPreinscripcion.dia +' '+ cursoPreinscripcion.horario;
+        diaHorario = ' el ' + cursoPreinscripcion.dia + ' ' + cursoPreinscripcion.horario;
 
       textoPreinscripcion = cursoPreinscripcion.nombre + lugar + diaHorario;
     }
 
+    const datosUsuario = props.loggedUser.datos;
+    const tieneExperienciasLaborales = datosUsuario.experienciasLaborales.length > 0;
+
     this.state = {
       tienePreInscripcion: tienePreInscripcion ? true : false,
-      preinscripcion:  tienePreInscripcion ? textoPreinscripcion : null,
+      preinscripcion: tienePreInscripcion ? textoPreinscripcion : null,
       dialogoOpen: false,
-      listaProgramas: undefined
+      listaProgramas: undefined,
+      preguntarPorTrabajo: !tieneExperienciasLaborales
     };
   }
 
@@ -94,6 +103,18 @@ class Programas extends React.PureComponent {
     this.setState({
       tienePreInscripcion: tienePreInscripcion
     });
+  }
+
+  onDialogoOpenTieneTrabajo = () => {
+    this.setState({ preguntarPorTrabajo: true });
+  }
+
+  onDialogoCloseTieneTrabajo = () => {
+    this.setState({ preguntarPorTrabajo: false });
+  }
+
+  agregarTrabajo = () => {
+    this.props.redireccionar('/Inicio/ExperienciaLaboral');
   }
 
   cargarProgramas = () => {
@@ -155,13 +176,14 @@ class Programas extends React.PureComponent {
 
   render() {
     const { classes } = this.props;
-    const { tienePreInscripcion, dialogoOpen, listaProgramas, preinscripcion } = this.state;
+    const { tienePreInscripcion, dialogoOpen, listaProgramas, preinscripcion, preguntarPorTrabajo } = this.state;
 
     return (
       <div className={classes.mainContainer}>
-        <Grid container spacing={16} justify="center">
+        {!preguntarPorTrabajo && 
+          <Grid container spacing={16} justify="center">
 
-          {/* {(this.estudioAlcanzadoNoConfig &&
+            {/* {(this.estudioAlcanzadoNoConfig &&
             <Grid item xs={12} sm={6} className={classes.seccionCenter}>
               <Typography variant="body2" gutterBottom className={classes.informacion} style={{ textAlign: 'center' }}>
                 Para poder mostrar los programas disponibles para usted, debe completar los datos adicionales de su perfil de Vecino Virtual.</Typography><br/>
@@ -214,7 +236,8 @@ class Programas extends React.PureComponent {
                 </React.Fragment>}
             </React.Fragment>
             {/*}*/}
-        </Grid>
+          </Grid>
+        }
 
         <MiControledDialog
           open={dialogoOpen}
@@ -227,6 +250,21 @@ class Programas extends React.PureComponent {
           }}
         >
           ¿Desea cancelar su preinscripción? Esta acción no se puedrá deshacer
+        </MiControledDialog>
+
+        <MiControledDialog
+          open={preguntarPorTrabajo}
+          onDialogoOpen={this.onDialogoOpenTieneTrabajo}
+          onDialogoClose={this.onDialogoCloseTieneTrabajo}
+          titulo={'Experiencia Laboral'}
+          buttonOptions={{
+            labelAccept: 'Si',
+            labelCancel: 'No',
+            onDialogoAccept: this.agregarTrabajo,
+            onDialogoCancel: this.onDialogoCloseTieneTrabajo
+          }}
+        >
+          ¿Usted trabaja actualmente?
         </MiControledDialog>
       </div>
     );
