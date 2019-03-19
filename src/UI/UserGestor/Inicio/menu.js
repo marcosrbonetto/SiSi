@@ -30,12 +30,13 @@ const Menu = [
     titulo: "Programas",
   },
   {
-    url: "/Inicio",
+    url: window.Config.URL_ROOT + '/Inicio',
     exact: true,
     mostrarEnMenu: true,
     component: Home,
     nombre: "Modo Ciudadano",
     titulo: "Modo Ciudadano",
+    externalLink: true
   }
 ];
 

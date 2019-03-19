@@ -39,13 +39,14 @@ const Menu = [
     titulo: "Estudios Realizados",
   },
   {
-    url: "/InicioGestor/Preinscripciones",
+    url: window.Config.URL_ROOT + "/InicioGestor/Preinscripciones",
     exact: true,
     mostrarEnMenu: true,
     component: Preinscripciones,
     itemGestor: true,
     nombre: "Modo Gestor",
     titulo: "Modo Gestor",
+    externalLink: true
   }
 ];
 

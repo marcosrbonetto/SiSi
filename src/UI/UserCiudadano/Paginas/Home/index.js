@@ -2,6 +2,8 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import CordobaFilesUtils from "@Utils/CordobaFiles";
 
+import _ from "lodash";
+
 //Styles
 import styles from './styles'
 import { withStyles } from "@material-ui/core/styles";
@@ -98,7 +100,10 @@ class Home extends React.PureComponent {
     const tieneEstudiosRealizados = datosUsuario.estudios.length > 0;
     const estudiosRealizados = tieneEstudiosRealizados && 'Actualmente posee ' + datosUsuario.estudios.length + ' estudios realizados cargados.' || 'No ha cargado estudios realizados';
 
-    const tieneTrabajoActualmente = tieneExperienciasLaborales && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
+    let tieneTrabajo = _.filter(datosUsuario.experienciasLaborales, (experienciaLaboral) => {
+      return experienciaLaboral.fechaFinalizacion == '' || experienciaLaboral.fechaFinalizacion == null || experienciaLaboral.fechaFinalizacion == undefined;
+    });
+    const tieneTrabajoActualmente = tieneTrabajo.length > 0 && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
 
     return (
       <div className={classes.mainContainer}>
