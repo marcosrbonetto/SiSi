@@ -5,10 +5,29 @@ const styles = theme => {
   return {
     boton: {
       color: "white",
-     
-    },
-    icon: {
-      marginRight: "4px"
+      maxWidth: 36,
+      minWidth: 36,
+      maxHeight: 36,
+      minHeight: 36,
+      padding: 0,
+      marginRight: theme.spacing.unit,
+      marginLeft: theme.spacing.unit,
+      [theme.breakpoints.up("sm")]: {
+        maxWidth: 300,
+        padding: theme.spacing.unit
+      },
+      "& .textoServicios": {
+        display: "none",
+        [theme.breakpoints.up("sm")]: {
+          display: "inherit"
+        }
+      },
+      "& .icon": {
+        marginRight: 0,
+        [theme.breakpoints.up("sm")]: {
+          marginRight: 4
+        }
+      }
     },
     menu: {
       paddingLeft: 12,
@@ -30,13 +49,17 @@ const styles = theme => {
           height: 50
         },
         "& .nombre": {
-          marginTop: 8,
-          minHeight: 40,
+          marginTop: 4,
+          minHeight: 32,
+          maxHeight: 32,
           overflow: "hidden",
-          maxHeight: 40,
           fontSize: "12px",
           textAlign: "center",
-          textTransform: "initial"
+          textTransform: "initial",
+          lineClamp: 2,
+          overflow: "hidden",
+          display: "-webkit-box",
+          boxOrient: "vertical"
         }
       }
     }

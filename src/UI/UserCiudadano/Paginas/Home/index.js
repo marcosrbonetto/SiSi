@@ -88,7 +88,6 @@ class Home extends React.PureComponent {
 
     const fechaNacimiento = datosUsuario.fechaNacimiento && dateToString(new Date(datosUsuario.fechaNacimiento), 'DD/MM/YYYY') || '-'
     const ocupacion = datosUsuario.ocupacionId && datosUsuario.ocupacionNombre || 'Desocupado';
-    const tieneTrabajoActualmente = datosUsuario.tieneTrabajoActualmente && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
 
     const tienePreinscripcion = datosUsuario.preinscripcion ? true : false;
     const programa = tienePreinscripcion && <span>Te preinscribiste a {datosUsuario.preinscripcion.curso.nombrePrograma}</span> || 'Todavía no te has preinscripto a ningún programa';
@@ -98,6 +97,8 @@ class Home extends React.PureComponent {
 
     const tieneEstudiosRealizados = datosUsuario.estudios.length > 0;
     const estudiosRealizados = tieneEstudiosRealizados && 'Actualmente posee ' + datosUsuario.estudios.length + ' estudios realizados cargados.' || 'No ha cargado estudios realizados';
+
+    const tieneTrabajoActualmente = tieneExperienciasLaborales && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
 
     return (
       <div className={classes.mainContainer}>
