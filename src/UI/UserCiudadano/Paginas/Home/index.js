@@ -59,7 +59,7 @@ class Home extends React.PureComponent {
   }
 
   onModificarPerfil = () => {
-    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token;
+    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&redirect=' + window.Config.URL_ROOT + '/Inicio';
   };
 
   onClickPreinscipcion = () => {
