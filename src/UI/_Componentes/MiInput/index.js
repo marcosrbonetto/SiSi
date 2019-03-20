@@ -70,7 +70,8 @@ class MiInput extends React.Component {
       error,
       mensajeError,
       withDisabled,
-      maxLength
+      maxLength,
+      multiline
     } = this.props;
 
     const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
@@ -111,6 +112,7 @@ class MiInput extends React.Component {
                   inputProps={{
                     maxLength: maxLength,
                   }}
+                  multiline={multiline || false}
                 />
               </React.Fragment>
             }

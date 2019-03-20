@@ -33,6 +33,8 @@ import MiCard from "@Componentes/MiCard";
 //Funciones
 import { dateToString, calcularEdad } from "@Utils/functions"
 
+import FormDatosExtrasCV from "@ComponentesHome/FormDatosExtrasCV";
+
 const mapStateToProps = state => {
   return {
     loggedUser: state.Usuario.loggedUser,
@@ -89,6 +91,10 @@ class Home extends React.PureComponent {
 
   handleChangeOcupacion = () => {
     window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra&seccionMensaje=Modifique su ocupación para mantener su perfil actualizado.&redirect=' + encodeURIComponent(window.Config.URL_ROOT + '/Inicio');
+  }
+
+  onClickDatosAdicionales = () => {
+
   }
 
   render() {
@@ -223,7 +229,27 @@ class Home extends React.PureComponent {
                 </Button>
               </div>
 
+              <br />
+              <Divider />
+              <br />
+
+              <div>
+                <Typography variant="body1" className={classes.titulo}>
+                  Descarga tu CV
+                </Typography>
+                <Typography variant="body1">
+                  También puede agregar datos adicionales tales como habilidades, idiomas y/o referencias.
+                </Typography>
+                <Button onClick={this.onClickEstudiosRealizados} variant="outlined" color="primary" size="small" className={classes.button}>
+                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment_ind</Icon>
+                  Descargar
+                </Button> 
+                <FormDatosExtrasCV />
+              </div>
+
             </MiCard>
+
+            
           </Grid>
         </Grid>
       </div>

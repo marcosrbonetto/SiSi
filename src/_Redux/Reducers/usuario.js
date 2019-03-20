@@ -6,6 +6,7 @@ import {
   UPDATE_PREINSCRIPCION,
   UPDATE_ESTUDIOS,
   UPDATE_EXPERIENCIAS,
+  UPDATE_DATOS_EXTRAS
 } from "@Redux/Constants/index";
 
 const initialState = {
@@ -54,6 +55,19 @@ const reducer = (state = initialState, action) => {
       if(!(loggedUser && loggedUser.datos)) return state;
 
       loggedUser.datos['experienciasLaborales'] = action.payload;
+      
+      return { ...state, loggedUser: loggedUser };
+    }
+    case UPDATE_DATOS_EXTRAS: {
+      let loggedUser = _.cloneDeep(state.loggedUser);
+      if(!(loggedUser && loggedUser.datos)) return state;
+
+      if(action.payload.habilidades)
+        loggedUser.datos['habilidades'] = action.payload.habilidades;
+      if(action.payload.idiomas)
+        loggedUser.datos['idiomas'] = action.payload.idiomas;
+      if(action.payload.referencias)
+        loggedUser.datos['referencias'] = action.payload.referencias;
       
       return { ...state, loggedUser: loggedUser };
     }

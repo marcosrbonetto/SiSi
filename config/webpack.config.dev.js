@@ -94,6 +94,7 @@ module.exports = {
       "@Resources": "_Resources",
       "@DatosEstaticos": "_DatosEstaticos",
       "@Componentes": "UI/_Componentes",
+      "@ComponentesHome": "UI/UserCiudadano/Paginas/Home/Componentes",
       "@ComponentesExperienciaLaboral": "UI/UserCiudadano/Paginas/ExperienciaLaboral/Componentes",
       "@ComponentesEstudiosRealizados": "UI/UserCiudadano/Paginas/EstudiosRealizados/Componentes",
       "@ComponentesProgramas": "UI/UserCiudadano/Paginas/Programas/Componentes",
