@@ -55,6 +55,15 @@ const styles = theme => ({
   },
   button: {
     marginTop: '6px'
+  },
+  iconOcupacion: {
+    fontSize: '22px',
+    verticalAlign: 'middle',
+    color: 'red',
+    cursor: 'pointer',
+  },
+  textTooltip: {
+    fontSize: '16px'
   }
 });
 

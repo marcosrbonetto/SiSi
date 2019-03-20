@@ -24,6 +24,8 @@ import Avatar from "@material-ui/core/Avatar";
 import Icon from '@material-ui/core/Icon';
 import Divider from '@material-ui/core/Divider';
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 //Mis Componentes
 import MiCard from "@Componentes/MiCard";
@@ -52,7 +54,7 @@ class Home extends React.PureComponent {
     super(props);
 
     this.state = {
-
+      openOcupacionInfo: false
     };
   }
 
@@ -76,7 +78,21 @@ class Home extends React.PureComponent {
     this.props.redireccionar('/Inicio/EstudiosRealizados');
   }
 
+  handleTooltipOpen = () => {
+    debugger;
+    this.setState({ openOcupacionInfo: true });
+  };
+
+  handleTooltipClose = () => {
+    this.setState({ openOcupacionInfo: false });
+  };
+
+  handleChangeOcupacion = () => {
+    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra&seccionMensaje=Modifique su ocupación para mantener su perfil actualizado.&redirect=' + window.Config.URL_ROOT + '/Inicio';
+  }
+
   render() {
+    const { openOcupacionInfo } = this.state;
     const {
       classes,
       loggedUser
@@ -89,7 +105,6 @@ class Home extends React.PureComponent {
     }
 
     const fechaNacimiento = datosUsuario.fechaNacimiento && dateToString(new Date(datosUsuario.fechaNacimiento), 'DD/MM/YYYY') || '-'
-    const ocupacion = datosUsuario.ocupacionId && datosUsuario.ocupacionNombre || 'Desocupado';
 
     const tienePreinscripcion = datosUsuario.preinscripcion ? true : false;
     const programa = tienePreinscripcion && <span>Te preinscribiste a {datosUsuario.preinscripcion.curso.nombrePrograma}</span> || 'Todavía no te has preinscripto a ningún programa';
@@ -104,6 +119,9 @@ class Home extends React.PureComponent {
       return experienciaLaboral.fechaFinalizacion == '' || experienciaLaboral.fechaFinalizacion == null || experienciaLaboral.fechaFinalizacion == undefined;
     });
     const tieneTrabajoActualmente = tieneTrabajo.length > 0 && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
+
+    let ocupacion = datosUsuario.ocupacionId && datosUsuario.ocupacionNombre || 'Desocupado';
+    ocupacion = !datosUsuario.ocupacionId && tieneTrabajo.length > 0 ? <ClickAwayListener onClickAway={this.handleTooltipClose}><Tooltip open={openOcupacionInfo} classes={{ tooltip: classes.textTooltip }} title={<span>Segun sus experiencias laborales cargadas usted no se encuentra desocupado actualmente, actualice su ocupación de MuniOnline entrando <b style={{cursor:'pointer'}} onClick={this.handleChangeOcupacion}>aquí</b>.</span>} placement="bottom"><span onClick={this.handleTooltipOpen} >{ocupacion}<i className={classNames(classes.iconOcupacion,"material-icons")}>error</i></span></Tooltip></ClickAwayListener> : ocupacion;
 
     return (
       <div className={classes.mainContainer}>
