@@ -39,7 +39,7 @@ class MiDrawer extends React.Component {
     if (this.props.onPaginaClick == undefined) return;
 
     if (Menu[index].externalLink)
-      window.location.href = Menu[index].url;
+      window.open(Menu[index].url,'_blank');
     else {
       this.setState({
         itemMenuSeleccionado: Menu[index]
