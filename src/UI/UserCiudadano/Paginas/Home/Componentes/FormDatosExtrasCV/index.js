@@ -150,26 +150,26 @@ class FormDatosExtrasCV extends React.PureComponent {
     const datosExtras = {
       "habilidades": InputHabilidades.value,
       "idiomas": InputIdiomas.value,
-      "referencias": InputReferencias.value 
+      "referencias": InputReferencias.value
     };
 
     this.onDialogoClose();
     Rules_Usuario.insertarDatosExtras(token, datosExtras)
-    .then((datos) => {
-      this.props.mostrarCargando(false);
-      if (!datos.ok) {
-        mostrarAlerta('Ocurrió un error al intentar guardar los datos adicionales.');
-        return false;
-      }
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar guardar los datos adicionales.');
+          return false;
+        }
 
-      this.props.actualizarDatosExtras(datosExtras);
-      mostrarMensaje('Datos adicionales agregados exitosamente!');
-    })
-    .catch((error) => {
-      this.props.mostrarCargando(false);
-      mostrarAlerta('Ocurrió un error al intentar guardar los datos adicionales.');
-      console.error('Error Servicio "Rules_Usuario.getInfoUsuario": ' + error);
-    });
+        this.props.actualizarDatosExtras(datosExtras);
+        mostrarMensaje('Datos adicionales agregados exitosamente!');
+      })
+      .catch((error) => {
+        this.props.mostrarCargando(false);
+        mostrarAlerta('Ocurrió un error al intentar guardar los datos adicionales.');
+        console.error('Error Servicio "Rules_Usuario.getInfoUsuario": ' + error);
+      });
   }
 
   render() {
@@ -189,6 +189,10 @@ class FormDatosExtrasCV extends React.PureComponent {
 
     return (
       <React.Fragment>
+        <Button onClick={this.onDialogoOpen} variant="outlined" color="primary" size="small" className={classes.button}>
+          <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment</Icon>
+          Datos adicionales
+                </Button>
         <MiControledDialog
           open={openForm}
           onDialogoOpen={this.onDialogoOpen}
@@ -201,12 +205,6 @@ class FormDatosExtrasCV extends React.PureComponent {
             onDialogoCancel: this.onDialogoClose
           }}
         >
-          <div key="buttonAction">
-            <Button onClick={this.onDialogoOpen} variant="outlined" color="primary" size="small" className={classes.button}>
-              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment</Icon>
-              Datos adicionales
-                </Button>
-          </div>
           <div key="mainContent">
             <Grid container>
               <Grid item xs={12} sm={12}>
