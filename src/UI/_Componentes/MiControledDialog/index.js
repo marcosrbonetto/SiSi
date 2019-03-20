@@ -88,6 +88,7 @@ class MiControledDialog extends React.PureComponent {
           classes={{
             paper: (this.paraMobile && classes.paraMobile) || (this.props.classMaxWidth ? this.props.classMaxWidth : classes.maxWidth)
           }}
+          onClose={this.handleCloseModal}
         >
           {titulo && <DialogTitle id="scroll-dialog-title">
             {titulo}{subtitulo && <React.Fragment><br/><span className={classes.subtitulo}>{subtitulo}</span></React.Fragment>}
