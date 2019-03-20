@@ -146,13 +146,13 @@ class App extends React.Component {
 
                     const estudioAlcanzadoNoConfig = !datos.estudioAlcanzadoId;
                     if (estudioAlcanzadoNoConfig) {
-                      window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosExtra&seccionMensaje=Debe completar los datos de "Datos Adicionales" para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + window.Config.URL_ROOT + '/Inicio';
+                      window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosExtra&seccionMensaje=Debe completar los datos de "Datos Adicionales" para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + encodeURIComponent(window.Config.URL_ROOT + '/Inicio');
                       return false;
                     }
 
                     const numeroTramiteNoConfig = !datos.validacionNumeroTramite;
                     if (numeroTramiteNoConfig) {
-                      window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosValidacion&seccionMensaje=Debe completar los datos de "Validación de número de trámite de DNI" para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + window.Config.URL_ROOT + '/Inicio';
+                      window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + token + '&seccion=datosValidacion&seccionMensaje=Debe completar los datos de "Validación de número de trámite de DNI" para poder inscribirse a los programas Si Estudio, Si Trabajo. Recuerde que al terminar, no olvide guardar los cambios.&redirect=' + encodeURIComponent(window.Config.URL_ROOT + '/Inicio');
                       return false;
                     }
 

@@ -63,7 +63,7 @@ class Home extends React.PureComponent {
   }
 
   onModificarPerfil = () => {
-    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&redirect=' + window.Config.URL_ROOT + '/Inicio';
+    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&redirect=' + encodeURIComponent(window.Config.URL_ROOT + '/Inicio');
   };
 
   onClickPreinscipcion = () => {
@@ -88,7 +88,7 @@ class Home extends React.PureComponent {
   };
 
   handleChangeOcupacion = () => {
-    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra&seccionMensaje=Modifique su ocupación para mantener su perfil actualizado.&redirect=' + window.Config.URL_ROOT + '/Inicio';
+    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra&seccionMensaje=Modifique su ocupación para mantener su perfil actualizado.&redirect=' + encodeURIComponent(window.Config.URL_ROOT + '/Inicio');
   }
 
   render() {

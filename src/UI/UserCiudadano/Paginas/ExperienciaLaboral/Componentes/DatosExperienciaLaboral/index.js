@@ -17,6 +17,7 @@ import { mostrarAlerta, mostrarMensaje, stringToDate, dateToString } from "@Util
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import Typography from '@material-ui/core/Typography';
 
 //Mis Componentes
 import MiCard from "@Componentes/MiNewCard";
@@ -47,11 +48,11 @@ class DatosExperienciaLaboral extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;    
+    const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;
     listaExperienciaLaboral.map((item, index) => {
-      if(item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
+      if (item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
 
-      const randomId = "id_"+index+"_"+(new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+      const randomId = "id_" + index + "_" + (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
 
       item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';
       item.fechaFinalizacion = item.fechaFinalizacion ? dateToString(new Date(item.fechaFinalizacion), 'DD/MM/YYYY') : '';
@@ -64,7 +65,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
   }
 
   componentWillMount() {
-    
+
   }
 
   agregarExperienciaLaboral = (experienciaLaboralAgregada) => {
@@ -85,8 +86,8 @@ class DatosExperienciaLaboral extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
     const experienciasLaborales = this.state.listaExperienciaLaboral;
-    
-    Rules_ExperienciaLaboral.insertExperienciaLaboral(token,experienciasLaborales)
+
+    Rules_ExperienciaLaboral.insertExperienciaLaboral(token, experienciasLaborales)
       .then((datos) => {
         this.props.mostrarCargando(false);
         if (!datos.ok) {
@@ -113,9 +114,18 @@ class DatosExperienciaLaboral extends React.PureComponent {
     });
   }
 
+  handleChangeOcupacion = () => {
+    window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra&seccionMensaje=Modifique su ocupación para mantener su perfil actualizado.&redirect=' + encodeURIComponent(window.Config.URL_ROOT + '/Inicio/ExperienciaLaboral');
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, loggedUser } = this.props;
     const { listaExperienciaLaboral } = this.state;
+
+    let tieneTrabajo = _.filter(listaExperienciaLaboral, (experienciaLaboral) => {
+      return experienciaLaboral.fechaFinalizacion == '' || experienciaLaboral.fechaFinalizacion == null || experienciaLaboral.fechaFinalizacion == undefined;
+    });
+    const actualizarOcupacion = !loggedUser.datos.ocupacionId && tieneTrabajo.length > 0;
 
     return (
       <React.Fragment>
@@ -138,6 +148,11 @@ class DatosExperienciaLaboral extends React.PureComponent {
           <FormExperienciaLaboral
             handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
           />
+
+          {actualizarOcupacion &&
+            <Typography variant="body2" className={classes.textoOcupacion}>
+              <i className={classNames(classes.iconOcupacion, "material-icons")}>error</i> Segun sus experiencias laborales cargadas usted no se encuentra desocupado actualmente, actualice su ocupación de MuniOnline entrando <b style={{ cursor: 'pointer' }} onClick={this.handleChangeOcupacion}>aquí</b>.
+            </Typography>}
 
           <div className={classes.itemsContainer}>
             {listaExperienciaLaboral.map((cardData) => {
@@ -162,6 +177,18 @@ const styles = theme => ({
   bottomContent: {
     display: 'flex',
     alignItems: 'flex-end',
+  },
+  iconOcupacion: {
+    fontSize: '22px',
+    verticalAlign: 'middle',
+    color: 'red',
+    cursor: 'pointer',
+  },
+  textoOcupacion: {
+    padding: '5px',
+    borderTop: '1px solid #e0dede',
+    borderBottom: '1px solid #e0dede',
+    margin: '16px auto',
   }
 });
 
