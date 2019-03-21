@@ -34,6 +34,7 @@ import MiCard from "@Componentes/MiCard";
 import { dateToString, calcularEdad } from "@Utils/functions"
 
 import FormDatosExtrasCV from "@ComponentesHome/FormDatosExtrasCV";
+import CV from "@ComponentesHome/CV";
 
 const mapStateToProps = state => {
   return {
@@ -81,7 +82,6 @@ class Home extends React.PureComponent {
   }
 
   handleTooltipOpen = () => {
-    debugger;
     this.setState({ openOcupacionInfo: true });
   };
 
@@ -106,6 +106,7 @@ class Home extends React.PureComponent {
 
     const datosUsuario = loggedUser.datos;
     let urlFotoPerfil;
+    
     if (datosUsuario) {
       urlFotoPerfil = CordobaFilesUtils.getUrlFotoMediana(datosUsuario.identificadorFotoPersonal, datosUsuario.sexoMasculino);
     }
@@ -127,7 +128,7 @@ class Home extends React.PureComponent {
     const tieneTrabajoActualmente = tieneTrabajo.length > 0 && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
 
     let ocupacion = datosUsuario.ocupacionId && datosUsuario.ocupacionNombre || 'Desocupado';
-    ocupacion = !datosUsuario.ocupacionId && tieneTrabajo.length > 0 ? <ClickAwayListener onClickAway={this.handleTooltipClose}><Tooltip open={openOcupacionInfo} classes={{ tooltip: classes.textTooltip }} title={<span>Segun sus experiencias laborales cargadas usted no se encuentra desocupado actualmente, actualice su ocupación de MuniOnline entrando <b style={{cursor:'pointer'}} onClick={this.handleChangeOcupacion}>aquí</b>.</span>} placement="bottom"><span onClick={this.handleTooltipOpen} >{ocupacion}<i className={classNames(classes.iconOcupacion,"material-icons")}>error</i></span></Tooltip></ClickAwayListener> : ocupacion;
+    ocupacion = !datosUsuario.ocupacionId && tieneTrabajo.length > 0 ? <ClickAwayListener onClickAway={this.handleTooltipClose}><Tooltip open={openOcupacionInfo} classes={{ tooltip: classes.textTooltip }} title={<span>Segun sus experiencias laborales cargadas usted no se encuentra desocupado actualmente, actualice su ocupación de MuniOnline entrando <b style={{ cursor: 'pointer' }} onClick={this.handleChangeOcupacion}>aquí</b>.</span>} placement="bottom"><span onClick={this.handleTooltipOpen} >{ocupacion}<i className={classNames(classes.iconOcupacion, "material-icons")}>error</i></span></Tooltip></ClickAwayListener> : ocupacion;
 
     return (
       <div className={classes.mainContainer}>
@@ -240,16 +241,15 @@ class Home extends React.PureComponent {
                 <Typography variant="body1">
                   También puede agregar datos adicionales tales como habilidades, idiomas y/o referencias.
                 </Typography>
-                <Button onClick={this.onClickEstudiosRealizados} variant="outlined" color="primary" size="small" className={classes.button}>
-                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment_ind</Icon>
-                  Descargar
-                </Button> 
-                <FormDatosExtrasCV />
+                <div className={classes.inlineBoxes}>
+                  <CV /> 
+                  <FormDatosExtrasCV />
+                </div>
               </div>
 
             </MiCard>
 
-            
+
           </Grid>
         </Grid>
       </div>

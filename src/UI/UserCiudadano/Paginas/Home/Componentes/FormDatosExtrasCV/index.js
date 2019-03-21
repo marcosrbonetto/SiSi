@@ -200,14 +200,14 @@ class FormDatosExtrasCV extends React.PureComponent {
           titulo={'Agregar datos adicionales'}
           buttonAction={true}
           buttonOptions={{
-            labelAccept: 'Agregar',
+            labelAccept: 'Guardar',
             onDialogoAccept: this.agregarDatosExtras,
             onDialogoCancel: this.onDialogoClose
           }}
         >
           <div key="mainContent">
             <Grid container>
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={12} sm={12} className={classes.marginBetween}>
                 <MiInput
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
@@ -223,7 +223,7 @@ class FormDatosExtrasCV extends React.PureComponent {
                 />
               </Grid>
               <br /><br /><br />
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={12} sm={12} className={classes.marginBetween}>
                 <MiInput
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
@@ -239,7 +239,7 @@ class FormDatosExtrasCV extends React.PureComponent {
                 />
               </Grid>
               <br /><br /><br />
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={12} sm={12} className={classes.marginBetween}>
                 <MiInput
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
@@ -283,6 +283,9 @@ const styles = theme => ({
   secondaryColor: {
     color: theme.color.ok.main,
   },
+  marginBetween: {
+    margin: '5px auto'
+  }
 });
 
 let componente = FormDatosExtrasCV;

@@ -64,6 +64,11 @@ const styles = theme => ({
   },
   textTooltip: {
     fontSize: '16px'
+  },
+  inlineBoxes: {
+    '& > *': {
+      display: 'inline-flex'
+    }
   }
 });
 

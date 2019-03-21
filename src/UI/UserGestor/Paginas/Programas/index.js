@@ -73,7 +73,6 @@ class Programas extends React.PureComponent {
 
     Rules_Gestor.getProgramasYCursos(token)
       .then((datos) => {
-        debugger;
         this.props.mostrarCargando(false);
         if (!datos.ok) {
           mostrarAlerta('Ocurrió un error al intentar obtener los programas.');
