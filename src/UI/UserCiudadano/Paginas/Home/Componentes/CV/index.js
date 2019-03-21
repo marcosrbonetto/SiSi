@@ -269,6 +269,8 @@ class CV extends React.PureComponent {
               <br /><br /><br /><br />
               <Grid item xs={12} sm={12}>
                 <Grid container>
+                          
+                    {estudiosRealizados.length > 0 && <React.Fragment>
                     <Grid item xs={12} sm={8}>
                       <div className={classes.centerContainer}>
                         <Typography variant="subheading" color="inherit" className={classes.usuario}>
@@ -294,7 +296,7 @@ class CV extends React.PureComponent {
                         })}
                     </Grid>
                     <Grid id item xs={12} sm={4}></Grid>
-          
+                    </React.Fragment>}
 
                     {datosUsuario.habilidades && <React.Fragment>
                       <Grid item xs={12} sm={8}>
@@ -341,7 +343,7 @@ class CV extends React.PureComponent {
                       <Grid item xs={12} sm={4}></Grid>
                     </React.Fragment>}
 
-                    
+                    {experienciasLaborales.length > 0 && <React.Fragment>
                     <Grid item xs={12} sm={8}>
                       <div className={classes.centerContainer}>
                         <Typography variant="subheading" color="inherit" className={classes.usuario}>
@@ -361,6 +363,7 @@ class CV extends React.PureComponent {
                         })}
                     </Grid>
                     <Grid item xs={12} sm={4}></Grid>
+                    </React.Fragment>}
 
                     {datosUsuario.referencias && <React.Fragment>
                       <Grid item xs={12} sm={8}>

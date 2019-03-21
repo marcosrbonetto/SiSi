@@ -138,6 +138,7 @@ class Home extends React.PureComponent {
               <img src={Logo_SiSi} width={150} height={84} /><br /><br />
               <Typography variant="body2" gutterBottom className={classes.informacion}>
                 Bienvenido a tu perfil del programa Sí Estudio Sí Trabajo. Desde acá podés gestionar tus datos, experiencia, programa al que querés participar.<br /><br />
+                <b>Actualmente se encuentran disponibles la modadlidad presencial y a partir del 1ro de Abril podrás acceder a los cursos de la modalidad virtual.</b><br /><br />
                 Son 100.000 cursos gratuitos de formación profesional virtuales, 5.000 capacitaciones presenciales remuneradas para jóvenes de 18 a 24 años (curso introducción al trabajo), 5.000 cursos presenciales gratuitos para mayores de 24 años sin empleo y 10.000 prácticas laborales remuneradas para jovenes de 18 a 24 años.<br /><br />
                 En Córdoba decimos Si Estudio Si Trabajo y queremos que vos seas protagonista.</Typography>
             </MiCard>
