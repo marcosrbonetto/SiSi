@@ -71,6 +71,15 @@ const reducer = (state = initialState, action) => {
       
       return { ...state, loggedUser: loggedUser };
     }
+    case UPDATE_PREINSCRIPCIONES_VIRTUALES: {
+      let loggedUser = _.cloneDeep(state.loggedUser);
+      if(!(loggedUser && loggedUser.datos)) return state;
+
+      if(action.payload)
+        loggedUser.datos['preinscripcionVirtuales'] = action.payload;
+      
+      return { ...state, loggedUser: loggedUser };
+    }
     default:
       return state;
   }

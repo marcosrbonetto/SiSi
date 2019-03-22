@@ -2,6 +2,7 @@ import Home from "@UI/UserCiudadano/Paginas/Home/index";
 import ExperienciaLaboral from "@UI/UserCiudadano/Paginas/ExperienciaLaboral/index";
 import EstudiosRealizados from "@UI/UserCiudadano/Paginas/EstudiosRealizados/index";
 import Programas from "@UI/UserCiudadano/Paginas/Programas/index";
+import ProgramasVirtuales from "@UI/UserCiudadano/Paginas/ProgramasVirtuales/index";
 
 import Preinscripciones from "@UI/UserGestor/Paginas/Preinscripciones/index";
 
@@ -21,6 +22,14 @@ const Menu = [
     component: Programas,
     nombre: "Programas",
     titulo: "Programas",
+  },
+  {
+    url: "/Inicio/ProgramasVirtuales",
+    exact: true,
+    mostrarEnMenu: true,
+    component: ProgramasVirtuales,
+    nombre: "Programas Virtuales",
+    titulo: "Programas Virtuales",
   },
   {
     url: "/Inicio/ExperienciaLaboral",
