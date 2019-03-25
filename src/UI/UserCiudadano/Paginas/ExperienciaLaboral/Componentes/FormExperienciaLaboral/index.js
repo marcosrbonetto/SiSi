@@ -47,28 +47,28 @@ class FormExperienciaLaboral extends React.PureComponent {
           id: 'InputNombreEmpresa',
           value: '',
           initValue: '',
-          valiateCondition: /^.{0,50}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 50 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 50 catacteres.'
         },
         {
           id: 'InputDescripcionEmpresa',
           value: '',
           initValue: '',
-          valiateCondition: /^.{0,150}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 250 catacteres.'
         },
         {
           id: 'InputDatosContactoEmpresa',
           value: '',
           initValue: '',
-          valiateCondition: /^.{0,150}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 250 catacteres.'
         },
         {
           id: 'InputCuitEmpresa',
@@ -77,16 +77,16 @@ class FormExperienciaLaboral extends React.PureComponent {
           valiateCondition: /^[0-9]{11}$/,
           error: false,
           required: false,
-          mensajeError: 'Este campo es opcional y debe contener 11 números.'
+          mensajeError: 'Este debe contener 11 números.'
         },
         {
           id: 'InputCargoActividadEmpresa',
           value: '',
           initValue: '',
-          valiateCondition: /^.{0,150}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 250 catacteres.'
         },
         {
           id: 'InputFechaInicioEmpresa',
@@ -94,7 +94,7 @@ class FormExperienciaLaboral extends React.PureComponent {
           initValue: new Date(),
           disabled: false,
           error: false,
-          required: true,
+          required: false,
           mensajeError: 'La fecha de inicio debe ser mayor a la fecha fin.'
         },
         {

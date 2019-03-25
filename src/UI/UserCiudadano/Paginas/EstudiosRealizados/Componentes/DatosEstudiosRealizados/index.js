@@ -48,16 +48,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
     super(props);
 
     let listaEstudiosRealizados = props.loggedUser.datos.estudios;
-    listaEstudiosRealizados.map((item, index) => {
-      if (item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
-
-      const randomId = "id_" + index + "_" + (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
-
-      item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';
-      item.fechaFinalizacion = item.fechaFinalizacion ? dateToString(new Date(item.fechaFinalizacion), 'DD/MM/YYYY') : '';
-      item.id = randomId;
-    });
-
+    
     this.state = {
       listaEstudiosRealizados: listaEstudiosRealizados && listaEstudiosRealizados.length > 0 && listaEstudiosRealizados || []
     };

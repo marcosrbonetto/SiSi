@@ -18,6 +18,7 @@ import Popover from "@material-ui/core/Popover";
 
 import MiNotificacion from "@Componentes/MiNotificacion";
 import MiCard from "@Componentes/MiCard";
+import MiMenuApps from "@Componentes/MiMenuApps";
 
 //REDUX
 import { connect } from "react-redux";
@@ -28,13 +29,11 @@ import Icon from '@material-ui/core/Icon';
 import CordobaFilesUtils from "@Utils/CordobaFiles";
 import { getTextoTipoTributo } from "@Utils/functions"
 
-
 const mapStateToProps = state => {
   return {
     usuario: state.Usuario.usuario,
     loggedUser: state.Usuario.loggedUser,
     paraMobile: state.MainContent.paraMobile,
-    aplicacionesPanel: state.MainContent.aplicacionesPanel,
   };
 };
 
@@ -56,7 +55,6 @@ class MiToolbar extends React.Component {
     this.state = {
       anchorPopupUsuario: undefined,
       datosUsuario: this.props.loggedUser && this.props.loggedUser.datos || undefined,
-      anchorElVV: null
     };
   }
 
@@ -125,18 +123,6 @@ class MiToolbar extends React.Component {
     window.location.href = window.Config.BASE_URL_AFIP + "/afipInicio.html?urlRedirect=" + encodeURIComponent(window.Config.BASE_URL_SET_AFIP + '/importacionMasivaAFIP?appUrlRedirect=' + window.location.hash.substring(1));
   };
 
-  handleClickPanelVV = event => {
-    this.setState({
-      anchorElVV: event.currentTarget
-    });
-  }
-
-  handleClosePanelVV = () => {
-    this.setState({
-      anchorElVV: null,
-    });
-  };
-
   render() {
     let { classes, titulo } = this.props;
 
@@ -198,44 +184,8 @@ class MiToolbar extends React.Component {
             </Button>
           </div>*/}
 
-          <IconButton
-            aria-label="More"
-            //aria-owns={open ? 'long-menu' : undefined}
-            aria-haspopup="true"
-            //onClick={this.handleClick}
-            style={{ marginLeft: '10px' }}
-            onClick={this.handleClickPanelVV}
-          >
-            <MoreVertIcon />
-          </IconButton>
+          <MiMenuApps />
 
-          <Popover
-            open={Boolean(this.state.anchorElVV)}
-            anchorEl={this.state.anchorElVV}
-            onClose={this.handleClosePanelVV}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            classes={{
-              paper: classes.contentPopover
-            }}
-            >
-              <MiCard padding={false} className={classes.styleMiCard}>
-              {this.props.aplicacionesPanel && this.props.aplicacionesPanel.map((item, index)=>{
-                let urlRedirect = item.url;
-                if(item.urlToken && this.props.loggedUser.token && this.props.loggedUser.token != 'INVITADO') {
-                  urlRedirect = item.urlToken.replace(/{token}/g, this.props.loggedUser.token);
-                }
-
-                return <a href={urlRedirect} target="_blank"><Avatar title={item.nombre} alt={item.nombre} src={item.urlIcono} className={classes.bigAvatar} /></a>;
-              })}
-              </MiCard>
-          </Popover>
         </Toolbar>
 
         {this.state.datosUsuario && <Menu
@@ -271,6 +221,7 @@ class MiToolbar extends React.Component {
         >
           <LinearProgress color="primary" />
         </div>
+
       </AppBar>
     );
   }
