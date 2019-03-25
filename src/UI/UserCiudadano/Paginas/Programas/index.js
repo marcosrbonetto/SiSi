@@ -79,7 +79,7 @@ class Programas extends React.PureComponent {
       preinscripcion: tienePreInscripcion ? textoPreinscripcion : null,
       dialogoOpen: false,
       listaProgramas: undefined,
-      preguntarPorTrabajo: !tieneExperienciasLaborales
+      preguntarPorTrabajo: !tieneExperienciasLaborales && !tienePreInscripcion
     };
   }
 
