@@ -40,6 +40,10 @@ class FormExperienciaLaboral extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    var date = new Date();
+    date.setDate(date.getDate() - 1);
+    var yesterdayDate = date;
+
     this.state = {
       openForm: false,
       formInputs: [
@@ -90,8 +94,8 @@ class FormExperienciaLaboral extends React.PureComponent {
         },
         {
           id: 'InputFechaInicioEmpresa',
-          value: new Date(),
-          initValue: new Date(),
+          value: yesterdayDate,
+          initValue: yesterdayDate,
           disabled: false,
           error: false,
           required: false,

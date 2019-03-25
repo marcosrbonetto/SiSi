@@ -28,9 +28,12 @@ const styles = theme => ({
     margin: '0px auto',
   },
   iconoBoton: {
-    fontSize: '16px',
-    lineHeight: '14px',
+    fontSize: '14px',
+    lineHeight: '18px',
     marginRight: '4px',
+  },
+  textCenter: {
+    textAlign: 'center'
   },
   secondaryColor: {
     color: theme.color.ok.main,

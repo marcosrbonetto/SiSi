@@ -174,13 +174,17 @@ class Programas extends React.PureComponent {
   //   window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra';
   // }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const { classes } = this.props;
     const { tienePreInscripcion, dialogoOpen, listaProgramas, preinscripcion, preguntarPorTrabajo } = this.state;
 
     return (
       <div className={classes.mainContainer}>
-        {!preguntarPorTrabajo && 
+        {!preguntarPorTrabajo &&
           <Grid container spacing={16} justify="center">
 
             {/* {(this.estudioAlcanzadoNoConfig &&
@@ -212,7 +216,7 @@ class Programas extends React.PureComponent {
 
                     <Grid item xs={12} sm={6}>
 
-                      {listaProgramas.map((programa) => {
+                      {listaProgramas.map((programa, index) => {
                         return <React.Fragment>
                           <SeleccionPrograma
                             tituloPrograma={programa.nombre}
@@ -222,9 +226,16 @@ class Programas extends React.PureComponent {
                             cambioEstadoPreinscripcion={this.cambioEstadoPreinscripcion}
                           />
 
-                          <br /><br /><br />
+                          {index != (listaProgramas.length - 1) && <React.Fragment><br /><br /><br /></React.Fragment> || <br/>}
                         </React.Fragment>
                       })}
+
+                      <div className={classes.textCenter}>
+                        <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                        <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                        Atrás</Button>
+                      </div>
+
 
                     </Grid>
 
@@ -232,10 +243,15 @@ class Programas extends React.PureComponent {
                     <Grid item xs={12} sm={12} className={classes.seccionCenter}>
                       <Typography variant="body2" gutterBottom className={classes.informacion} style={{ textAlign: 'center' }}>
                         De acuerdo a su estado actual, no se presentan programas disponibles para usted.</Typography>
+
+                        <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                      <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                      Atrás</Button>
                     </Grid>}
                 </React.Fragment>}
             </React.Fragment>
             {/*}*/}
+
           </Grid>
         }
 

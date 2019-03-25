@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 import _ from "lodash";
+import { push } from "connected-react-router";
 
 //Styles
 import { withStyles } from "@material-ui/core/styles";
@@ -40,7 +41,10 @@ const mapDispatchToProps = dispatch => ({
   },
   actualizarEstudiosRealizados: (data) => {
     dispatch(actualizarEstudiosRealizados(data));
-  }
+  },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class DatosEstudiosRealizados extends React.PureComponent {
@@ -104,6 +108,10 @@ class DatosEstudiosRealizados extends React.PureComponent {
     });
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const { classes } = this.props;
     const { listaEstudiosRealizados } = this.state;
@@ -114,9 +122,14 @@ class DatosEstudiosRealizados extends React.PureComponent {
           informacionAlerta={'Cargá acá tus estudios realizados, desde el secundario hasta el nivel que haya alzcanzado'}
           seccionBotones={{
             align: 'right',
-            content: <Button onClick={this.guardarEstudiosRealizados} variant="outlined" color="primary" className={classes.button}>
+            content: <React.Fragment>
+            <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+              Atrás</Button> 
+              <Button onClick={this.guardarEstudiosRealizados} variant="outlined" color="primary" className={classes.button}>
               <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
               Guardar</Button>
+            </React.Fragment>
           }}
         >
 
@@ -154,7 +167,10 @@ const styles = theme => ({
     color: theme.palette.primary.main,
     textDecoration: 'underline',
     marginLeft: '20px',
-  }
+  },
+  iconoBoton: {
+    fontSize: '16px',
+  },
 });
 
 let componente = DatosEstudiosRealizados;
