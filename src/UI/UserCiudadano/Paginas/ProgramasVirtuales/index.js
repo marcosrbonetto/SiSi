@@ -84,41 +84,57 @@ class ProgramasVirtuales extends React.PureComponent {
       });
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const { classes } = this.props;
     const { listaProgramas } = this.state;
 
     return (
       <div className={classes.mainContainer}>
-        
+
         <Grid container spacing={16} justify="center">
-            {listaProgramas &&
-              <React.Fragment>
-                {listaProgramas.length > 0 &&
+          {listaProgramas &&
+            <React.Fragment>
+              {listaProgramas.length > 0 &&
 
-                  <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6}>
 
-                    {listaProgramas.map((programa) => {
-                      return <React.Fragment>
-                        <SeleccionPrograma
-                          tituloPrograma={programa.nombre}
-                          classTituloPrograma={classes.tituloPrograma}
-                          textoInformativo={programa.descripcion}
-                          arrayCursos={programa.cursos}
-                        />
+                  {listaProgramas.map((programa, index) => {
+                    return <React.Fragment>
+                      <SeleccionPrograma
+                        tituloPrograma={programa.nombre}
+                        classTituloPrograma={classes.tituloPrograma}
+                        textoInformativo={programa.descripcion}
+                        arrayCursos={programa.cursos}
+                      />
 
-                        <br /><br /><br />
-                      </React.Fragment>
-                    })}
+                      {index != (listaProgramas.length - 1) && <React.Fragment><br /><br /><br /></React.Fragment> || <br/>}
+                    </React.Fragment>
+                  })}
 
-                  </Grid>
+                  <div className={classes.textCenter}>
+                    <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                      <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                      Atrás</Button>
+                  </div>
 
-                  ||
-                  <Grid item xs={12} sm={12} className={classes.seccionCenter}>
-                    <Typography variant="body2" gutterBottom className={classes.informacion} style={{ textAlign: 'center' }}>
-                      De acuerdo a su estado actual, no se presentan programas disponibles para usted.</Typography>
-                  </Grid>}
-              </React.Fragment>}
+                </Grid>
+
+                ||
+                <Grid item xs={12} sm={12} className={classes.seccionCenter}>
+                  <Typography variant="body2" gutterBottom className={classes.informacion} style={{ textAlign: 'center' }}>
+                    De acuerdo a su estado actual, no se presentan programas disponibles para usted.</Typography>
+
+                  <div className={classes.textCenter}>
+                    <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                      <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                      Atrás</Button>
+                  </div>
+                </Grid>}
+            </React.Fragment>}
         </Grid>
 
       </div>

@@ -18,6 +18,14 @@ const styles = theme => ({
     justifyContent: 'center',
     textAlign: 'center',
   },
+  iconoBoton: {
+    fontSize: '14px',
+    lineHeight: '18px',
+    marginRight: '4px',
+  },
+  textCenter: {
+    textAlign: 'center'
+  },
   imgSiSi: {
     display: 'block',
     margin: '0px auto'
@@ -26,11 +34,6 @@ const styles = theme => ({
     ...theme.button,
     width: '160px',
     margin: '0px auto',
-  },
-  iconoBoton: {
-    fontSize: '16px',
-    lineHeight: '14px',
-    marginRight: '4px',
   },
   secondaryColor: {
     color: theme.color.ok.main,

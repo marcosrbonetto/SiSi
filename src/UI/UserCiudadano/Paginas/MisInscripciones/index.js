@@ -24,10 +24,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Typography from '@material-ui/core/Typography';
+import Button from "@material-ui/core/Button";
+import Icon from '@material-ui/core/Icon';
 
 import Rules_Preinscripcion from "@Rules/Rules_Preinscripcion";
 
 import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
+import { Grid } from "@material-ui/core";
 
 const mapStateToProps = state => {
   return {
@@ -138,6 +141,10 @@ class MisInscripciones extends React.PureComponent {
     this.setState({ dialogoOpen: false });
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const { classes } = this.props;
     const { dialogoOpen, miInscripcionPresencial, misInscripcionesVirtuales } = this.state;
@@ -145,43 +152,57 @@ class MisInscripciones extends React.PureComponent {
     return (
       <div className={classes.mainContainer}>
 
-        <MiCard titulo="Mis Inscripciones">
-          <List className={classes.root}>
-            {miInscripcionPresencial &&
-              miInscripcionPresencial.length > 0 &&
-              miInscripcionPresencial.map((inscripcion) => {
-                const curso = inscripcion.curso;
+        <Grid container justify={'center'}>
+          <Grid item xs={12} sm={8}>
 
-                return <ListItem>
-                  <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag + ' - ' + curso.nombrePrograma} />
-                  <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'No'} onClick={this.onDialogoOpen}>
-                    <CancelIcon />
-                  </Avatar>
-                </ListItem>;
-              })}
+            <MiCard titulo="Mis Inscripciones">
 
-            {misInscripcionesVirtuales &&
-              misInscripcionesVirtuales.length > 0 &&
-              misInscripcionesVirtuales.map((inscripcion) => {
-                const curso = inscripcion.curso;
+              <List className={classes.root}>
+                {miInscripcionPresencial &&
+                  miInscripcionPresencial.length > 0 &&
+                  miInscripcionPresencial.map((inscripcion) => {
+                    const curso = inscripcion.curso;
 
-                return <ListItem>
-                  <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag + ' - ' + curso.nombrePrograma} />
-                  <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'Si'} onClick={this.onDialogoOpen}>
-                    <CancelIcon />
-                  </Avatar>
-                </ListItem>;
-              })}
+                    return <ListItem>
+                      <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag + ' - ' + curso.nombrePrograma} />
+                      <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'No'} onClick={this.onDialogoOpen}>
+                        <CancelIcon />
+                      </Avatar>
+                    </ListItem>;
+                  })}
+
+                {misInscripcionesVirtuales &&
+                  misInscripcionesVirtuales.length > 0 &&
+                  misInscripcionesVirtuales.map((inscripcion) => {
+                    const curso = inscripcion.curso;
+
+                    return <ListItem>
+                      <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag + ' - ' + curso.nombrePrograma} />
+                      <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'Si'} onClick={this.onDialogoOpen}>
+                        <CancelIcon />
+                      </Avatar>
+                    </ListItem>;
+                  })}
 
 
-            {(!misInscripcionesVirtuales ||
-              misInscripcionesVirtuales.length == 0) &&
-              (!miInscripcionPresencial ||
-                miInscripcionPresencial.length == 0) &&
-              <Typography variant="body1" gutterBottom className={classes.informacion} style={{ textAlign: 'center', marginBottom: '0px' }}>
-                No posee inscripciones.</Typography>}
-          </List>
-        </MiCard>
+                {(!misInscripcionesVirtuales ||
+                  misInscripcionesVirtuales.length == 0) &&
+                  (!miInscripcionPresencial ||
+                    miInscripcionPresencial.length == 0) &&
+                  <Typography variant="body1" gutterBottom className={classes.informacion} style={{ textAlign: 'center', marginBottom: '0px' }}>
+                    No posee inscripciones.</Typography>}
+              </List>
+
+            </MiCard>
+            
+            <br />
+            <div className={classes.textCenter}>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+            </div>
+          </Grid>
+        </Grid>
 
         <MiControledDialog
           open={dialogoOpen}
