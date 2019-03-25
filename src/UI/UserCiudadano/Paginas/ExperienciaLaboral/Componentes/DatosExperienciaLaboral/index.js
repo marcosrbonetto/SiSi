@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 import _ from "lodash";
+import { push } from "connected-react-router";
 
 //Styles
 import { withStyles } from "@material-ui/core/styles";
@@ -41,7 +42,10 @@ const mapDispatchToProps = dispatch => ({
   },
   actualizarExperienciasLaborales: (data) => {
     dispatch(actualizarExperienciasLaborales(data));
-  }
+  },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class DatosExperienciaLaboral extends React.PureComponent {
@@ -49,16 +53,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
     super(props);
 
     const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;
-    listaExperienciaLaboral.map((item, index) => {
-      if (item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
-
-      const randomId = "id_" + index + "_" + (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
-
-      item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';
-      item.fechaFinalizacion = item.fechaFinalizacion ? dateToString(new Date(item.fechaFinalizacion), 'DD/MM/YYYY') : '';
-      item.id = randomId;
-    });
-
+    
     this.state = {
       listaExperienciaLaboral: listaExperienciaLaboral && listaExperienciaLaboral.length > 0 && listaExperienciaLaboral || []
     };
@@ -118,6 +113,10 @@ class DatosExperienciaLaboral extends React.PureComponent {
     window.location.href = window.Config.URL_MI_PERFIL + "/#/?token=" + this.props.loggedUser.token + '&seccion=datosExtra&seccionMensaje=Modifique su ocupación para mantener su perfil actualizado.&redirect=' + encodeURIComponent(window.Config.URL_ROOT + '/Inicio/ExperienciaLaboral');
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const { classes, loggedUser } = this.props;
     const { listaExperienciaLaboral } = this.state;
@@ -133,9 +132,14 @@ class DatosExperienciaLaboral extends React.PureComponent {
           informacionAlerta={'Cargá acá tu último trabajo formal o informal. Por ej.: Atención del público en Centro de Salud. Recordá que es obligatorio. Podes cargar mas de una actividad.'}
           seccionBotones={{
             align: 'right',
-            content: <Button onClick={this.guardarExperienciaLaborales} variant="outlined" color="primary" className={classes.button}>
+            content: <React.Fragment>
+            <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+              Atrás</Button> 
+            <Button onClick={this.guardarExperienciaLaborales} variant="outlined" color="primary" className={classes.button}>
               <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
               Guardar</Button>
+            </React.Fragment>
           }}
         >
 
@@ -177,6 +181,9 @@ const styles = theme => ({
   bottomContent: {
     display: 'flex',
     alignItems: 'flex-end',
+  },
+  iconoBoton: {
+    fontSize: '16px',
   },
   iconOcupacion: {
     fontSize: '22px',

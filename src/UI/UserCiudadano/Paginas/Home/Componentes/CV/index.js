@@ -290,7 +290,7 @@ class CV extends React.PureComponent {
 
                           return <List className={classes.root}>
                             <ListItem>
-                              <ListItemText primary={estudio.nombre + ' - ' + 'Nivel ' + nombreNivelEd} secondary={"Fecha Inicio: " + (estudio.fechaInicio ? dateToString(new Date(estudio.fechaInicio), 'DD/MM/YYYY') : '-') + '/ Fecha Finalización: ' + (estudio.fechaFinalizacion ? dateToString(new Date(estudio.fechaFinalizacion), 'DD/MM/YYYY') : '-')} />
+                              <ListItemText primary={estudio.nombre + ' - ' + nombreNivelEd} secondary={"Fecha Inicio: " + (estudio.fechaInicio ? estudio.fechaInicio : '-') + '/ Fecha Finalización: ' + (estudio.fechaFinalizacion ? estudio.fechaFinalizacion : '-')} />
                             </ListItem>
                           </List>
                         })}
@@ -357,7 +357,7 @@ class CV extends React.PureComponent {
                         {experienciasLaborales.map((expLab) => {
                           return <List className={classes.root}>
                             <ListItem>
-                              <ListItemText primary={expLab.cargo + ' - ' + expLab.nombre} secondary={"Fecha Inicio: " + (expLab.fechaInicio ? dateToString(new Date(expLab.fechaInicio), 'DD/MM/YYYY') : '-') + '/ Fecha Finalización: ' + (expLab.fechaFinalizacion ? dateToString(new Date(expLab.fechaFinalizacion), 'DD/MM/YYYY') : '-')} />
+                              <ListItemText primary={expLab.cargo + ' - ' + expLab.nombre} secondary={"Fecha Inicio: " + (expLab.fechaInicio ? expLab.fechaInicio : '-') + '/ Fecha Finalización: ' + (expLab.fechaFinalizacion ? expLab.fechaFinalizacion : '-')} />
                             </ListItem>
                           </List>
                         })}

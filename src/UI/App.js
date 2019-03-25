@@ -39,7 +39,7 @@ import MiSoporteUsuario from "@UI/_Componentes/MiSoporteUsuario"
 
 import Rules_Usuario from "@Rules/Rules_Usuario";
 import Rules_VecinoVirtual from '@Rules/Rules_VecinoVirtual';
-import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
+import { dateToString } from "@Utils/functions";
 
 const mapStateToProps = state => {
   return {
@@ -136,6 +136,28 @@ class App extends React.Component {
 
               Rules_Usuario.getInfoUsuario(token)
                 .then(datos => {
+
+                  const listaExperienciaLaboral = datos.experienciasLaborales;
+                  listaExperienciaLaboral.map((item, index) => {
+                    if (item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
+
+                    const randomId = "id_" + index + "_" + (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+
+                    item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';
+                    item.fechaFinalizacion = item.fechaFinalizacion ? dateToString(new Date(item.fechaFinalizacion), 'DD/MM/YYYY') : '';
+                    item.id = randomId;
+                  });
+
+                  let listaEstudiosRealizados = datos.estudios;
+                  listaEstudiosRealizados.map((item, index) => {
+                    if (item.id) return true; //Cuando ya se seteo el ID no se deberá a realizar este proceso
+
+                    const randomId = "id_" + index + "_" + (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
+
+                    item.fechaInicio = item.fechaInicio ? dateToString(new Date(item.fechaInicio), 'DD/MM/YYYY') : '';
+                    item.fechaFinalizacion = item.fechaFinalizacion ? dateToString(new Date(item.fechaFinalizacion), 'DD/MM/YYYY') : '';
+                    item.id = randomId;
+                  });
 
                   Rules_Usuario.getDatosExtrasUsuario(token)
                     .then(datosExtras => {

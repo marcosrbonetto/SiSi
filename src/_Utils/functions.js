@@ -165,12 +165,16 @@ export const dateToString = (date, format) => {
 };
 
 export const stringToDate = (stringDate) => {
-	const day = parseInt(stringDate.split("/")[0]);
-	const month = parseInt(stringDate.split("/")[1]) - 1;
-	const strYear = stringDate.split("/")[2];
-	const year = strYear.length > 2 ? parseInt(strYear) : (2000 + parseInt(strYear));
+	try {
+		const day = parseInt(stringDate.split("/")[0]);
+		const month = parseInt(stringDate.split("/")[1]) - 1;
+		const strYear = stringDate.split("/")[2];
+		const year = strYear.length > 2 ? parseInt(strYear) : (2000 + parseInt(strYear));
 
-	return new Date(year, month, day);
+		return new Date(year, month, day);	
+	} catch (error) {
+		return false;
+	}
 };
 
 export const diffDays = (fromDate, toDate) => {

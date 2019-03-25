@@ -41,6 +41,10 @@ class FormEstudiosRealizados extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    var date = new Date();
+    date.setDate(date.getDate() - 1);
+    var yesterdayDate = date;
+
     this.state = {
       openForm: false,
       formInputs: [
@@ -56,45 +60,45 @@ class FormEstudiosRealizados extends React.PureComponent {
           id: 'InputNombreEstudio',
           value: '',
           initValue: '',
-          valiateCondition: /^.{0,50}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 50 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 250 catacteres.'
         },
         {
           id: 'InputDescripcionEstudio',
           value: '',
           initValue: '',
-          valiateCondition: /^.{0,150}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 250 catacteres.'
         },
         {
           id: 'InputLugarCursadoEstudio',
           value: '',
           initValue: '',
-          valiateCondition: /^.{0,150}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 250 catacteres.'
         },
         {
           id: 'InputDuracionEstudio',
           value: 0,
           initValue: 0,
-          valiateCondition: /^.{0,150}$/,
+          valiateCondition: /^.{0,250}$/,
           error: false,
-          required: true,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          required: false,
+          mensajeError: 'Este campo tiene un límite de 250 catacteres.'
         },
         {
           id: 'InputFechaInicioEstudio',
-          value: new Date(),
-          initValue: new Date(),
+          value: yesterdayDate,
+          initValue: yesterdayDate,
           disabled: false,
           error: false,
-          required: true,
+          required: false,
           mensajeError: 'La fecha de inicio debe ser mayor a la fecha fin.'
         },
         {
@@ -186,8 +190,8 @@ class FormEstudiosRealizados extends React.PureComponent {
 
     const nuevaExpLab = {
       tipoEstudio: InputTipoEstudio.value,
-      nombre: InputNombreEstudio.value,
-      descripcion: InputDescripcionEstudio.value,
+      nombre: InputNombreEstudio.value || _.find(arrayTipoEstudios, { value: InputTipoEstudio.value }).label,
+      descripcion: InputDescripcionEstudio.value || _.find(arrayTipoEstudios, { value: InputTipoEstudio.value }).label,
       lugarDeCursado: InputLugarCursadoEstudio.value,
       duracion: InputDuracionEstudio.value,
       fechaInicio: !InputFechaInicioEstudio.disabled ? dateToString(InputFechaInicioEstudio.value, 'DD/MM/YYYY') : null,
@@ -206,7 +210,7 @@ class FormEstudiosRealizados extends React.PureComponent {
     }
 
     const estudiosRealizadoAgregada = this.getEstudiosRealizados();
-
+  
     this.setState({ openForm: false }, () => {
       this.props.handleEstudiosRealizadosAgregada && this.props.handleEstudiosRealizadosAgregada(estudiosRealizadoAgregada);
     });
@@ -258,7 +262,7 @@ class FormEstudiosRealizados extends React.PureComponent {
                 mensajeError={InputTipoEstudio && InputTipoEstudio.mensajeError || ''}
                 withDisabled={true}
                 disabled={InputTipoEstudio && InputTipoEstudio.disabled != undefined ? InputTipoEstudio.disabled : true}
-                value={1}
+                value={InputTipoEstudio && InputTipoEstudio.value || 1}
                 itemsSelect={arrayTipoEstudios}
               />
             </Grid>
@@ -320,7 +324,7 @@ class FormEstudiosRealizados extends React.PureComponent {
                   error={InputDuracionEstudio && InputDuracionEstudio.error || false}
                   mensajeError={InputDuracionEstudio && InputDuracionEstudio.mensajeError || 'Campo erroneo'}
                   label={'Duracion'}
-                  placeholder={'Cantidad de horas/dias...'}
+                  placeholder={'Cantidad de horas/dias/meses/años...'}
                 />
               </Grid>
             </Grid>
