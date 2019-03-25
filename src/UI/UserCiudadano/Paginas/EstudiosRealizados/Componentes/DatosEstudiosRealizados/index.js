@@ -73,6 +73,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
       listaEstudiosRealizados: [...this.state.listaEstudiosRealizados, EstudiosRealizadosAgregada]
     }, () => {
       console.log(this.state.listaEstudiosRealizados);
+      this.guardarEstudiosRealizados();
     });
   }
 
@@ -105,6 +106,9 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
     this.setState({
       listaEstudiosRealizados: newArrayEstRea
+    }, () => {
+      console.log(this.state.listaEstudiosRealizados);
+      this.guardarEstudiosRealizados();
     });
   }
 
@@ -121,14 +125,11 @@ class DatosEstudiosRealizados extends React.PureComponent {
         <MiCard
           informacionAlerta={'Cargá acá tus estudios realizados, desde el secundario hasta el nivel que haya alzcanzado'}
           seccionBotones={{
-            align: 'right',
+            align: 'left',
             content: <React.Fragment>
             <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
               <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
               Atrás</Button> 
-              <Button onClick={this.guardarEstudiosRealizados} variant="outlined" color="primary" className={classes.button}>
-              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
-              Guardar</Button>
             </React.Fragment>
           }}
         >

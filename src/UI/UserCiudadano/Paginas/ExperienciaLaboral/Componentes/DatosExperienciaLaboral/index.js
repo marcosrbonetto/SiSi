@@ -73,6 +73,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
     this.setState({
       listaExperienciaLaboral: [...this.state.listaExperienciaLaboral, experienciaLaboralAgregada]
     }, () => {
+      this.guardarExperienciaLaborales();
       console.log(this.state.listaExperienciaLaboral);
     });
   }
@@ -106,6 +107,9 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
     this.setState({
       listaExperienciaLaboral: newArrayExpLab
+    }, () => {
+      this.guardarExperienciaLaborales();
+      console.log(this.state.listaExperienciaLaboral);
     });
   }
 
@@ -131,14 +135,11 @@ class DatosExperienciaLaboral extends React.PureComponent {
         <MiCard
           informacionAlerta={'Cargá acá tu último trabajo formal o informal. Por ej.: Atención del público en Centro de Salud. Recordá que es obligatorio. Podes cargar mas de una actividad.'}
           seccionBotones={{
-            align: 'right',
+            align: 'left',
             content: <React.Fragment>
             <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
               <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-              Atrás</Button> 
-            <Button onClick={this.guardarExperienciaLaborales} variant="outlined" color="primary" className={classes.button}>
-              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>create</Icon>
-              Guardar</Button>
+              Atrás</Button>
             </React.Fragment>
           }}
         >
