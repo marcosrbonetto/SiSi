@@ -66,7 +66,7 @@ class ProgramasVirtuales extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    Rules_Programas.getProgramas(token)
+    Rules_Programas.getProgramasVirtuales(token)
       .then((datos) => {
         this.props.mostrarCargando(false);
         if (!datos.ok) {

@@ -27,10 +27,10 @@ const insertPreinscripcion = (token, body) => {
     });
 };
 
-const deletePreinscripcion = (token) => {
+const deletePreinscripcion = (token, idCurso) => {
 
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Preinscripcion/Delete', {
+        fetch(window.Config.BASE_URL_WS + '/v1/Preinscripcion/Delete?idCurso=' + idCurso, {
             method: "DELETE",
             headers: {
                 "Accept": "application/json",

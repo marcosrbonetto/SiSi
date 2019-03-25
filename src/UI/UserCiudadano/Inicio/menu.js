@@ -5,6 +5,7 @@ import Programas from "@UI/UserCiudadano/Paginas/Programas/index";
 import ProgramasVirtuales from "@UI/UserCiudadano/Paginas/ProgramasVirtuales/index";
 
 import Preinscripciones from "@UI/UserGestor/Paginas/Preinscripciones/index";
+import MisInscripciones from "@UI/UserCiudadano/Paginas/MisInscripciones/index";
 
 const Menu = [
   {
@@ -30,6 +31,14 @@ const Menu = [
     component: ProgramasVirtuales,
     nombre: "Programas Virtuales",
     titulo: "Programas Virtuales",
+  },
+  {
+    url: "/Inicio/MisInscripciones",
+    exact: true,
+    mostrarEnMenu: true,
+    component: MisInscripciones,
+    nombre: "Mis Inscripciones",
+    titulo: "Mis Inscripciones",
   },
   {
     url: "/Inicio/ExperienciaLaboral",

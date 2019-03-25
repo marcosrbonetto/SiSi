@@ -5,6 +5,9 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  root: {
+    width: '700px',
+  },
   tituloPrograma: {
     fontSize: '20px'
   },
@@ -44,6 +47,9 @@ const styles = theme => ({
   buttonModifDatosAdicionales: {
     width: 'auto',
     borderRadius: '20px'
+  },
+  iconDesinscripcion: {
+    cursor: 'pointer'
   }
 });
 
