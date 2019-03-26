@@ -17,7 +17,7 @@ import { mostrarAlerta, mostrarMensaje, stringToDate, dateToString } from "@Util
 //Material UI
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import List from '@material-ui/core/List';
 
 //Mis Componentes
 import MiCard from "@Componentes/MiNewCard";
@@ -52,9 +52,10 @@ class DatosEstudiosRealizados extends React.PureComponent {
     super(props);
 
     let listaEstudiosRealizados = props.loggedUser.datos.estudios;
-    
+
     this.state = {
-      listaEstudiosRealizados: listaEstudiosRealizados && listaEstudiosRealizados.length > 0 && listaEstudiosRealizados || []
+      listaEstudiosRealizados: listaEstudiosRealizados && listaEstudiosRealizados.length > 0 && listaEstudiosRealizados || [],
+      itemToEdit: null
     };
   }
 
@@ -116,9 +117,17 @@ class DatosEstudiosRealizados extends React.PureComponent {
     this.props.redireccionar("/Inicio");
   }
 
+  editarEstudiosRealizados = (itemToEdit) => {
+    this.setState({
+      itemToEdit: itemToEdit
+    });
+  }
+
   render() {
     const { classes } = this.props;
-    const { listaEstudiosRealizados } = this.state;
+    let { listaEstudiosRealizados, itemToEdit } = this.state;
+
+    listaEstudiosRealizados = _.orderBy(listaEstudiosRealizados, ['tipoEstudio', 'fechaFinalizacion', 'fechaInicio'], ['desc','desc','desc']);
 
     return (
       <React.Fragment>
@@ -127,9 +136,9 @@ class DatosEstudiosRealizados extends React.PureComponent {
           seccionBotones={{
             align: 'left',
             content: <React.Fragment>
-            <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-              Atrás</Button> 
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
             </React.Fragment>
           }}
         >
@@ -142,15 +151,21 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
           <FormEstudiosRealizados
             handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}
+            itemToEdit={itemToEdit}
           />
 
           <div className={classes.itemsContainer}>
-            {listaEstudiosRealizados.map((cardData) => {
-              return <CardEstudiosRealizados
-                cardData={cardData}
-                handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
-              />
-            })}
+            <List className={classes.root}>
+              {listaEstudiosRealizados.map((cardData) => {
+                return <React.Fragment>
+                  <CardEstudiosRealizados
+                  cardData={cardData}
+                  handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
+                  handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
+                /><hr/>
+                </React.Fragment>
+              })}
+            </List>
           </div>
 
         </MiCard>

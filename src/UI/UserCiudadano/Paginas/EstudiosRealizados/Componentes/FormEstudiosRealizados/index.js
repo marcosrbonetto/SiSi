@@ -113,6 +113,27 @@ class FormEstudiosRealizados extends React.PureComponent {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if(JSON.stringify(this.props.itemToEdit) != JSON.stringify(nextProps.itemToEdit) && 
+    nextProps.itemToEdit instanceof Object) {
+
+      let formInputs = _.cloneDeep(this.state.formInputs);
+      
+      Object.keys(nextProps.itemToEdit).map((field) => {
+        let currentField = _.find(formInputs, { id: field });
+
+        if(currentField) {
+          currentField.initValue = nextProps.itemToEdit[field];
+          currentField.value = nextProps.itemToEdit[field];
+        }
+      });
+
+      this.setState({
+        formInputs: formInputs
+      });
+    }
+  }
+
   onDialogoOpen = () => {
     let formInputs = this.state.formInputs;
     formInputs.map((inputs) => {

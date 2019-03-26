@@ -17,7 +17,7 @@ import { mostrarAlerta, mostrarMensaje, stringToDate, dateToString } from "@Util
 //Material UI
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 
 //Mis Componentes
@@ -53,9 +53,10 @@ class DatosExperienciaLaboral extends React.PureComponent {
     super(props);
 
     const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;
-    
+
     this.state = {
-      listaExperienciaLaboral: listaExperienciaLaboral && listaExperienciaLaboral.length > 0 && listaExperienciaLaboral || []
+      listaExperienciaLaboral: listaExperienciaLaboral && listaExperienciaLaboral.length > 0 && listaExperienciaLaboral || [],
+      itemToEdit: null
     };
   }
 
@@ -121,14 +122,22 @@ class DatosExperienciaLaboral extends React.PureComponent {
     this.props.redireccionar("/Inicio");
   }
 
+  editarExperienciaLaboral = (itemToEdit) => {
+    this.setState({
+      itemToEdit: itemToEdit
+    });
+  }
+
   render() {
     const { classes, loggedUser } = this.props;
-    const { listaExperienciaLaboral } = this.state;
+    let { listaExperienciaLaboral, itemToEdit } = this.state;
 
     let tieneTrabajo = _.filter(listaExperienciaLaboral, (experienciaLaboral) => {
       return experienciaLaboral.fechaFinalizacion == '' || experienciaLaboral.fechaFinalizacion == null || experienciaLaboral.fechaFinalizacion == undefined;
     });
     const actualizarOcupacion = !loggedUser.datos.ocupacionId && tieneTrabajo.length > 0;
+
+    listaExperienciaLaboral = _.orderBy(listaExperienciaLaboral, ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
 
     return (
       <React.Fragment>
@@ -137,9 +146,9 @@ class DatosExperienciaLaboral extends React.PureComponent {
           seccionBotones={{
             align: 'left',
             content: <React.Fragment>
-            <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-              Atrás</Button>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
             </React.Fragment>
           }}
         >
@@ -152,6 +161,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
           <FormExperienciaLaboral
             handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
+            itemToEdit={itemToEdit}
           />
 
           {actualizarOcupacion &&
@@ -160,12 +170,17 @@ class DatosExperienciaLaboral extends React.PureComponent {
             </Typography>}
 
           <div className={classes.itemsContainer}>
-            {listaExperienciaLaboral.map((cardData) => {
-              return <CardExperienciaLaboral
-                cardData={cardData}
-                handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}
-              />
-            })}
+            <List className={classes.root}>
+              {listaExperienciaLaboral.map((cardData) => {
+                return <React.Fragment>
+                  <CardExperienciaLaboral
+                    cardData={cardData}
+                    handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}
+                    handleEditarExperienciaLaboral={this.editarExperienciaLaboral}
+                  /><hr />
+                </React.Fragment>
+              })}
+            </List>
           </div>
 
         </MiCard>
@@ -175,6 +190,9 @@ class DatosExperienciaLaboral extends React.PureComponent {
 }
 
 const styles = theme => ({
+  root: {
+    width: '100%'
+  },
   itemsContainer: {
     display: 'flex',
     flexWrap: 'wrap'

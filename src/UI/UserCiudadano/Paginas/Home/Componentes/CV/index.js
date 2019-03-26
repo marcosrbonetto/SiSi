@@ -112,7 +112,7 @@ class CV extends React.PureComponent {
     const fechaNacimiento = datosUsuario.fechaNacimiento && dateToString(new Date(datosUsuario.fechaNacimiento), 'DD/MM/YYYY') || '-'
 
     const estudiosRealizados = _.orderBy(datosUsuario.estudios, ['tipoEstudio'], ['desc']);
-    const experienciasLaborales = _.orderBy(datosUsuario.experienciasLaborales, ['fechaFinalizacion'], ['desc']);
+    const experienciasLaborales = _.orderBy(datosUsuario.experienciasLaborales, ['fechaInicio', 'fechaFinalizacion'], ['desc','desc']);
 
     return (
       <React.Fragment>
