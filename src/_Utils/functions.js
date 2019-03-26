@@ -177,6 +177,19 @@ export const stringToDate = (stringDate) => {
 	}
 };
 
+export const stringToDateYYYYMMDD = (stringDate) => {
+	try {
+		const day = parseInt(stringDate.split("-")[2]);
+		const month = parseInt(stringDate.split("-")[1]) - 1;
+		const strYear = stringDate.split("-")[1];
+		const year = strYear.length > 2 ? parseInt(strYear) : (2000 + parseInt(strYear));
+
+		return new Date(year, month, day);	
+	} catch (error) {
+		return false;
+	}
+};
+
 export const diffDays = (fromDate, toDate) => {
 	let cantDias = Math.round(Math.abs((fromDate.getTime() - toDate.getTime()) / (24 * 60 * 60 * 1000)));
 	if(fromDate > toDate)

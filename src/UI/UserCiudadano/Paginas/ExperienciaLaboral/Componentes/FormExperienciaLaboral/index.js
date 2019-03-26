@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, dateToString } from "@Utils/functions";
+import { mostrarAlerta, dateToString, stringToDateYYYYMMDD } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -96,20 +96,23 @@ class FormExperienciaLaboral extends React.PureComponent {
         },
         {
           id: 'InputFechaInicioEmpresa',
-          value: yesterdayDate,
-          initValue: yesterdayDate,
+          value: dateToString(yesterdayDate, 'YYYY-MM-DD'),
+          initValue: dateToString(yesterdayDate, 'YYYY-MM-DD'),
+          valiateCondition: /^\d{4}(-)(((0)[0-9])|((1)[0-2]))(-)([0-2][0-9]|(3)[0-1])$/,
           disabled: false,
           error: false,
-          required: false,
-          mensajeError: 'La fecha de inicio debe ser mayor a la fecha fin.'
+          required: true,
+          mensajeError: 'Error en el formato de la fecha'
         },
         {
           id: 'InputFechaFinEmpresa',
-          value: new Date(),
-          initValue: new Date(),
+          value: '',
+          initValue: '',
+          valiateCondition: /^\d{4}(-)(((0)[0-9])|((1)[0-2]))(-)([0-2][0-9]|(3)[0-1])$/,
           disabled: true,
           error: false,
-          required: false
+          required: false,
+          mensajeError: 'Error en el formato de la fecha'
         }
       ]
     };
@@ -178,20 +181,28 @@ class FormExperienciaLaboral extends React.PureComponent {
     let formHayError = resultValidation.formHayError;
     let formInputs = resultValidation.formInputs;
 
-    //Conditions between inputs
-    const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
-    const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
+    if (!formHayError) {
+      //Conditions between inputs
+      const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
+      const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
 
-    if (InputFechaInicioEmpresa.value && InputFechaFinEmpresa.value &&
-      InputFechaInicioEmpresa.disabled == false && InputFechaFinEmpresa.disabled == false &&
-      InputFechaInicioEmpresa.value.getTime() > InputFechaFinEmpresa.value.getTime()) {
-      InputFechaInicioEmpresa.error = true;
-      InputFechaFinEmpresa.error = true;
+      if (InputFechaInicioEmpresa.value && InputFechaFinEmpresa.value &&
+        stringToDateYYYYMMDD(InputFechaInicioEmpresa.value).getTime() > stringToDateYYYYMMDD(InputFechaFinEmpresa.value).getTime()) {
 
-      formHayError = true;
-    } else {
-      InputFechaInicioEmpresa.error = false;
-      InputFechaFinEmpresa.error = false;
+        InputFechaInicioEmpresa.error = true;
+        InputFechaFinEmpresa.error = true;
+
+        InputFechaInicioEmpresa.mensajeError = 'La fecha de inicio debe ser menor a la fecha fin.';
+        InputFechaFinEmpresa.mensajeError = 'La fecha de fin debe ser mayor a la fecha inicio.';
+
+        formHayError = true;
+      } else {
+        InputFechaInicioEmpresa.error = false;
+        InputFechaFinEmpresa.error = false;
+
+        InputFechaInicioEmpresa.mensajeError = 'Error en el formato de la fecha';
+        InputFechaFinEmpresa.mensajeError = 'Error en el formato de la fecha';
+      }
     }
 
     this.setState({
@@ -217,8 +228,8 @@ class FormExperienciaLaboral extends React.PureComponent {
       contacto: InputDatosContactoEmpresa.value,
       cuit: InputCuitEmpresa.value,
       cargo: InputCargoActividadEmpresa.value,
-      fechaInicio: !InputFechaInicioEmpresa.disabled ? dateToString(InputFechaInicioEmpresa.value, 'DD/MM/YYYY') : null,
-      fechaFinalizacion: !InputFechaFinEmpresa.disabled ? dateToString(InputFechaFinEmpresa.value, 'DD/MM/YYYY') : null,
+      fechaInicio: InputFechaInicioEmpresa.value != '' ? dateToString(stringToDateYYYYMMDD(InputFechaInicioEmpresa.value), 'DD/MM/YYYY') : null,
+      fechaFinalizacion: InputFechaFinEmpresa.value != '' ? dateToString(stringToDateYYYYMMDD(InputFechaFinEmpresa.value), 'DD/MM/YYYY') : null,
     };
 
     return nuevaExpLab;
@@ -362,13 +373,12 @@ class FormExperienciaLaboral extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaInicioEmpresa'}
-                    tipoInput={'date'}
+                    tipoInput={'date2'}
                     label={'Fecha de inicio'}
                     value={InputFechaInicioEmpresa && InputFechaInicioEmpresa.value || new Date()}
                     error={InputFechaInicioEmpresa && InputFechaInicioEmpresa.error || false}
                     mensajeError={InputFechaInicioEmpresa && InputFechaInicioEmpresa.mensajeError || 'Campo erroneo'}
                     withDisabled={false}
-                    disabled={InputFechaInicioEmpresa && InputFechaInicioEmpresa.disabled != undefined ? InputFechaInicioEmpresa.disabled : true}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -376,13 +386,12 @@ class FormExperienciaLaboral extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaFinEmpresa'}
-                    tipoInput={'date'}
+                    tipoInput={'date2'}
                     label={'Fecha de fin'}
                     value={InputFechaFinEmpresa && InputFechaFinEmpresa.value || new Date()}
                     error={InputFechaFinEmpresa && InputFechaFinEmpresa.error || false}
                     mensajeError={InputFechaFinEmpresa && InputFechaFinEmpresa.mensajeError || ''}
                     withDisabled={true}
-                    disabled={InputFechaFinEmpresa && InputFechaFinEmpresa.disabled != undefined ? InputFechaFinEmpresa.disabled : true}
                   />
                 </Grid>
               </Grid>

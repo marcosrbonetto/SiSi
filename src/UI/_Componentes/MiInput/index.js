@@ -213,6 +213,36 @@ class MiInput extends React.Component {
               </React.Fragment>
             }
 
+            {tipoInput && tipoInput == 'date2' &&
+              <React.Fragment>
+                <TextField
+                  error={error || false}
+                  type={'date'}
+                  label={label}
+                  className={classNames(classes.wideWidth, classInput)}
+                  value={value || ''}
+                  margin="none"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  placeholder={placeholder}
+                  inputProps={{
+                    className: classes.wideWidth
+                  }}
+                  onChange={this.handleInputOnCange}
+                  onBlur={this.handleInputOnFocusOut}
+                  helperText={error && mensajeError}
+                  FormHelperTextProps={{
+                    className: classes.errorText
+                  }}
+                  inputProps={{
+                    maxLength: maxLength,
+                  }}
+                  className={classes.inputDate}
+                />
+              </React.Fragment>
+            }
+
             <Typography variant="body1" className={classes.textoAdicional}>{postInput}</Typography>
           </div>
         </div>
@@ -272,6 +302,9 @@ const styles = theme => ({
   textArea: {
     minHeight: '100px',
     overflowY: 'scroll',
+  },
+  inputDate: {
+    width: '150px'
   }
 });
 

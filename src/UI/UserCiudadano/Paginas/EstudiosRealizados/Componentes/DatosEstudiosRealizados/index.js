@@ -156,13 +156,15 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
           <div className={classes.itemsContainer}>
             <List className={classes.root}>
-              {listaEstudiosRealizados.map((cardData) => {
+              {listaEstudiosRealizados.map((cardData, index) => {
                 return <React.Fragment>
+                  {index == 0 && <hr />}
                   <CardEstudiosRealizados
                     cardData={cardData}
                     handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
                     handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
-                  /><hr />
+                  />
+                  <hr />
                 </React.Fragment>
               })}
             </List>

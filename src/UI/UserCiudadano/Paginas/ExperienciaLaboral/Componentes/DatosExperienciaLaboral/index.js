@@ -171,8 +171,9 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
           <div className={classes.itemsContainer}>
             <List className={classes.root}>
-              {listaExperienciaLaboral.map((cardData) => {
+              {listaExperienciaLaboral.map((cardData, index) => {
                 return <React.Fragment>
+                  {index == 0 && <hr />}
                   <CardExperienciaLaboral
                     cardData={cardData}
                     handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}

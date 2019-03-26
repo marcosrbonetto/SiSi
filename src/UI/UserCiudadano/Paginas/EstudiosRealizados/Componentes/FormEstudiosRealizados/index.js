@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, dateToString } from "@Utils/functions";
+import { mostrarAlerta, dateToString, stringToDateYYYYMMDD } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -96,20 +96,23 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputFechaInicioEstudio',
-          value: yesterdayDate,
-          initValue: yesterdayDate,
+          value: dateToString(yesterdayDate, 'YYYY-MM-DD'),
+          initValue: dateToString(yesterdayDate, 'YYYY-MM-DD'),
+          valiateCondition: /^\d{4}(-)(((0)[0-9])|((1)[0-2]))(-)([0-2][0-9]|(3)[0-1])$/,
           disabled: false,
           error: false,
-          required: false,
-          mensajeError: 'La fecha de inicio debe ser mayor a la fecha fin.'
+          required: true,
+          mensajeError: 'Error en el formato de la fecha'
         },
         {
           id: 'InputFechaFinEstudio',
-          value: new Date(),
-          initValue: new Date(),
+          value: '',
+          initValue: '',
+          valiateCondition: /^\d{4}(-)(((0)[0-9])|((1)[0-2]))(-)([0-2][0-9]|(3)[0-1])$/,
           disabled: true,
           error: false,
-          required: false
+          required: false,
+          mensajeError: 'Error en el formato de la fecha'
         }
       ]
     };
@@ -178,20 +181,28 @@ class FormEstudiosRealizados extends React.PureComponent {
     let formHayError = resultValidation.formHayError;
     let formInputs = resultValidation.formInputs;
 
-    //Conditions between inputs
-    const InputFechaInicioEstudio = _.find(formInputs, { id: 'InputFechaInicioEstudio' });
-    const InputFechaFinEstudio = _.find(formInputs, { id: 'InputFechaFinEstudio' });
+    if (!formHayError) {
+      //Conditions between inputs
+      const InputFechaInicioEstudio = _.find(formInputs, { id: 'InputFechaInicioEstudio' });
+      const InputFechaFinEstudio = _.find(formInputs, { id: 'InputFechaFinEstudio' });
 
-    if (InputFechaInicioEstudio.value && InputFechaFinEstudio.value &&
-      InputFechaInicioEstudio.disabled == false && InputFechaFinEstudio.disabled == false &&
-      InputFechaInicioEstudio.value.getTime() > InputFechaFinEstudio.value.getTime()) {
-      InputFechaInicioEstudio.error = true;
-      InputFechaFinEstudio.error = true;
+      if (InputFechaInicioEstudio.value && InputFechaFinEstudio.value &&
+        stringToDateYYYYMMDD(InputFechaInicioEstudio.value).getTime() > stringToDateYYYYMMDD(InputFechaFinEstudio.value).getTime()) {
 
-      formHayError = true;
-    } else {
-      InputFechaInicioEstudio.error = false;
-      InputFechaFinEstudio.error = false;
+        InputFechaInicioEstudio.error = true;
+        InputFechaFinEstudio.error = true;
+
+        InputFechaInicioEstudio.mensajeError = 'La fecha de inicio debe ser menor a la fecha fin.';
+        InputFechaFinEstudio.mensajeError = 'La fecha de fin debe ser mayor a la fecha inicio.';
+
+        formHayError = true;
+      } else {
+        InputFechaInicioEstudio.error = false;
+        InputFechaFinEstudio.error = false;
+
+        InputFechaInicioEstudio.mensajeError = 'Error en el formato de la fecha';
+        InputFechaFinEstudio.mensajeError = 'Error en el formato de la fecha';
+      }
     }
 
     this.setState({
@@ -217,8 +228,8 @@ class FormEstudiosRealizados extends React.PureComponent {
       descripcion: InputDescripcionEstudio.value || _.find(arrayTipoEstudios, { value: InputTipoEstudio.value }).label,
       lugarDeCursado: InputLugarCursadoEstudio.value,
       duracion: InputDuracionEstudio.value,
-      fechaInicio: !InputFechaInicioEstudio.disabled ? dateToString(InputFechaInicioEstudio.value, 'DD/MM/YYYY') : null,
-      fechaFinalizacion: !InputFechaFinEstudio.disabled ? dateToString(InputFechaFinEstudio.value, 'DD/MM/YYYY') : null,
+      fechaInicio: InputFechaInicioEstudio.value != '' ? dateToString(stringToDateYYYYMMDD(InputFechaInicioEstudio.value), 'DD/MM/YYYY') : null,
+      fechaFinalizacion: InputFechaFinEstudio.value != '' ? dateToString(stringToDateYYYYMMDD(InputFechaFinEstudio.value), 'DD/MM/YYYY') : null,
     };
 
     return nuevaExpLab;
@@ -365,13 +376,12 @@ class FormEstudiosRealizados extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaInicioEstudio'}
-                    tipoInput={'date'}
+                    tipoInput={'date2'}
                     label={'Fecha de inicio'}
                     value={InputFechaInicioEstudio && InputFechaInicioEstudio.value || new Date()}
                     error={InputFechaInicioEstudio && InputFechaInicioEstudio.error || false}
                     mensajeError={InputFechaInicioEstudio && InputFechaInicioEstudio.mensajeError || 'Campo erroneo'}
                     withDisabled={false}
-                    disabled={InputFechaInicioEstudio && InputFechaInicioEstudio.disabled != undefined ? InputFechaInicioEstudio.disabled : true}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -379,13 +389,12 @@ class FormEstudiosRealizados extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaFinEstudio'}
-                    tipoInput={'date'}
+                    tipoInput={'date2'}
                     label={'Fecha de fin'}
                     value={InputFechaFinEstudio && InputFechaFinEstudio.value || new Date()}
                     error={InputFechaFinEstudio && InputFechaFinEstudio.error || false}
                     mensajeError={InputFechaFinEstudio && InputFechaFinEstudio.mensajeError || ''}
                     withDisabled={true}
-                    disabled={InputFechaFinEstudio && InputFechaFinEstudio.disabled != undefined ? InputFechaFinEstudio.disabled : true}
                   />
                 </Grid>
               </Grid>

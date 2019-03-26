@@ -66,6 +66,7 @@ const Export = ({ fileName, props, buttonVover, children, onLoading, onFinish, o
             {buttonVover}
             <button style={styleButton} onClick={() => printPDF(fileName, onLoading, onFinish, onError)}>Download PDF</button>
         </div>
+        <br/>
         <div id="overallPage">{children}</div>
     </div>
 );

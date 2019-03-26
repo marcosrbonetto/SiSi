@@ -10,6 +10,7 @@ import classNames from "classnames";
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
 import { actualizarPreinscipcion } from '@Redux/Actions/usuario';
+import { push } from "connected-react-router";
 
 //Material UI
 import Divider from '@material-ui/core/Divider';
@@ -54,7 +55,10 @@ const mapDispatchToProps = dispatch => ({
   },
   actualizarPreinscipcion: (data) => {
     dispatch(actualizarPreinscipcion(data));
-  }
+  },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class SeleccionPrograma extends React.PureComponent {
@@ -286,7 +290,7 @@ class SeleccionPrograma extends React.PureComponent {
           </span>`;
         }
       }
-      
+
       return {
         dialogoOpenInfoCurso: true,
         dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar ? ' - ' + cursoSeleccionado.lugar : ''),
@@ -404,6 +408,10 @@ class SeleccionPrograma extends React.PureComponent {
 
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const {
       classes,
@@ -453,8 +461,15 @@ class SeleccionPrograma extends React.PureComponent {
           informacionAlerta={tituloPrograma}
           classInformacionAlerta={classTituloPrograma}
           seccionBotones={{
-            align: 'center',
-            content: <Button variant="contained" className={classes.buttonSiSi} onClick={listaCursos.length == 1 ? this.onDialogoOpenInfoCurso : this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
+            align: 'space-between',
+            content: <React.Fragment>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+
+              <Button onClick={listaCursos.length == 1 ? this.onDialogoOpenInfoCurso : this.onDialogoOpen} variant="outlined" color="primary" className={classes.button}>
+              PRE - INSCRIBIRME</Button>
+            </React.Fragment>
           }}
         >
           <Typography variant="subheading" className={classTextoInformativo}>{textoInformativo}</Typography>
@@ -551,8 +566,8 @@ class SeleccionPrograma extends React.PureComponent {
             <div className={classes.containerBotonera}>
               <Divider />
               <div className={classes.botonesBotonera}>
-                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button>
-                <Button variant="contained" className={classes.buttonSiSi} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'PRE - INSCRIBIRME'}</Button>
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button> 
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.procesarPreInscripcion}>PRE - INSCRIBIRME</Button>
               </div>
             </div>
           }
@@ -664,9 +679,9 @@ class SeleccionPrograma extends React.PureComponent {
           botonera={true}
         >
           {(enfilaDeEspera &&
-          <Icon className={classes.iconoListaEsperaPreInscripcion}>error_outline</Icon>)
-          || <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>}
-          
+            <Icon className={classes.iconoListaEsperaPreInscripcion}>error_outline</Icon>)
+            || <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>}
+
           <Typography variant={'title'} style={{ fontSize: '30px' }}>
             Tu preinscripción {cursoPreinscripto} {enfilaDeEspera ? 'se encuentra en lista de espera' : 'fue realizada con éxito'}
           </Typography>
@@ -698,12 +713,6 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  button: {
-    ...theme.button
-  },
-  buttonSiSi: {
-    ...theme.buttonSiSi
-  },
   itemLista: {
     minWidth: '400px',
     cursor: 'pointer',
@@ -720,6 +729,9 @@ const styles = theme => ({
     '& > *': {
       width: '100%',
     }
+  },
+  iconoBoton: {
+    fontSize: '16px',
   },
   botonesBotonera: {
     textAlign: 'center',

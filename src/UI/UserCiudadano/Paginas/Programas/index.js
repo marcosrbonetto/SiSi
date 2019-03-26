@@ -79,7 +79,7 @@ class Programas extends React.PureComponent {
       preinscripcion: tienePreInscripcion ? textoPreinscripcion : null,
       dialogoOpen: false,
       listaProgramas: undefined,
-      preguntarPorTrabajo: !tieneExperienciasLaborales
+      preguntarPorTrabajo: !tieneExperienciasLaborales && !tienePreInscripcion
     };
   }
 
@@ -207,7 +207,7 @@ class Programas extends React.PureComponent {
                     <b>{preinscripcion}</b><br />
                     Por lo que no vas a poder inscribirte a otro programa</Typography>
                   <br />
-                  <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoOpen}>Desinscribirme</Button>
+                  <Button variant="outlined" color="primary" className={classNames(classes.button, classes.buttonDesinscribirme)} onClick={this.onDialogoOpen}>Desinscribirme</Button>
                 </Grid>}
 
               {!tienePreInscripcion && listaProgramas &&
@@ -229,13 +229,6 @@ class Programas extends React.PureComponent {
                           {index != (listaProgramas.length - 1) && <React.Fragment><br /><br /><br /></React.Fragment> || <br/>}
                         </React.Fragment>
                       })}
-
-                      <div className={classes.textCenter}>
-                        <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-                        <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-                        Atrás</Button>
-                      </div>
-
 
                     </Grid>
 
