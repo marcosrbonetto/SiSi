@@ -135,7 +135,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
     let tieneTrabajo = _.filter(listaExperienciaLaboral, (experienciaLaboral) => {
       return experienciaLaboral.fechaFinalizacion == '' || experienciaLaboral.fechaFinalizacion == null || experienciaLaboral.fechaFinalizacion == undefined;
     });
-    const actualizarOcupacion = !loggedUser.datos.ocupacionId && tieneTrabajo.length > 0;
+    const actualizarOcupacion = (!loggedUser.datos.ocupacionId || loggedUser.datos.ocupacionId == 31) && tieneTrabajo.length > 0;
 
     listaExperienciaLaboral = _.orderBy(listaExperienciaLaboral, ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
 
@@ -144,11 +144,16 @@ class DatosExperienciaLaboral extends React.PureComponent {
         <MiCard
           informacionAlerta={'Cargá acá tu último trabajo formal o informal. Por ej.: Atención del público en Centro de Salud. Recordá que es obligatorio. Podes cargar mas de una actividad.'}
           seccionBotones={{
-            align: 'left',
+            align: 'space-between',
             content: <React.Fragment>
               <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>arrow_back_ios</Icon>
                 Atrás</Button>
+
+              <FormExperienciaLaboral
+                handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
+                itemToEdit={itemToEdit}
+              />
             </React.Fragment>
           }}
         >
@@ -158,11 +163,6 @@ class DatosExperienciaLaboral extends React.PureComponent {
             label={'No tengo experiencia laboral'}
             checked={true}
           />}
-
-          <FormExperienciaLaboral
-            handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
-            itemToEdit={itemToEdit}
-          />
 
           {actualizarOcupacion &&
             <Typography variant="body2" className={classes.textoOcupacion}>
@@ -201,8 +201,11 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  iconoBoton: {
+  iconoBotonAtras: {
     fontSize: '16px',
+  },
+  iconoBoton: {
+    fontSize: '20px',
   },
   iconOcupacion: {
     fontSize: '22px',

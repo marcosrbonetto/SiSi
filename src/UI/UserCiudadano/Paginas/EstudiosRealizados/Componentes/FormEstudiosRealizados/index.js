@@ -14,6 +14,8 @@ import { mostrarAlerta, dateToString } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
+import Icon from '@material-ui/core/Icon';
+import Button from "@material-ui/core/Button";
 
 //Mis Componentes
 import MiInput from "@Componentes/MiInput";
@@ -22,7 +24,7 @@ import { onInputChangeValidateForm, onInputFocusOutValidateForm, validateForm } 
 import MiControledDialog from "@Componentes/MiControledDialog";
 import CardEstudiosRealizados from '@ComponentesEstudiosRealizados/CardEstudiosRealizados'
 
-import {arrayTipoEstudios} from '@DatosEstaticos/EstudiosRealizados.js'
+import { arrayTipoEstudios } from '@DatosEstaticos/EstudiosRealizados.js'
 
 const mapStateToProps = state => {
   return {
@@ -114,15 +116,15 @@ class FormEstudiosRealizados extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(JSON.stringify(this.props.itemToEdit) != JSON.stringify(nextProps.itemToEdit) && 
-    nextProps.itemToEdit instanceof Object) {
+    if (JSON.stringify(this.props.itemToEdit) != JSON.stringify(nextProps.itemToEdit) &&
+      nextProps.itemToEdit instanceof Object) {
 
       let formInputs = _.cloneDeep(this.state.formInputs);
-      
+
       Object.keys(nextProps.itemToEdit).map((field) => {
         let currentField = _.find(formInputs, { id: field });
 
-        if(currentField) {
+        if (currentField) {
           currentField.initValue = nextProps.itemToEdit[field];
           currentField.value = nextProps.itemToEdit[field];
         }
@@ -153,19 +155,19 @@ class FormEstudiosRealizados extends React.PureComponent {
 
   onChangeInput = (value, type, input, props) => {
 
-    const newformInputs = onInputChangeValidateForm(this.state.formInputs, {value, type, input, props});
+    const newformInputs = onInputChangeValidateForm(this.state.formInputs, { value, type, input, props });
 
     this.setState({
-      formInputs : newformInputs
+      formInputs: newformInputs
     });
   }
 
   onFocusOutInput = (input, props) => {
 
-    const newformInputs = onInputFocusOutValidateForm(this.state.formInputs, {input, props});
+    const newformInputs = onInputFocusOutValidateForm(this.state.formInputs, { input, props });
 
     this.setState({
-      formInputs : newformInputs
+      formInputs: newformInputs
     });
   }
 
@@ -180,12 +182,12 @@ class FormEstudiosRealizados extends React.PureComponent {
     const InputFechaInicioEstudio = _.find(formInputs, { id: 'InputFechaInicioEstudio' });
     const InputFechaFinEstudio = _.find(formInputs, { id: 'InputFechaFinEstudio' });
 
-    if(InputFechaInicioEstudio.value && InputFechaFinEstudio.value && 
-      InputFechaInicioEstudio.disabled == false && InputFechaFinEstudio.disabled == false && 
+    if (InputFechaInicioEstudio.value && InputFechaFinEstudio.value &&
+      InputFechaInicioEstudio.disabled == false && InputFechaFinEstudio.disabled == false &&
       InputFechaInicioEstudio.value.getTime() > InputFechaFinEstudio.value.getTime()) {
       InputFechaInicioEstudio.error = true;
       InputFechaFinEstudio.error = true;
-      
+
       formHayError = true;
     } else {
       InputFechaInicioEstudio.error = false;
@@ -193,9 +195,9 @@ class FormEstudiosRealizados extends React.PureComponent {
     }
 
     this.setState({
-      formInputs : _.cloneDeep(formInputs)
+      formInputs: _.cloneDeep(formInputs)
     });
-      
+
     return formHayError;
   }
 
@@ -231,7 +233,7 @@ class FormEstudiosRealizados extends React.PureComponent {
     }
 
     const estudiosRealizadoAgregada = this.getEstudiosRealizados();
-  
+
     this.setState({ openForm: false }, () => {
       this.props.handleEstudiosRealizadosAgregada && this.props.handleEstudiosRealizadosAgregada(estudiosRealizadoAgregada);
     });
@@ -262,125 +264,133 @@ class FormEstudiosRealizados extends React.PureComponent {
           open={openForm}
           onDialogoOpen={this.onDialogoOpen}
           onDialogoClose={this.onDialogoClose}
-          textoLink={'Agregar'}
           titulo={'Agregar estudio realizado'}
           classTextoLink={classes.textoLink}
+          buttonAction={true}
           buttonOptions={{
             labelAccept: 'Agregar',
             onDialogoAccept: this.agregarEstudiosRealizados,
             onDialogoCancel: this.onDialogoClose
           }}
         >
-          <Grid container>
-            <Grid item xs={12} sm={12}>
-              <MiInput
-                onChange={this.onChangeInput}
-                onFocusOut={this.onFocusOutInput}
-                id={'InputTipoEstudio'}
-                tipoInput={'select'}
-                label={''}
-                error={InputTipoEstudio && InputTipoEstudio.error || false}
-                mensajeError={InputTipoEstudio && InputTipoEstudio.mensajeError || ''}
-                withDisabled={true}
-                disabled={InputTipoEstudio && InputTipoEstudio.disabled != undefined ? InputTipoEstudio.disabled : true}
-                value={InputTipoEstudio && InputTipoEstudio.value || 1}
-                itemsSelect={arrayTipoEstudios}
-              />
-            </Grid>
-            <br /><br /><br />
-            <Grid item xs={12} sm={12}>
-              <MiInput
-                onChange={this.onChangeInput}
-                onFocusOut={this.onFocusOutInput}
-                id={'InputNombreEstudio'}
-                tipoInput={'input'}
-                type={'text'}
-                value={InputNombreEstudio && InputNombreEstudio.value || ''}
-                error={InputNombreEstudio && InputNombreEstudio.error || false}
-                mensajeError={InputNombreEstudio && InputNombreEstudio.mensajeError || 'Campo erroneo'}
-                label={'Nombre del estudio'}
-                placeholder={'Ingrese el nombre del estudio...'}
-              />
-            </Grid>
-            <br /><br /><br />
-            <Grid item xs={12} sm={12}>
-              <MiInput
-                onChange={this.onChangeInput}
-                onFocusOut={this.onFocusOutInput}
-                id={'InputDescripcionEstudio'}
-                tipoInput={'input'}
-                type={'text'}
-                value={InputDescripcionEstudio && InputDescripcionEstudio.value || ''}
-                error={InputDescripcionEstudio && InputDescripcionEstudio.error || false}
-                mensajeError={InputDescripcionEstudio && InputDescripcionEstudio.mensajeError || 'Campo erroneo'}
-                label={'Descripción del estudio'}
-                placeholder={'Describa la actividad del estudio...'}
-              />
-            </Grid>
-            <br /><br /><br />
-            <Grid item xs={12} sm={12}>
-              <MiInput
-                onChange={this.onChangeInput}
-                onFocusOut={this.onFocusOutInput}
-                id={'InputLugarCursadoEstudio'}
-                tipoInput={'input'}
-                type={'text'}
-                value={InputLugarCursadoEstudio && InputLugarCursadoEstudio.value || ''}
-                error={InputLugarCursadoEstudio && InputLugarCursadoEstudio.error || false}
-                mensajeError={InputLugarCursadoEstudio && InputLugarCursadoEstudio.mensajeError || 'Campo erroneo'}
-                label={'Lugar de Cursado'}
-                placeholder={'Describa el lugar cursado...'}
-              />
-            </Grid>
-            <br /><br /><br />
+          <div key="buttonAction">
+            <Button onClick={this.onDialogoOpen} variant="outlined" color="primary" className={classes.button}>
+              Agregar
+              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>add</Icon>
+            </Button>
+          </div>
+          <div key="mainContent">
             <Grid container>
               <Grid item xs={12} sm={12}>
                 <MiInput
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
-                  id={'InputDuracionEstudio'}
+                  id={'InputTipoEstudio'}
+                  tipoInput={'select'}
+                  label={''}
+                  error={InputTipoEstudio && InputTipoEstudio.error || false}
+                  mensajeError={InputTipoEstudio && InputTipoEstudio.mensajeError || ''}
+                  withDisabled={true}
+                  disabled={InputTipoEstudio && InputTipoEstudio.disabled != undefined ? InputTipoEstudio.disabled : true}
+                  value={InputTipoEstudio && InputTipoEstudio.value || 1}
+                  itemsSelect={arrayTipoEstudios}
+                />
+              </Grid>
+              <br /><br /><br />
+              <Grid item xs={12} sm={12}>
+                <MiInput
+                  onChange={this.onChangeInput}
+                  onFocusOut={this.onFocusOutInput}
+                  id={'InputNombreEstudio'}
                   tipoInput={'input'}
                   type={'text'}
-                  value={InputDuracionEstudio && InputDuracionEstudio.value || ''}
-                  error={InputDuracionEstudio && InputDuracionEstudio.error || false}
-                  mensajeError={InputDuracionEstudio && InputDuracionEstudio.mensajeError || 'Campo erroneo'}
-                  label={'Duracion'}
-                  placeholder={'Cantidad de horas/dias/meses/años...'}
+                  value={InputNombreEstudio && InputNombreEstudio.value || ''}
+                  error={InputNombreEstudio && InputNombreEstudio.error || false}
+                  mensajeError={InputNombreEstudio && InputNombreEstudio.mensajeError || 'Campo erroneo'}
+                  label={'Nombre del estudio'}
+                  placeholder={'Ingrese el nombre del estudio...'}
                 />
               </Grid>
-            </Grid>
-            <br /><br /><br />
-            <Grid container>
-              <Grid item xs={12} sm={6}>
+              <br /><br /><br />
+              <Grid item xs={12} sm={12}>
                 <MiInput
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
-                  id={'InputFechaInicioEstudio'}
-                  tipoInput={'date'}
-                  label={'Fecha de inicio'}
-                  value={InputFechaInicioEstudio && InputFechaInicioEstudio.value || new Date()}
-                  error={InputFechaInicioEstudio && InputFechaInicioEstudio.error || false}
-                  mensajeError={InputFechaInicioEstudio && InputFechaInicioEstudio.mensajeError || 'Campo erroneo'}
-                  withDisabled={false}
-                  disabled={InputFechaInicioEstudio && InputFechaInicioEstudio.disabled != undefined ? InputFechaInicioEstudio.disabled : true}
+                  id={'InputDescripcionEstudio'}
+                  tipoInput={'input'}
+                  type={'text'}
+                  value={InputDescripcionEstudio && InputDescripcionEstudio.value || ''}
+                  error={InputDescripcionEstudio && InputDescripcionEstudio.error || false}
+                  mensajeError={InputDescripcionEstudio && InputDescripcionEstudio.mensajeError || 'Campo erroneo'}
+                  label={'Descripción del estudio'}
+                  placeholder={'Describa la actividad del estudio...'}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <br /><br /><br />
+              <Grid item xs={12} sm={12}>
                 <MiInput
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
-                  id={'InputFechaFinEstudio'}
-                  tipoInput={'date'}
-                  label={'Fecha de fin'}
-                  value={InputFechaFinEstudio && InputFechaFinEstudio.value || new Date()}
-                  error={InputFechaFinEstudio && InputFechaFinEstudio.error || false}
-                  mensajeError={InputFechaFinEstudio && InputFechaFinEstudio.mensajeError || ''}
-                  withDisabled={true}
-                  disabled={InputFechaFinEstudio && InputFechaFinEstudio.disabled != undefined ? InputFechaFinEstudio.disabled : true}
+                  id={'InputLugarCursadoEstudio'}
+                  tipoInput={'input'}
+                  type={'text'}
+                  value={InputLugarCursadoEstudio && InputLugarCursadoEstudio.value || ''}
+                  error={InputLugarCursadoEstudio && InputLugarCursadoEstudio.error || false}
+                  mensajeError={InputLugarCursadoEstudio && InputLugarCursadoEstudio.mensajeError || 'Campo erroneo'}
+                  label={'Lugar de Cursado'}
+                  placeholder={'Describa el lugar cursado...'}
                 />
               </Grid>
+              <br /><br /><br />
+              <Grid container>
+                <Grid item xs={12} sm={12}>
+                  <MiInput
+                    onChange={this.onChangeInput}
+                    onFocusOut={this.onFocusOutInput}
+                    id={'InputDuracionEstudio'}
+                    tipoInput={'input'}
+                    type={'text'}
+                    value={InputDuracionEstudio && InputDuracionEstudio.value || ''}
+                    error={InputDuracionEstudio && InputDuracionEstudio.error || false}
+                    mensajeError={InputDuracionEstudio && InputDuracionEstudio.mensajeError || 'Campo erroneo'}
+                    label={'Duracion'}
+                    placeholder={'Cantidad de horas/dias/meses/años...'}
+                  />
+                </Grid>
+              </Grid>
+              <br /><br /><br />
+              <Grid container>
+                <Grid item xs={12} sm={6}>
+                  <MiInput
+                    onChange={this.onChangeInput}
+                    onFocusOut={this.onFocusOutInput}
+                    id={'InputFechaInicioEstudio'}
+                    tipoInput={'date'}
+                    label={'Fecha de inicio'}
+                    value={InputFechaInicioEstudio && InputFechaInicioEstudio.value || new Date()}
+                    error={InputFechaInicioEstudio && InputFechaInicioEstudio.error || false}
+                    mensajeError={InputFechaInicioEstudio && InputFechaInicioEstudio.mensajeError || 'Campo erroneo'}
+                    withDisabled={false}
+                    disabled={InputFechaInicioEstudio && InputFechaInicioEstudio.disabled != undefined ? InputFechaInicioEstudio.disabled : true}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <MiInput
+                    onChange={this.onChangeInput}
+                    onFocusOut={this.onFocusOutInput}
+                    id={'InputFechaFinEstudio'}
+                    tipoInput={'date'}
+                    label={'Fecha de fin'}
+                    value={InputFechaFinEstudio && InputFechaFinEstudio.value || new Date()}
+                    error={InputFechaFinEstudio && InputFechaFinEstudio.error || false}
+                    mensajeError={InputFechaFinEstudio && InputFechaFinEstudio.mensajeError || ''}
+                    withDisabled={true}
+                    disabled={InputFechaFinEstudio && InputFechaFinEstudio.disabled != undefined ? InputFechaFinEstudio.disabled : true}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
-          </Grid>
+          </div>
         </MiControledDialog>
       </React.Fragment>
     );
@@ -396,7 +406,10 @@ const styles = theme => ({
     color: theme.palette.primary.main,
     textDecoration: 'underline',
     marginLeft: '20px',
-  }
+  },
+  iconoBoton: {
+    fontSize: '20px',
+  },
 });
 
 let componente = FormEstudiosRealizados;

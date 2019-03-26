@@ -11,6 +11,9 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { push } from "connected-react-router";
+
+//Components
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Avatar from "@material-ui/core/Avatar";
@@ -40,6 +43,9 @@ const mapDispatchToProps = dispatch => ({
   mostrarCargando: (cargar) => {
     dispatch(mostrarCargando(cargar));
   },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class CV extends React.PureComponent {
@@ -47,7 +53,6 @@ class CV extends React.PureComponent {
     super(props);
 
     this.state = {
-      openDialog: false,
       urlFotoPerfil: '#'
     };
   }
@@ -70,17 +75,8 @@ class CV extends React.PureComponent {
     });
   }
 
-  onDialogoOpen = () => {
-    this.setState({ openDialog: true });
-  }
-
-  onDialogoClose = () => {
-    this.setState({ openDialog: false });
-  }
-
   handleOnLoading = () => {
     this.props.mostrarCargando(true);
-    this.onDialogoClose();
   }
 
   handleOnFinish = () => {
@@ -93,9 +89,12 @@ class CV extends React.PureComponent {
     mostrarAlerta('Ocurrió un error al intentar descargar el CV');
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const {
-      openDialog,
       urlFotoPerfil
     } = this.state;
 
@@ -116,20 +115,16 @@ class CV extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <Button onClick={this.onDialogoOpen} variant="outlined" color="primary" size="small" className={classes.button}>
-          <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment_ind</Icon>
-          Descargar
-        </Button>
         
-        <MiControledDialog
-          open={openDialog}
-          onDialogoOpen={this.onDialogoOpen}
-          onDialogoClose={this.onDialogoClose}
-          titulo={'Curriculum Vitae'}
-          buttonAction={true}
-        >
-          <div key="mainContent">
-          <Export fileName={'CV'} onLoading={this.handleOnLoading} onFinish={this.handleOnFinish} onError={this.handleOnError}>
+          <Export 
+          buttonVover={
+            <React.Fragment>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+            </React.Fragment>
+          }
+          fileName={'CV'} onLoading={this.handleOnLoading} onFinish={this.handleOnFinish} onError={this.handleOnError}>
             <Grid container>
               <Grid item xs={12} sm={12} className={classes.widthHoja}>
                 <Grid container>
@@ -392,8 +387,6 @@ class CV extends React.PureComponent {
 
               </Grid>
             </Export>
-          </div>
-        </MiControledDialog>
       </React.Fragment>
     );
   }

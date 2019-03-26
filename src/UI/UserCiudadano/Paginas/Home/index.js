@@ -33,9 +33,6 @@ import MiCard from "@Componentes/MiCard";
 //Funciones
 import { dateToString, calcularEdad } from "@Utils/functions"
 
-import FormDatosExtrasCV from "@ComponentesHome/FormDatosExtrasCV";
-import CV from "@ComponentesHome/CV";
-
 const mapStateToProps = state => {
   return {
     loggedUser: state.Usuario.loggedUser,
@@ -94,7 +91,11 @@ class Home extends React.PureComponent {
   }
 
   onClickDatosAdicionales = () => {
+    this.props.redireccionar('/Inicio/FormDatosAdicionales');
+  }
 
+  onClickCV = () => {
+    this.props.redireccionar('/Inicio/CurriculumVitae');
   }
 
   render() {
@@ -106,7 +107,7 @@ class Home extends React.PureComponent {
 
     const datosUsuario = loggedUser.datos;
     let urlFotoPerfil;
-    
+
     if (datosUsuario) {
       urlFotoPerfil = CordobaFilesUtils.getUrlFotoMediana(datosUsuario.identificadorFotoPersonal, datosUsuario.sexoMasculino);
     }
@@ -128,7 +129,7 @@ class Home extends React.PureComponent {
     const tieneTrabajoActualmente = tieneTrabajo.length > 0 && 'Actualmente con trabajo' || 'Actualmente sin trabajo';
 
     let ocupacion = datosUsuario.ocupacionId && datosUsuario.ocupacionNombre || 'Desocupado';
-    ocupacion = !datosUsuario.ocupacionId && tieneTrabajo.length > 0 ? <ClickAwayListener onClickAway={this.handleTooltipClose}><Tooltip open={openOcupacionInfo} classes={{ tooltip: classes.textTooltip }} title={<span>Segun sus experiencias laborales cargadas usted no se encuentra desocupado actualmente, actualice su ocupación de MuniOnline entrando <b style={{ cursor: 'pointer' }} onClick={this.handleChangeOcupacion}>aquí</b>.</span>} placement="bottom"><span onClick={this.handleTooltipOpen} >{ocupacion}<i className={classNames(classes.iconOcupacion, "material-icons")}>error</i></span></Tooltip></ClickAwayListener> : ocupacion;
+    ocupacion = (!datosUsuario.ocupacionId || datosUsuario.ocupacionId == 31) && tieneTrabajo.length > 0 ? <ClickAwayListener onClickAway={this.handleTooltipClose}><Tooltip open={openOcupacionInfo} classes={{ tooltip: classes.textTooltip }} title={<span>Segun sus experiencias laborales cargadas usted no se encuentra desocupado actualmente, actualice su ocupación de MuniOnline entrando <b style={{ cursor: 'pointer' }} onClick={this.handleChangeOcupacion}>aquí</b>.</span>} placement="bottom"><span onClick={this.handleTooltipOpen} >{ocupacion}<i className={classNames(classes.iconOcupacion, "material-icons")}>error</i></span></Tooltip></ClickAwayListener> : ocupacion;
 
     return (
       <div className={classes.mainContainer}>
@@ -209,8 +210,8 @@ class Home extends React.PureComponent {
                   {experienciasLaborales}
                 </Typography>
                 <Button onClick={this.onClickExperienciaLaboral} variant="outlined" color="primary" size="small" className={classes.button}>
-                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tieneExperienciasLaborales ? 'list_alt' : 'create'}</Icon>
-                  {tieneExperienciasLaborales ? 'Ver' : 'Cargar'}
+                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>list_alt</Icon>
+                  Ver Trabajos
                 </Button>
               </div>
 
@@ -226,8 +227,8 @@ class Home extends React.PureComponent {
                   {estudiosRealizados}
                 </Typography>
                 <Button onClick={this.onClickEstudiosRealizados} variant="outlined" color="primary" size="small" className={classes.button}>
-                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tieneEstudiosRealizados ? 'list_alt' : 'create'}</Icon>
-                  {tieneEstudiosRealizados ? 'Ver' : 'Cargar'}
+                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>list_alt</Icon>
+                  Ver Estudios
                 </Button>
               </div>
 
@@ -243,8 +244,14 @@ class Home extends React.PureComponent {
                   También puede agregar datos adicionales tales como habilidades, idiomas y/o referencias.
                 </Typography>
                 <div className={classes.inlineBoxes}>
-                  <CV /> 
-                  <FormDatosExtrasCV />
+                  <Button onClick={this.onClickDatosAdicionales} variant="outlined" color="primary" size="small" className={classes.button}>
+                    <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment</Icon>
+                    Ver Datos Adicionales
+                </Button> 
+                  <Button onClick={this.onClickCV} variant="outlined" color="primary" size="small" className={classes.button}>
+                    <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment_ind</Icon>
+                    Ver CV
+                </Button>
                 </div>
               </div>
 

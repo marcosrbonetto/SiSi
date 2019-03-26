@@ -663,20 +663,24 @@ class SeleccionPrograma extends React.PureComponent {
           classContainterContent={classes.contenedorInfoPreInscripcion}
           botonera={true}
         >
-          <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>
+          {(enfilaDeEspera &&
+          <Icon className={classes.iconoListaEsperaPreInscripcion}>error_outline</Icon>)
+          || <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>}
+          
           <Typography variant={'title'} style={{ fontSize: '30px' }}>
-            Tu preinscripción {cursoPreinscripto} fue realizada con éxito
+            Tu preinscripción {cursoPreinscripto} {enfilaDeEspera ? 'se encuentra en lista de espera' : 'fue realizada con éxito'}
           </Typography>
           <br />
           <Typography variant="subheading">
             Te enviamos un mail a {loggedUser.datos.email} con el comprobante del registro
           </Typography>
-          <br /><br />
+          <br />
           {enfilaDeEspera &&
             <React.Fragment>
-              <Typography variant="subheading">El curso al cual te preinscribiste ya tiene el cupo completo. Si lo deseas te podemos anotar en una lista de espera.</Typography><br /> <br />
-              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoEliminarPreInscripcion}>Elegir otro Curso</Button>
-              <Button variant="contained" className={classes.onDialogoCloseInfoPreInscripcion} >{'Anotarme en la lista de espera'}</Button></React.Fragment>
+              <Typography variant="subheading">El curso al cual te preinscribiste ya tiene el cupo completo por lo que actualmente se encuentra en lista de espera. Usted puede:</Typography><br />
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoPreInscripcion} >Seguir en la lista de espera</Button>
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoEliminarPreInscripcion}>Cancelar preinscripción</Button>
+            </React.Fragment>
           }
           {!enfilaDeEspera &&
             <React.Fragment>
@@ -721,6 +725,12 @@ const styles = theme => ({
     textAlign: 'center',
     margin: '12px auto',
     marginTop: '18px',
+  },
+  iconoListaEsperaPreInscripcion: {
+    color: '#ffb300',
+    fontSize: '100px',
+    display: 'block',
+    margin: '0px auto',
   },
   iconoOKPreInscripcion: {
     color: theme.color.ok.main,

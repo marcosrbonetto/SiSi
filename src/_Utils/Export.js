@@ -41,11 +41,12 @@ const printPDF = function printPDF(fileName, onLoading, onFinish, onError) {
 
 const styleButton = {
     color: '#149257',
-    padding: '8px 16px',
+    padding: '0px 16px',
     fontSize: '0.875rem',
     minWidth: '64px',
     boxSizing: 'border-box',
-    minHeight: '36px',
+    height: '42px',
+    marginTop: '6px',
     transition: 'background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     fontWeight: '500',
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
@@ -54,14 +55,17 @@ const styleButton = {
     textTransform: 'uppercase',
     border: 'none',
     background: '#fff',
-    border: '1px solid #149257',
+    border: '1px solid rgba(20, 146, 87, 0.5)',
     cursor: 'pointer'
 }
 
 // eslint-disable-next-line no-shadow
-const Export = ({ fileName, props, children, onLoading, onFinish, onError }) => (
+const Export = ({ fileName, props, buttonVover, children, onLoading, onFinish, onError }) => (
     <div {...props}>
-        <button style={styleButton} onClick={() => printPDF(fileName, onLoading, onFinish, onError)}>Download PDF</button>
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            {buttonVover}
+            <button style={styleButton} onClick={() => printPDF(fileName, onLoading, onFinish, onError)}>Download PDF</button>
+        </div>
         <div id="overallPage">{children}</div>
     </div>
 );

@@ -127,18 +127,23 @@ class DatosEstudiosRealizados extends React.PureComponent {
     const { classes } = this.props;
     let { listaEstudiosRealizados, itemToEdit } = this.state;
 
-    listaEstudiosRealizados = _.orderBy(listaEstudiosRealizados, ['tipoEstudio', 'fechaFinalizacion', 'fechaInicio'], ['desc','desc','desc']);
+    listaEstudiosRealizados = _.orderBy(listaEstudiosRealizados, ['tipoEstudio', 'fechaFinalizacion', 'fechaInicio'], ['desc', 'desc', 'desc']);
 
     return (
       <React.Fragment>
         <MiCard
           informacionAlerta={'Cargá acá tus estudios realizados, desde el secundario hasta el nivel que haya alzcanzado'}
           seccionBotones={{
-            align: 'left',
+            align: 'space-between',
             content: <React.Fragment>
               <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-                Atrás</Button>
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Volver</Button>
+
+              <FormEstudiosRealizados
+                handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}
+                itemToEdit={itemToEdit}
+              />
             </React.Fragment>
           }}
         >
@@ -149,20 +154,15 @@ class DatosEstudiosRealizados extends React.PureComponent {
             checked={true}
           />}
 
-          <FormEstudiosRealizados
-            handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}
-            itemToEdit={itemToEdit}
-          />
-
           <div className={classes.itemsContainer}>
             <List className={classes.root}>
               {listaEstudiosRealizados.map((cardData) => {
                 return <React.Fragment>
                   <CardEstudiosRealizados
-                  cardData={cardData}
-                  handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
-                  handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
-                /><hr/>
+                    cardData={cardData}
+                    handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
+                    handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
+                  /><hr />
                 </React.Fragment>
               })}
             </List>
@@ -184,8 +184,11 @@ const styles = theme => ({
     textDecoration: 'underline',
     marginLeft: '20px',
   },
-  iconoBoton: {
+  iconoBotonAtras: {
     fontSize: '16px',
+  },
+  iconoBoton: {
+    fontSize: '20px',
   },
 });
 

@@ -14,6 +14,8 @@ import { mostrarAlerta, dateToString } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
+import Icon from '@material-ui/core/Icon';
+import Button from "@material-ui/core/Button";
 
 //Mis Componentes
 import MiInput from "@Componentes/MiInput";
@@ -114,15 +116,15 @@ class FormExperienciaLaboral extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(JSON.stringify(this.props.itemToEdit) != JSON.stringify(nextProps.itemToEdit) && 
-    nextProps.itemToEdit instanceof Object) {
+    if (JSON.stringify(this.props.itemToEdit) != JSON.stringify(nextProps.itemToEdit) &&
+      nextProps.itemToEdit instanceof Object) {
 
       let formInputs = _.cloneDeep(this.state.formInputs);
-      
+
       Object.keys(nextProps.itemToEdit).map((field) => {
         let currentField = _.find(formInputs, { id: field });
 
-        if(currentField) {
+        if (currentField) {
           currentField.initValue = nextProps.itemToEdit[field];
           currentField.value = nextProps.itemToEdit[field];
         }
@@ -140,10 +142,10 @@ class FormExperienciaLaboral extends React.PureComponent {
       inputs.value = inputs.initValue;
       inputs.error = false;
     });
-    
-    this.setState({ 
+
+    this.setState({
       openForm: true,
-      formInputs : _.cloneDeep(formInputs)
+      formInputs: _.cloneDeep(formInputs)
     });
   }
 
@@ -153,19 +155,19 @@ class FormExperienciaLaboral extends React.PureComponent {
 
   onChangeInput = (value, type, input, props) => {
 
-    const newformInputs = onInputChangeValidateForm(this.state.formInputs, {value, type, input, props});
+    const newformInputs = onInputChangeValidateForm(this.state.formInputs, { value, type, input, props });
 
     this.setState({
-      formInputs : newformInputs
+      formInputs: newformInputs
     });
   }
 
   onFocusOutInput = (input, props) => {
 
-    const newformInputs = onInputFocusOutValidateForm(this.state.formInputs, {input, props});
+    const newformInputs = onInputFocusOutValidateForm(this.state.formInputs, { input, props });
 
     this.setState({
-      formInputs : newformInputs
+      formInputs: newformInputs
     });
   }
 
@@ -180,12 +182,12 @@ class FormExperienciaLaboral extends React.PureComponent {
     const InputFechaInicioEmpresa = _.find(formInputs, { id: 'InputFechaInicioEmpresa' });
     const InputFechaFinEmpresa = _.find(formInputs, { id: 'InputFechaFinEmpresa' });
 
-    if(InputFechaInicioEmpresa.value && InputFechaFinEmpresa.value && 
-      InputFechaInicioEmpresa.disabled == false && InputFechaFinEmpresa.disabled == false && 
+    if (InputFechaInicioEmpresa.value && InputFechaFinEmpresa.value &&
+      InputFechaInicioEmpresa.disabled == false && InputFechaFinEmpresa.disabled == false &&
       InputFechaInicioEmpresa.value.getTime() > InputFechaFinEmpresa.value.getTime()) {
       InputFechaInicioEmpresa.error = true;
       InputFechaFinEmpresa.error = true;
-      
+
       formHayError = true;
     } else {
       InputFechaInicioEmpresa.error = false;
@@ -193,9 +195,9 @@ class FormExperienciaLaboral extends React.PureComponent {
     }
 
     this.setState({
-      formInputs : _.cloneDeep(formInputs)
+      formInputs: _.cloneDeep(formInputs)
     });
-      
+
     return formHayError;
   }
 
@@ -222,23 +224,23 @@ class FormExperienciaLaboral extends React.PureComponent {
     return nuevaExpLab;
   }
 
-  agregarExperienciaLaboral = () => { 
+  agregarExperienciaLaboral = () => {
     const formHayError = this.validateForm();
-    
-    if(formHayError) {
+
+    if (formHayError) {
       mostrarAlerta('Se han encontrado campos erroneos.');
       return false;
     }
 
     const experienciaLaboralAgregada = this.getExperienciaLaboral();
 
-    this.setState({ openForm: false },() => {
+    this.setState({ openForm: false }, () => {
       this.props.handleExperienciaLaboralAgregada && this.props.handleExperienciaLaboralAgregada(experienciaLaboralAgregada);
     });
   }
 
   render() {
-    const { 
+    const {
       classes
     } = this.props;
 
@@ -259,18 +261,25 @@ class FormExperienciaLaboral extends React.PureComponent {
     return (
       <React.Fragment>
         <MiControledDialog
-            open={openForm}
-            onDialogoOpen={this.onDialogoOpen}
-            onDialogoClose={this.onDialogoClose}
-            textoLink={'Agregar'}
-            titulo={'Agregar experiencia laboral'}
-            classTextoLink={classes.textoLink}
-            buttonOptions={{
-              labelAccept: 'Agregar',
-              onDialogoAccept: this.agregarExperienciaLaboral,
-              onDialogoCancel: this.onDialogoClose
-            }}
-          >
+          open={openForm}
+          onDialogoOpen={this.onDialogoOpen}
+          onDialogoClose={this.onDialogoClose}
+          titulo={'Agregar experiencia laboral'}
+          classTextoLink={classes.textoLink}
+          buttonAction={true}
+          buttonOptions={{
+            labelAccept: 'Agregar',
+            onDialogoAccept: this.agregarExperienciaLaboral,
+            onDialogoCancel: this.onDialogoClose
+          }}
+        >
+          <div key="buttonAction">
+            <Button onClick={this.onDialogoOpen} variant="outlined" color="primary" className={classes.button}>
+              Agregar
+              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>add</Icon>
+            </Button>
+          </div>
+          <div key="mainContent">
             <Grid container>
               <Grid item xs={12} sm={12}>
                 <MiInput
@@ -378,7 +387,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                 </Grid>
               </Grid>
             </Grid>
-          </MiControledDialog>
+          </div>
+        </MiControledDialog>
       </React.Fragment>
     );
   }
@@ -393,7 +403,10 @@ const styles = theme => ({
     color: theme.palette.primary.main,
     textDecoration: 'underline',
     marginLeft: '20px',
-  }
+  },
+  iconoBoton: {
+    fontSize: '20px',
+  },
 });
 
 let componente = FormExperienciaLaboral;

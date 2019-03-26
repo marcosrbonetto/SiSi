@@ -117,6 +117,37 @@ class MiInput extends React.Component {
               </React.Fragment>
             }
 
+            {tipoInput && tipoInput == 'textarea' &&
+              <React.Fragment>
+                <TextField
+                  error={error || false}
+                  type={type || 'text'}
+                  label={label}
+                  className={classNames(classes.wideWidth, classInput)}
+                  value={value || ''}
+                  margin="none"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  placeholder={placeholder}
+                  inputProps={{
+                    className: classNames(classes.wideWidth),
+                    classes: {
+                      root: classes.textArea
+                    },
+                    maxLength: maxLength,
+                  }}
+                  onChange={this.handleInputOnCange}
+                  onBlur={this.handleInputOnFocusOut}
+                  helperText={error && mensajeError}
+                  FormHelperTextProps={{
+                    className: classes.errorText
+                  }}
+                  multiline={true}
+                />
+              </React.Fragment>
+            }
+
             {tipoInput && tipoInput == 'select' &&
               <React.Fragment>
                 <FormControl className={classNames(classes.formControl, classes.wideWidth)}>
@@ -237,6 +268,10 @@ const styles = theme => ({
   },
   errorText: {
     marginTop: '2px'
+  },
+  textArea: {
+    minHeight: '100px',
+    overflowY: 'scroll',
   }
 });
 

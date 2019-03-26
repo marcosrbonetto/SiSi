@@ -12,6 +12,7 @@ import classNames from "classnames";
 import { mostrarCargando } from '@Redux/Actions/mainContent'
 import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
 import { actualizarDatosExtras } from '@Redux/Actions/usuario';
+import { push } from "connected-react-router";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -22,8 +23,7 @@ import Icon from '@material-ui/core/Icon';
 import MiInput from "@Componentes/MiInput";
 import { onInputChangeValidateForm, onInputFocusOutValidateForm, validateForm } from "@Componentes/MiInput";
 
-import MiControledDialog from "@Componentes/MiControledDialog";
-import CardExperienciaLaboral from '@ComponentesExperienciaLaboral/CardExperienciaLaboral'
+import MiCard from "@Componentes/MiNewCard";
 
 import Rules_Usuario from "@Rules/Rules_Usuario";
 
@@ -40,7 +40,10 @@ const mapDispatchToProps = dispatch => ({
   },
   actualizarDatosExtras: (datosExtras) => {
     dispatch(actualizarDatosExtras(datosExtras));
-  }
+  },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class FormDatosExtrasCV extends React.PureComponent {
@@ -50,7 +53,6 @@ class FormDatosExtrasCV extends React.PureComponent {
     const datos = props.loggedUser.datos;
 
     this.state = {
-      openForm: false,
       formInputs: [
         {
           id: 'InputHabilidades',
@@ -78,23 +80,6 @@ class FormDatosExtrasCV extends React.PureComponent {
         }
       ]
     };
-  }
-
-  onDialogoOpen = () => {
-    let formInputs = this.state.formInputs;
-    formInputs.map((inputs) => {
-      inputs.value = inputs.value;
-      inputs.error = false;
-    });
-
-    this.setState({
-      openForm: true,
-      formInputs: _.cloneDeep(formInputs)
-    });
-  }
-
-  onDialogoClose = () => {
-    this.setState({ openForm: false });
   }
 
   onChangeInput = (value, type, input, props) => {
@@ -153,7 +138,6 @@ class FormDatosExtrasCV extends React.PureComponent {
       "referencias": InputReferencias.value
     };
 
-    this.onDialogoClose();
     Rules_Usuario.insertarDatosExtras(token, datosExtras)
       .then((datos) => {
         this.props.mostrarCargando(false);
@@ -172,13 +156,16 @@ class FormDatosExtrasCV extends React.PureComponent {
       });
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const {
       classes
     } = this.props;
 
     const {
-      openForm,
       formInputs
     } = this.state;
 
@@ -189,74 +176,68 @@ class FormDatosExtrasCV extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <Button onClick={this.onDialogoOpen} variant="outlined" color="primary" size="small" className={classes.button}>
-          <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment</Icon>
-          Datos adicionales
-                </Button>
-        <MiControledDialog
-          open={openForm}
-          onDialogoOpen={this.onDialogoOpen}
-          onDialogoClose={this.onDialogoClose}
-          titulo={'Agregar datos adicionales'}
-          buttonAction={true}
-          buttonOptions={{
-            labelAccept: 'Guardar',
-            onDialogoAccept: this.agregarDatosExtras,
-            onDialogoCancel: this.onDialogoClose
-          }}
-        >
-          <div key="mainContent">
-            <Grid container>
-              <Grid item xs={12} sm={12} className={classes.marginBetween}>
-                <MiInput
-                  onChange={this.onChangeInput}
-                  onFocusOut={this.onFocusOutInput}
-                  id={'InputHabilidades'}
-                  tipoInput={'input'}
-                  type={'text'}
-                  value={InputHabilidades && InputHabilidades.value || ''}
-                  error={InputHabilidades && InputHabilidades.error || false}
-                  mensajeError={InputHabilidades && InputHabilidades.mensajeError || 'Campo erroneo'}
-                  label={'Descripción de las habilidades'}
-                  placeholder={'Describa sus habilidades...'}
-                  multiline={true}
-                />
-              </Grid>
-              <br /><br /><br />
-              <Grid item xs={12} sm={12} className={classes.marginBetween}>
-                <MiInput
-                  onChange={this.onChangeInput}
-                  onFocusOut={this.onFocusOutInput}
-                  id={'InputIdiomas'}
-                  tipoInput={'input'}
-                  type={'text'}
-                  value={InputIdiomas && InputIdiomas.value || ''}
-                  error={InputIdiomas && InputIdiomas.error || false}
-                  mensajeError={InputIdiomas && InputIdiomas.mensajeError || 'Campo erroneo'}
-                  label={'Descripción de idiomas'}
-                  placeholder={'Describa los idiomas y su nivel...'}
-                  multiline={true}
-                />
-              </Grid>
-              <br /><br /><br />
-              <Grid item xs={12} sm={12} className={classes.marginBetween}>
-                <MiInput
-                  onChange={this.onChangeInput}
-                  onFocusOut={this.onFocusOutInput}
-                  id={'InputReferencias'}
-                  tipoInput={'input'}
-                  type={'text'}
-                  value={InputReferencias && InputReferencias.value || ''}
-                  error={InputReferencias && InputReferencias.error || false}
-                  mensajeError={InputReferencias && InputReferencias.mensajeError || 'Campo erroneo'}
-                  label={'Descripción de referencias'}
-                  placeholder={'Describa sus referencias...'}
-                  multiline={true}
-                />
-              </Grid>
+
+        <MiCard
+          informacionAlerta={'Cargá acá tu tus datos adicionales que permita que tu Curriculum Vitae permanezca completo.'}
+          seccionBotones={{
+            align: 'space-between',
+            content: <React.Fragment>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+
+              <Button onClick={this.agregarDatosExtras} variant="outlined" color="primary" className={classes.button}>
+                Guardar
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>check</Icon>
+              </Button>
+            </React.Fragment>
+          }}>
+
+          <Grid container>
+            <Grid item xs={12} sm={12} className={classes.marginBetween}>
+              <MiInput
+                onChange={this.onChangeInput}
+                onFocusOut={this.onFocusOutInput}
+                id={'InputHabilidades'}
+                tipoInput={'textarea'}
+                type={'text'}
+                value={InputHabilidades && InputHabilidades.value || ''}
+                error={InputHabilidades && InputHabilidades.error || false}
+                mensajeError={InputHabilidades && InputHabilidades.mensajeError || 'Campo erroneo'}
+                label={'Habilidades'}
+              />
             </Grid>
-          </div>
-        </MiControledDialog>
+            <br /><br /><br />
+            <Grid item xs={12} sm={12} className={classes.marginBetween}>
+              <MiInput
+                onChange={this.onChangeInput}
+                onFocusOut={this.onFocusOutInput}
+                id={'InputIdiomas'}
+                tipoInput={'textarea'}
+                type={'text'}
+                value={InputIdiomas && InputIdiomas.value || ''}
+                error={InputIdiomas && InputIdiomas.error || false}
+                mensajeError={InputIdiomas && InputIdiomas.mensajeError || 'Campo erroneo'}
+                label={'Idiomas'}
+              />
+            </Grid>
+            <br /><br /><br />
+            <Grid item xs={12} sm={12} className={classes.marginBetween}>
+              <MiInput
+                onChange={this.onChangeInput}
+                onFocusOut={this.onFocusOutInput}
+                id={'InputReferencias'}
+                tipoInput={'textarea'}
+                type={'text'}
+                value={InputReferencias && InputReferencias.value || ''}
+                error={InputReferencias && InputReferencias.error || false}
+                mensajeError={InputReferencias && InputReferencias.mensajeError || 'Campo erroneo'}
+                label={'Referencias'}
+              />
+            </Grid>
+
+          </Grid>
+        </MiCard>
       </React.Fragment>
     );
   }
@@ -273,7 +254,8 @@ const styles = theme => ({
     marginLeft: '20px',
   },
   button: {
-    marginTop: '6px'
+    marginTop: '6px',
+    float: 'right'
   },
   iconoBoton: {
     fontSize: '16px',
