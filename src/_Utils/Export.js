@@ -64,7 +64,7 @@ const Export = ({ fileName, props, buttonVover, children, onLoading, onFinish, o
     <div {...props}>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
             {buttonVover}
-            <button style={styleButton} onClick={() => printPDF(fileName, onLoading, onFinish, onError)}>Download PDF</button>
+            <button style={styleButton} onClick={() => printPDF(fileName, onLoading, onFinish, onError)}>Descargar PDF</button>
         </div>
         <br/>
         <div id="overallPage">{children}</div>

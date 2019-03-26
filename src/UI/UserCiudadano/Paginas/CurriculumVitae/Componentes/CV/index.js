@@ -129,7 +129,7 @@ class CV extends React.PureComponent {
               <Grid item xs={12} sm={12} className={classes.widthHoja}>
                 <Grid container>
                   <Grid item xs={12} sm={8}>
-                    <div className={classes.centerContainer}>
+                    <div className={classes.titlesContainer}>
                       <Typography variant="subheading" color="inherit" className={classes.usuario}>
                         {datosUsuario &&
                           datosUsuario.apellido + ', ' + datosUsuario.nombre}
@@ -267,7 +267,7 @@ class CV extends React.PureComponent {
                           
                     {estudiosRealizados.length > 0 && <React.Fragment>
                     <Grid item xs={12} sm={8}>
-                      <div className={classes.centerContainer}>
+                      <div className={classes.titlesContainer}>
                         <Typography variant="subheading" color="inherit" className={classes.usuario}>
                           Educación
                         </Typography>
@@ -284,7 +284,7 @@ class CV extends React.PureComponent {
                           } catch (error) {}
 
                           return <List className={classes.root}>
-                            <ListItem>
+                            <ListItem className={classes.listItem}>
                               <ListItemText primary={estudio.nombre + ' - ' + nombreNivelEd} secondary={"Fecha Inicio: " + (estudio.fechaInicio ? estudio.fechaInicio : '-') + '/ Fecha Finalización: ' + (estudio.fechaFinalizacion ? estudio.fechaFinalizacion : '-')} />
                             </ListItem>
                           </List>
@@ -295,7 +295,7 @@ class CV extends React.PureComponent {
 
                     {datosUsuario.habilidades && <React.Fragment>
                       <Grid item xs={12} sm={8}>
-                        <div className={classes.centerContainer}>
+                        <div className={classes.titlesContainer}>
                           <Typography variant="subheading" color="inherit" className={classes.usuario}>
                             Habilidades
                           </Typography>
@@ -318,7 +318,7 @@ class CV extends React.PureComponent {
 
                     {datosUsuario.idiomas && <React.Fragment>
                       <Grid item xs={12} sm={8}>
-                        <div className={classes.centerContainer}>
+                        <div className={classes.titlesContainer}>
                           <Typography variant="subheading" color="inherit" className={classes.usuario}>
                             Idiomas
                           </Typography>
@@ -340,7 +340,7 @@ class CV extends React.PureComponent {
 
                     {experienciasLaborales.length > 0 && <React.Fragment>
                     <Grid item xs={12} sm={8}>
-                      <div className={classes.centerContainer}>
+                      <div className={classes.titlesContainer}>
                         <Typography variant="subheading" color="inherit" className={classes.usuario}>
                           Experiencia Laboral
                         </Typography>
@@ -351,7 +351,7 @@ class CV extends React.PureComponent {
                     <Grid item xs={12} sm={8}>
                         {experienciasLaborales.map((expLab) => {
                           return <List className={classes.root}>
-                            <ListItem>
+                            <ListItem className={classes.listItem}>
                               <ListItemText primary={expLab.cargo + ' - ' + expLab.nombre} secondary={"Fecha Inicio: " + (expLab.fechaInicio ? expLab.fechaInicio : '-') + '/ Fecha Finalización: ' + (expLab.fechaFinalizacion ? expLab.fechaFinalizacion : '-')} />
                             </ListItem>
                           </List>
@@ -362,7 +362,7 @@ class CV extends React.PureComponent {
 
                     {datosUsuario.referencias && <React.Fragment>
                       <Grid item xs={12} sm={8}>
-                        <div className={classes.centerContainer}>
+                        <div className={classes.titlesContainer}>
                           <Typography variant="subheading" color="inherit" className={classes.usuario}>
                             Referencias
                           </Typography>
@@ -405,6 +405,11 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
   },
+  titlesContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: '20px'
+  },
   icono: {
     float: 'right',
     width: 200,
@@ -439,6 +444,10 @@ const styles = theme => ({
   button: {
     marginTop: '6px'
   },
+  listItem: {
+    padding: '0px',
+    paddingLeft: '2px',
+  }
 });
 
 let componente = CV;

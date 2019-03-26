@@ -193,8 +193,8 @@ class Home extends React.PureComponent {
                   {programa}
                 </Typography>
                 <Button onClick={this.onClickPreinscipcion} variant="outlined" color="primary" size="small" className={classes.button}>
-                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tienePreinscripcion ? 'delete' : 'create'}</Icon>
-                  {tienePreinscripcion ? 'Desinscribirme' : 'Inscribirme'}
+                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tienePreinscripcion ? 'list_alt' : 'create'}</Icon>
+                  {tienePreinscripcion ? 'Ver Preinscripción' : 'Inscribirme'}
                 </Button>
               </div>
 
@@ -245,7 +245,7 @@ class Home extends React.PureComponent {
                 </Typography>
                 <div className={classes.inlineBoxes}>
                   <Button onClick={this.onClickDatosAdicionales} variant="outlined" color="primary" size="small" className={classes.button}>
-                    <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment</Icon>
+                    <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>list_alt</Icon>
                     Ver Datos Adicionales
                 </Button> 
                   <Button onClick={this.onClickCV} variant="outlined" color="primary" size="small" className={classes.button}>
