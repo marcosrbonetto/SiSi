@@ -70,7 +70,7 @@ class CardEstudiosRealizados extends React.PureComponent {
         <ListItem>
 
           <ListItemText
-            primary={<Typography variant="subheading" className={classes.titulo}><b>{cardData.nombre}</b></Typography>}
+            primary={<Typography variant="subheading" className={classes.titulo}>{cardData.nombre}</Typography>}
             secondary={
               <React.Fragment>
                 <Grid container>

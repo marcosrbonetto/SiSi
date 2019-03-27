@@ -86,6 +86,13 @@ const styles = theme => ({
   },
   contentTable: {
     marginTop: '14px'
+  },
+  dialogWidth: {
+    height: '190px',
+    minWidth: '500px'
+  },
+  inputWidth: {
+    width: '100%'
   }
 });
 

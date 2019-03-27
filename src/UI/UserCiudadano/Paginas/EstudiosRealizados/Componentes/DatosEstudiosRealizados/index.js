@@ -194,18 +194,19 @@ class DatosEstudiosRealizados extends React.PureComponent {
                   var tipoEstudio = _.find(arrayTipoEstudios, { value: idTipoEstudio });
 
                   return <React.Fragment>
-                    <Typography variant="headline">
-                      {tipoEstudio.label}
+                    <Typography variant="headline" style={{marginTop: '10px'}}>
+                      <b>{tipoEstudio.label}</b>
                     </Typography>
+                    <hr />
                     {lista.map((cardData, index) => {
                         return <React.Fragment>
-                          {index == 0 && <hr />}
+                          
                           <CardEstudiosRealizados
                             cardData={cardData}
                             handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
                             handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
                           />
-                          <hr />
+                          
                         </React.Fragment>;
                     })}
                   </React.Fragment>;
