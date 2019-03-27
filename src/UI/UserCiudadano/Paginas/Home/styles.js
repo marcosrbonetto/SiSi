@@ -33,6 +33,11 @@ const styles = theme => ({
     height: 80,
     float: 'right'
   },
+  iconoOcupacion: {
+    width: '24px',
+    margin: '4px',
+    fill: '#737373',
+  },
   usuario: {
     fontSize: '1.5em',
     marginBottom: '4px'
