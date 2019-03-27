@@ -110,7 +110,8 @@ class CV extends React.PureComponent {
     // }
     const fechaNacimiento = datosUsuario.fechaNacimiento && dateToString(new Date(datosUsuario.fechaNacimiento), 'DD/MM/YYYY') || '-'
 
-    const estudiosRealizados = _.orderBy(datosUsuario.estudios, ['tipoEstudio'], ['desc']);
+    const estudiosRealizados = datosUsuario.estudios;
+    let gruposNivelesEstudios = _.groupBy(estudiosRealizados, (o) => { return o.tipoEstudio });
     const experienciasLaborales = _.orderBy(datosUsuario.experienciasLaborales, ['fechaInicio', 'fechaFinalizacion'], ['desc','desc']);
 
     return (
@@ -264,33 +265,46 @@ class CV extends React.PureComponent {
               <br /><br /><br /><br />
               <Grid item xs={12} sm={12}>
                 <Grid container>
-                          
+
                     {estudiosRealizados.length > 0 && <React.Fragment>
-                    <Grid item xs={12} sm={8}>
-                      <div className={classes.titlesContainer}>
-                        <Typography variant="subheading" color="inherit" className={classes.usuario}>
-                          Educación
-                        </Typography>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={4}></Grid>
-                
-                    <Grid item xs={12} sm={8}>
-                        {estudiosRealizados.map((estudio) => {
-                          let nombreNivelEd = '';
+                      <Grid item xs={12} sm={8}>
+                        <div className={classes.titlesContainer}>
+                          <Typography variant="subheading" color="inherit" className={classes.usuario}>
+                            Educación
+                          </Typography>
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} sm={4}></Grid>
+                  
+                      <Grid item xs={12} sm={8}>
+                        <List className={classes.root}>
+                          {Object.keys(gruposNivelesEstudios).reverse().map((value) => {
+                            
+                            var idTipoEstudio = parseInt(value);
 
-                          try {
-                            nombreNivelEd = _.find(arrayTipoEstudios, {value: parseInt(estudio.tipoEstudio)}).label;
-                          } catch (error) {}
+                            if (_.filter(gruposNivelesEstudios[idTipoEstudio], { tipoEstudio: idTipoEstudio }).length > 0) {
 
-                          return <List className={classes.root}>
-                            <ListItem className={classes.listItem}>
-                              <ListItemText primary={estudio.nombre + ' - ' + nombreNivelEd} secondary={"Fecha Inicio: " + (estudio.fechaInicio ? estudio.fechaInicio : '-') + '/ Fecha Finalización: ' + (estudio.fechaFinalizacion ? estudio.fechaFinalizacion : '-')} />
-                            </ListItem>
-                          </List>
-                        })}
-                    </Grid>
-                    <Grid id item xs={12} sm={4}></Grid>
+                              var lista = _.orderBy(gruposNivelesEstudios[idTipoEstudio], ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
+                              var tipoEstudio = _.find(arrayTipoEstudios, { value: idTipoEstudio });
+
+                              return <React.Fragment>
+                                <Typography variant="subheading" className={classes.tituloNivel}>
+                                  {tipoEstudio.label}
+                                </Typography>
+                                {lista.map((cardData, index) => {
+
+                                    return <React.Fragment>
+                                    <ListItem className={classNames(classes.listItem, classes.listItemEstudios)}>
+                                      <ListItemText primary={cardData.nombre || '-'} secondary={"Fecha Inicio: " + (cardData.fechaInicio ? cardData.fechaInicio : '-') + '/ Fecha Finalización: ' + (cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-')} />
+                                    </ListItem>
+                                    </React.Fragment>;
+                                })}
+                              </React.Fragment>;                              
+                            }
+                          })}
+                        </List>
+                      </Grid>
+                      <Grid item xs={12} sm={4}></Grid>
                     </React.Fragment>}
 
                     {datosUsuario.habilidades && <React.Fragment>
@@ -447,6 +461,13 @@ const styles = theme => ({
   listItem: {
     padding: '0px',
     paddingLeft: '2px',
+  },
+  listItemEstudios: {
+    marginLeft: '16px'
+  },
+  tituloNivel: {
+    fontSize: '18px',
+    fontWeight: '500'
   }
 });
 
