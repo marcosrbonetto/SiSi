@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, dateToString } from "@Utils/functions";
+import { mostrarAlerta, dateToString, stringToDate } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -49,9 +49,13 @@ class FormEstudiosRealizados extends React.PureComponent {
 
     this.state = {
       openForm: false,
+      itemToEdit: null,
       formInputs: [
         {
           id: 'InputTipoEstudio',
+          serviceField: 'tipoEstudio',
+          tipoInput: 'select',
+          type: 'select',
           value: 1,
           initValue: 1,
           error: false,
@@ -60,6 +64,9 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputNombreEstudio',
+          serviceField: 'nombre',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^.{0,250}$/,
@@ -69,6 +76,9 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputDescripcionEstudio',
+          serviceField: 'descripcion',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^.{0,250}$/,
@@ -78,6 +88,9 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputLugarCursadoEstudio',
+          serviceField: 'lugarDeCursado',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^.{0,250}$/,
@@ -87,8 +100,11 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputDuracionEstudio',
-          value: 0,
-          initValue: 0,
+          serviceField: 'duracion',
+          tipoInput: 'input',
+          type: 'text',
+          value: '',
+          initValue: '',
           valiateCondition: /^.{0,250}$/,
           error: false,
           required: false,
@@ -96,8 +112,12 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputFechaInicioEstudio',
+          serviceField: 'fechaInicio',
+          tipoInput: 'date',
+          type: 'date',
           value: null,
           initValue: null,
+          initDisabled: false,
           disabled: false,
           error: false,
           required: true,
@@ -105,8 +125,12 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputFechaFinEstudio',
+          serviceField: 'fechaFinalizacion',
+          tipoInput: 'date',
+          type: 'date',
           value: null,
           initValue: null,
+          initDisabled: true,
           disabled: true,
           error: false,
           required: false,
@@ -117,21 +141,34 @@ class FormEstudiosRealizados extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
+    
     if (JSON.stringify(this.props.itemToEdit) != JSON.stringify(nextProps.itemToEdit) &&
-      nextProps.itemToEdit instanceof Object) {
+    nextProps && nextProps.itemToEdit instanceof Object) {
 
       let formInputs = _.cloneDeep(this.state.formInputs);
+      //Reseteamos los valores por defecto
+      formInputs.map((inputs) => {
+        inputs.value = inputs.initValue;
+        inputs.error = false;
+
+        if(inputs.initDisabled)
+          inputs.disabled = inputs.initDisabled;
+      });
 
       Object.keys(nextProps.itemToEdit).map((field) => {
-        let currentField = _.find(formInputs, { id: field });
+        let currentField = _.find(formInputs, { serviceField: field });
 
         if (currentField) {
-          currentField.initValue = nextProps.itemToEdit[field];
-          currentField.value = nextProps.itemToEdit[field];
+          if(currentField.tipoInput == 'date')
+            currentField.value = nextProps.itemToEdit[field] != null ? stringToDate(nextProps.itemToEdit[field]) : null;
+          else
+            currentField.value = nextProps.itemToEdit[field];
         }
       });
 
       this.setState({
+        openForm: true,
+        itemToEdit: nextProps.itemToEdit,
         formInputs: formInputs
       });
     }
@@ -142,6 +179,9 @@ class FormEstudiosRealizados extends React.PureComponent {
     formInputs.map((inputs) => {
       inputs.value = inputs.initValue;
       inputs.error = false;
+
+      if(inputs.initDisabled)
+          inputs.disabled = inputs.initDisabled;
     });
 
     this.setState({
@@ -151,7 +191,9 @@ class FormEstudiosRealizados extends React.PureComponent {
   }
 
   onDialogoClose = () => {
-    this.setState({ openForm: false });
+    this.setState({ openForm: false, itemToEdit: null });
+
+    this.props.handleOnCloseDialog && this.props.handleOnCloseDialog();
   }
 
   onChangeInput = (value, type, input, props) => {
@@ -234,10 +276,16 @@ class FormEstudiosRealizados extends React.PureComponent {
       return false;
     }
 
-    const estudiosRealizadoAgregada = this.getEstudiosRealizados();
+    const itemToEdit = this.state.itemToEdit;
+    let estudiosRealizado = this.getEstudiosRealizados(itemToEdit);
 
-    this.setState({ openForm: false }, () => {
-      this.props.handleEstudiosRealizadosAgregada && this.props.handleEstudiosRealizadosAgregada(estudiosRealizadoAgregada);
+    this.setState({ openForm: false, itemToEdit: null }, () => {
+      if(itemToEdit) {
+        estudiosRealizado.id = itemToEdit.id;
+        this.props.handleEstudiosRealizadosModificada && this.props.handleEstudiosRealizadosModificada(estudiosRealizado);
+      } else {
+        this.props.handleEstudiosRealizadosAgregada && this.props.handleEstudiosRealizadosAgregada(estudiosRealizado);
+      }
     });
   }
 
@@ -248,7 +296,8 @@ class FormEstudiosRealizados extends React.PureComponent {
 
     const {
       openForm,
-      formInputs
+      formInputs,
+      itemToEdit
     } = this.state;
 
     //Set inputs
@@ -266,11 +315,11 @@ class FormEstudiosRealizados extends React.PureComponent {
           open={openForm}
           onDialogoOpen={this.onDialogoOpen}
           onDialogoClose={this.onDialogoClose}
-          titulo={'Agregar estudio realizado'}
+          titulo={itemToEdit ? 'Modificar estudio realizado' : 'Agregar estudio realizado'}
           classTextoLink={classes.textoLink}
           buttonAction={true}
           buttonOptions={{
-            labelAccept: 'Agregar',
+            labelAccept: itemToEdit ? 'Modificar' : 'Agregar',
             onDialogoAccept: this.agregarEstudiosRealizados,
             onDialogoCancel: this.onDialogoClose
           }}
@@ -288,7 +337,8 @@ class FormEstudiosRealizados extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputTipoEstudio'}
-                  tipoInput={'select'}
+                  tipoInput={InputTipoEstudio && InputTipoEstudio.tipoInput || 'input'}
+                  type={InputTipoEstudio && InputTipoEstudio.type || 'text'}
                   label={''}
                   error={InputTipoEstudio && InputTipoEstudio.error || false}
                   mensajeError={InputTipoEstudio && InputTipoEstudio.mensajeError || ''}
@@ -304,8 +354,8 @@ class FormEstudiosRealizados extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputNombreEstudio'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputNombreEstudio && InputNombreEstudio.tipoInput || 'input'}
+                  type={InputNombreEstudio && InputNombreEstudio.type || 'text'}
                   value={InputNombreEstudio && InputNombreEstudio.value || ''}
                   error={InputNombreEstudio && InputNombreEstudio.error || false}
                   mensajeError={InputNombreEstudio && InputNombreEstudio.mensajeError || 'Campo erroneo'}
@@ -319,8 +369,8 @@ class FormEstudiosRealizados extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputDescripcionEstudio'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputDescripcionEstudio && InputDescripcionEstudio.tipoInput || 'input'}
+                  type={InputDescripcionEstudio && InputDescripcionEstudio.type || 'text'}
                   value={InputDescripcionEstudio && InputDescripcionEstudio.value || ''}
                   error={InputDescripcionEstudio && InputDescripcionEstudio.error || false}
                   mensajeError={InputDescripcionEstudio && InputDescripcionEstudio.mensajeError || 'Campo erroneo'}
@@ -334,8 +384,8 @@ class FormEstudiosRealizados extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputLugarCursadoEstudio'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputLugarCursadoEstudio && InputLugarCursadoEstudio.tipoInput || 'input'}
+                  type={InputLugarCursadoEstudio && InputLugarCursadoEstudio.type || 'text'}
                   value={InputLugarCursadoEstudio && InputLugarCursadoEstudio.value || ''}
                   error={InputLugarCursadoEstudio && InputLugarCursadoEstudio.error || false}
                   mensajeError={InputLugarCursadoEstudio && InputLugarCursadoEstudio.mensajeError || 'Campo erroneo'}
@@ -350,8 +400,8 @@ class FormEstudiosRealizados extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputDuracionEstudio'}
-                    tipoInput={'input'}
-                    type={'text'}
+                    tipoInput={InputDuracionEstudio && InputDuracionEstudio.tipoInput || 'input'}
+                    type={InputDuracionEstudio && InputDuracionEstudio.type || 'text'}
                     value={InputDuracionEstudio && InputDuracionEstudio.value || ''}
                     error={InputDuracionEstudio && InputDuracionEstudio.error || false}
                     mensajeError={InputDuracionEstudio && InputDuracionEstudio.mensajeError || 'Campo erroneo'}
@@ -367,7 +417,8 @@ class FormEstudiosRealizados extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaInicioEstudio'}
-                    tipoInput={'date'}
+                    tipoInput={InputFechaInicioEstudio && InputFechaInicioEstudio.tipoInput || 'input'}
+                    type={InputFechaInicioEstudio && InputFechaInicioEstudio.type || 'text'}
                     label={'Fecha de inicio'}
                     value={InputFechaInicioEstudio && InputFechaInicioEstudio.value || null}
                     error={InputFechaInicioEstudio && InputFechaInicioEstudio.error || false}
@@ -381,7 +432,8 @@ class FormEstudiosRealizados extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaFinEstudio'}
-                    tipoInput={'date'}
+                    tipoInput={InputFechaFinEstudio && InputFechaFinEstudio.tipoInput || 'input'}
+                    type={InputFechaFinEstudio && InputFechaFinEstudio.type || 'text'}
                     label={'Fecha de fin'}
                     value={InputFechaFinEstudio && InputFechaFinEstudio.value || null}
                     error={InputFechaFinEstudio && InputFechaFinEstudio.error || false}

@@ -52,6 +52,10 @@ class CardExperienciaLaboral extends React.PureComponent {
     this.props.handleEliminarExperienciaLaboral && this.props.handleEliminarExperienciaLaboral(idExpLab);
   }
 
+  handleEditarExperienciaLaboral = (event) => {
+    this.props.handleEditarExperienciaLaboral && this.props.handleEditarExperienciaLaboral(this.props.cardData);
+  }
+  
   render() {
     const { classes, cardData } = this.props;
 
@@ -83,9 +87,9 @@ class CardExperienciaLaboral extends React.PureComponent {
                     </Typography>
                   </Grid>
                 </Grid>
-                {/* <Button title="Editar" onClick={this.handleEditarExperienciaLaboral} idEstRea={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEditar}>
+                <Button title="Editar" onClick={this.handleEditarExperienciaLaboral} idEstRea={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEditar}>
                   <EditIcon />
-                </Button> */}
+                </Button>
                 <Button title="Eliminar" onClick={this.handleEliminarExperienciaLaboral} idExpLab={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEliminar}>
                   <DeleteIcon />
                 </Button>

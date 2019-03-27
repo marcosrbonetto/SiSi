@@ -66,6 +66,23 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
   }
 
+  modificarEstudiosRealizados = (EstudiosRealizadosModificada) => {
+    if (!EstudiosRealizadosModificada) return false;
+
+    let listaEstudiosRealizados = _.cloneDeep(this.state.listaEstudiosRealizados);
+
+    _.remove(listaEstudiosRealizados, function (item) {
+      return item.id == EstudiosRealizadosModificada.id;
+    });
+
+    this.setState({
+      listaEstudiosRealizados: [...listaEstudiosRealizados, EstudiosRealizadosModificada]
+    }, () => {
+      console.log(this.state.listaEstudiosRealizados);
+      this.guardarEstudiosRealizados();
+    });
+  }
+
   agregarEstudiosRealizados = (EstudiosRealizadosAgregada) => {
     if (!EstudiosRealizadosAgregada) return false;
 
@@ -126,6 +143,12 @@ class DatosEstudiosRealizados extends React.PureComponent {
     });
   }
 
+  handleOnCloseDialog = () => {
+    this.setState({
+      itemToEdit: null
+    });
+  }
+
   render() {
     const { classes } = this.props;
     let { listaEstudiosRealizados, itemToEdit } = this.state;
@@ -145,7 +168,9 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
               <FormEstudiosRealizados
                 handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}
+                handleEstudiosRealizadosModificada={this.modificarEstudiosRealizados}
                 itemToEdit={itemToEdit}
+                handleOnCloseDialog={this.handleOnCloseDialog}
               />
             </React.Fragment>
           }}
