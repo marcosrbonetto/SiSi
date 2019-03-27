@@ -18,6 +18,7 @@ import { mostrarAlerta, mostrarMensaje, stringToDate, dateToString } from "@Util
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
 import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
 
 //Mis Componentes
 import MiCard from "@Componentes/MiNewCard";
@@ -27,6 +28,8 @@ import CardEstudiosRealizados from '@ComponentesEstudiosRealizados/CardEstudiosR
 import FormEstudiosRealizados from '@ComponentesEstudiosRealizados/FormEstudiosRealizados'
 
 import Rules_EstudiosRealizados from "@Rules/Rules_EstudiosRealizados";
+
+import { arrayTipoEstudios } from '@DatosEstaticos/EstudiosRealizados'
 
 const mapStateToProps = state => {
   return {
@@ -127,8 +130,8 @@ class DatosEstudiosRealizados extends React.PureComponent {
     const { classes } = this.props;
     let { listaEstudiosRealizados, itemToEdit } = this.state;
 
-    listaEstudiosRealizados = _.orderBy(listaEstudiosRealizados, ['tipoEstudio', 'fechaFinalizacion', 'fechaInicio'], ['desc', 'desc', 'desc']);
-
+    let gruposNiveles = _.groupBy(listaEstudiosRealizados, (o) => { return o.tipoEstudio });
+    
     return (
       <React.Fragment>
         <MiCard
@@ -156,16 +159,34 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
           <div className={classes.itemsContainer}>
             <List className={classes.root}>
-              {listaEstudiosRealizados.map((cardData, index) => {
-                return <React.Fragment>
-                  {index == 0 && <hr />}
-                  <CardEstudiosRealizados
-                    cardData={cardData}
-                    handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
-                    handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
-                  />
-                  <hr />
-                </React.Fragment>
+              {Object.keys(gruposNiveles).reverse().map((value) => {
+                
+                var idTipoEstudio = parseInt(value);
+
+                if (_.filter(gruposNiveles[idTipoEstudio], { tipoEstudio: idTipoEstudio }).length > 0) {
+
+                  var lista = _.orderBy(gruposNiveles[idTipoEstudio], ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
+                  var tipoEstudio = _.find(arrayTipoEstudios, { value: idTipoEstudio });
+
+                  return <React.Fragment>
+                    <Typography variant="headline">
+                      {tipoEstudio.label}
+                    </Typography>
+                    {lista.map((cardData, index) => {
+                        return <React.Fragment>
+                          {index == 0 && <hr />}
+                          <CardEstudiosRealizados
+                            cardData={cardData}
+                            handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
+                            handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
+                          />
+                          <hr />
+                        </React.Fragment>;
+                    })}
+                  </React.Fragment>;
+
+                }
+
               })}
             </List>
           </div>

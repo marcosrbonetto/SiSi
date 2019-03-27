@@ -70,7 +70,7 @@ class CardEstudiosRealizados extends React.PureComponent {
         <ListItem>
 
           <ListItemText
-            primary={<Typography variant="headline">{cardData.nombre}</Typography>}
+            primary={<Typography variant="subheading" className={classes.titulo}><b>{cardData.nombre}</b></Typography>}
             secondary={
               <React.Fragment>
                 <Grid container>
@@ -134,6 +134,9 @@ const styles = theme => ({
     '&:hover': {
       background: '#929090'
     }
+  },
+  titulo: {
+    fontSize: '20px'
   }
 });
 
