@@ -21,7 +21,7 @@ export const arrayTipoEstudios = [
   },
   {
     value: 6,
-    label: 'Carrera de Grado'
+    label: 'Universitario / Carrera de Grado'
   },
   {
     value: 7,

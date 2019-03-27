@@ -162,7 +162,7 @@ class Home extends React.PureComponent {
               </Typography>
               </div>
               <div className={classes.leftContainer}>
-                <Icon className={classes.iconoDetalle}>person</Icon>
+                <Icon className={classes.iconoDetalle}>work</Icon>
                 <Typography variant="body1">
                   {ocupacion}
                 </Typography>

@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, dateToString, stringToDateYYYYMMDD } from "@Utils/functions";
+import { mostrarAlerta, dateToString } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -96,23 +96,21 @@ class FormEstudiosRealizados extends React.PureComponent {
         },
         {
           id: 'InputFechaInicioEstudio',
-          value: dateToString(yesterdayDate, 'YYYY-MM-DD'),
-          initValue: dateToString(yesterdayDate, 'YYYY-MM-DD'),
-          valiateCondition: /^\d{4}(-)(((0)[0-9])|((1)[0-2]))(-)([0-2][0-9]|(3)[0-1])$/,
+          value: null,
+          initValue: null,
           disabled: false,
           error: false,
           required: true,
-          mensajeError: 'Error en el formato de la fecha'
+          mensajeError: 'La fecha es obligatoria y debe ser menor a la fecha fin.'
         },
         {
           id: 'InputFechaFinEstudio',
-          value: '',
-          initValue: '',
-          valiateCondition: /^\d{4}(-)(((0)[0-9])|((1)[0-2]))(-)([0-2][0-9]|(3)[0-1])$/,
+          value: null,
+          initValue: null,
           disabled: true,
           error: false,
           required: false,
-          mensajeError: 'Error en el formato de la fecha'
+          mensajeError: 'La fecha debe ser mayor a la fecha inicio.'
         }
       ]
     };
@@ -175,7 +173,6 @@ class FormEstudiosRealizados extends React.PureComponent {
   }
 
   validateForm = () => {
-
     const resultValidation = validateForm(this.state.formInputs);
 
     let formHayError = resultValidation.formHayError;
@@ -187,21 +184,15 @@ class FormEstudiosRealizados extends React.PureComponent {
       const InputFechaFinEstudio = _.find(formInputs, { id: 'InputFechaFinEstudio' });
 
       if (InputFechaInicioEstudio.value && InputFechaFinEstudio.value &&
-        stringToDateYYYYMMDD(InputFechaInicioEstudio.value).getTime() > stringToDateYYYYMMDD(InputFechaFinEstudio.value).getTime()) {
-
+        InputFechaInicioEstudio.disabled == false && InputFechaFinEstudio.disabled == false &&
+        InputFechaInicioEstudio.value.getTime() > InputFechaFinEstudio.value.getTime()) {
         InputFechaInicioEstudio.error = true;
         InputFechaFinEstudio.error = true;
-
-        InputFechaInicioEstudio.mensajeError = 'La fecha de inicio debe ser menor a la fecha fin.';
-        InputFechaFinEstudio.mensajeError = 'La fecha de fin debe ser mayor a la fecha inicio.';
 
         formHayError = true;
       } else {
         InputFechaInicioEstudio.error = false;
         InputFechaFinEstudio.error = false;
-
-        InputFechaInicioEstudio.mensajeError = 'Error en el formato de la fecha';
-        InputFechaFinEstudio.mensajeError = 'Error en el formato de la fecha';
       }
     }
 
@@ -224,12 +215,12 @@ class FormEstudiosRealizados extends React.PureComponent {
 
     const nuevaExpLab = {
       tipoEstudio: InputTipoEstudio.value,
-      nombre: InputNombreEstudio.value || _.find(arrayTipoEstudios, { value: InputTipoEstudio.value }).label,
-      descripcion: InputDescripcionEstudio.value || _.find(arrayTipoEstudios, { value: InputTipoEstudio.value }).label,
+      nombre: InputNombreEstudio.value,
+      descripcion: InputDescripcionEstudio.value,
       lugarDeCursado: InputLugarCursadoEstudio.value,
       duracion: InputDuracionEstudio.value,
-      fechaInicio: InputFechaInicioEstudio.value != '' ? dateToString(stringToDateYYYYMMDD(InputFechaInicioEstudio.value), 'DD/MM/YYYY') : null,
-      fechaFinalizacion: InputFechaFinEstudio.value != '' ? dateToString(stringToDateYYYYMMDD(InputFechaFinEstudio.value), 'DD/MM/YYYY') : null,
+      fechaInicio: !InputFechaInicioEstudio.disabled && InputFechaInicioEstudio.value ? dateToString(InputFechaInicioEstudio.value, 'DD/MM/YYYY') : null,
+      fechaFinalizacion: !InputFechaFinEstudio.disabled && InputFechaFinEstudio.value ? dateToString(InputFechaFinEstudio.value, 'DD/MM/YYYY') : null,
     };
 
     return nuevaExpLab;
@@ -369,19 +360,20 @@ class FormEstudiosRealizados extends React.PureComponent {
                   />
                 </Grid>
               </Grid>
-              <br /><br /><br />
+              <br /><br />
               <Grid container>
                 <Grid item xs={12} sm={6}>
                   <MiInput
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaInicioEstudio'}
-                    tipoInput={'date2'}
+                    tipoInput={'date'}
                     label={'Fecha de inicio'}
-                    value={InputFechaInicioEstudio && InputFechaInicioEstudio.value || new Date()}
+                    value={InputFechaInicioEstudio && InputFechaInicioEstudio.value || null}
                     error={InputFechaInicioEstudio && InputFechaInicioEstudio.error || false}
                     mensajeError={InputFechaInicioEstudio && InputFechaInicioEstudio.mensajeError || 'Campo erroneo'}
                     withDisabled={false}
+                    disabled={InputFechaInicioEstudio && InputFechaInicioEstudio.disabled != undefined ? InputFechaInicioEstudio.disabled : true}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -389,12 +381,13 @@ class FormEstudiosRealizados extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaFinEstudio'}
-                    tipoInput={'date2'}
+                    tipoInput={'date'}
                     label={'Fecha de fin'}
-                    value={InputFechaFinEstudio && InputFechaFinEstudio.value || new Date()}
+                    value={InputFechaFinEstudio && InputFechaFinEstudio.value || null}
                     error={InputFechaFinEstudio && InputFechaFinEstudio.error || false}
                     mensajeError={InputFechaFinEstudio && InputFechaFinEstudio.mensajeError || ''}
                     withDisabled={true}
+                    disabled={InputFechaFinEstudio && InputFechaFinEstudio.disabled != undefined ? InputFechaFinEstudio.disabled : true}
                   />
                 </Grid>
               </Grid>

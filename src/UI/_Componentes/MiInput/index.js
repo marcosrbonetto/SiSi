@@ -201,14 +201,26 @@ class MiInput extends React.Component {
                 />}
                 <DatePicker
                   disabled={withDisabled ? !checkDate : false}
-                  error={error || false}
-                  margin="normal"
-                  value={value || new Date()}
+                  keyboard
                   label={label}
+                  // format={props.getFormatString({
+                  //   moment: "DD/MM/YYYY",
+                  //   dateFns: "dd/MM/yyyy",
+                  // })}
                   format={'dd/MM/YYYY'}
+                  margin="normal"
+                  placeholder="Ej.: 10/10/2018"
+                  mask={value =>
+                    // handle clearing outside if value can be changed outside of the component
+                    value ? [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/] : []
+                  }
+                  value={value}
                   onChange={this.handleInputDateOnCange}
                   onBlur={this.handleInputOnFocusOut}
                   helperText={error && mensajeError}
+                  error={error || false}
+                  disableOpenOnEnter
+                  animateYearScrolling={false}
                 />
               </React.Fragment>
             }
@@ -321,7 +333,7 @@ export const onInputChangeValidateForm = (form, param) => {
   const inputChanged = _.find(formInputs, { id: param.props.id });
   if (!inputChanged) return false;
 
-  if (inputChanged[param.type] != undefined)
+  if (inputChanged[param.type] != undefined || inputChanged[param.type] == null) //inputChanged[param.type] == null en caso de fechas
     inputChanged[param.type] = param.value != undefined ? param.value : inputChanged.value;
 
   inputChanged.error = false;
@@ -353,10 +365,11 @@ export const validateForm = (form) => {
 
   formInputs.map((input) => {
     if (
-      (input.required && input.value == '') ||
-      (input.required && input.value == '' && input.disabled != undefined && !input.disabled) ||
+      (input.required && (input.value == '' || input.value == null)) ||
+      ((input.disabled  != undefined && input.disabled == false) && (input.value == '' || input.value == null)) ||
+      (input.required && (input.value == '' || input.value == null) && input.disabled != undefined && !input.disabled) ||
       (input.required && input.checked != undefined && !input.checked) ||
-      (input.value != '' && input.valiateCondition && !input.valiateCondition.test(input.value))
+      ((input.value != null && input.value != '') && input.valiateCondition && !input.valiateCondition.test(input.value))
     ) {
       input.error = true;
       formHayError = true;
