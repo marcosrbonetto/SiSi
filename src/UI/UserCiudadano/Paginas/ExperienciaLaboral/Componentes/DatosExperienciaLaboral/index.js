@@ -64,6 +64,23 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
   }
 
+  modificarExperienciaLaboral = (ExperienciaLaboralModificada) => {
+    if (!ExperienciaLaboralModificada) return false;
+
+    let listaExperienciaLaboral = _.cloneDeep(this.state.listaExperienciaLaboral);
+
+    _.remove(listaExperienciaLaboral, function (item) {
+      return item.id == ExperienciaLaboralModificada.id;
+    });
+
+    this.setState({
+      listaExperienciaLaboral: [...listaExperienciaLaboral, ExperienciaLaboralModificada]
+    }, () => {
+      console.log(this.state.listaExperienciaLaboral);
+      this.guardarExperienciaLaborales();
+    });
+  }
+
   agregarExperienciaLaboral = (experienciaLaboralAgregada) => {
     if (!experienciaLaboralAgregada) return false;
 
@@ -128,6 +145,12 @@ class DatosExperienciaLaboral extends React.PureComponent {
     });
   }
 
+  handleOnCloseDialog = () => {
+    this.setState({
+      itemToEdit: null
+    });
+  }
+
   render() {
     const { classes, loggedUser } = this.props;
     let { listaExperienciaLaboral, itemToEdit } = this.state;
@@ -152,7 +175,9 @@ class DatosExperienciaLaboral extends React.PureComponent {
 
               <FormExperienciaLaboral
                 handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
+                handleExperienciaLaboralModificada={this.modificarExperienciaLaboral}
                 itemToEdit={itemToEdit}
+                handleOnCloseDialog={this.handleOnCloseDialog}
               />
             </React.Fragment>
           }}

@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
-import { mostrarAlerta, dateToString } from "@Utils/functions";
+import { mostrarAlerta, dateToString, stringToDate } from "@Utils/functions";
 
 //Material UI
 import Grid from "@material-ui/core/Grid";
@@ -48,9 +48,13 @@ class FormExperienciaLaboral extends React.PureComponent {
 
     this.state = {
       openForm: false,
+      itemToEdit: null,
       formInputs: [
         {
           id: 'InputNombreEmpresa',
+          serviceField: 'nombre',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^.{0,250}$/,
@@ -60,6 +64,9 @@ class FormExperienciaLaboral extends React.PureComponent {
         },
         {
           id: 'InputDescripcionEmpresa',
+          serviceField: 'descripcion',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^.{0,250}$/,
@@ -69,6 +76,9 @@ class FormExperienciaLaboral extends React.PureComponent {
         },
         {
           id: 'InputDatosContactoEmpresa',
+          serviceField: 'contacto',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^.{0,250}$/,
@@ -78,6 +88,9 @@ class FormExperienciaLaboral extends React.PureComponent {
         },
         {
           id: 'InputCuitEmpresa',
+          serviceField: 'cuit',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^[0-9]{11}$/,
@@ -87,6 +100,9 @@ class FormExperienciaLaboral extends React.PureComponent {
         },
         {
           id: 'InputCargoActividadEmpresa',
+          serviceField: 'cargo',
+          tipoInput: 'input',
+          type: 'text',
           value: '',
           initValue: '',
           valiateCondition: /^.{0,250}$/,
@@ -96,18 +112,26 @@ class FormExperienciaLaboral extends React.PureComponent {
         },
         {
           id: 'InputFechaInicioEmpresa',
+          serviceField: 'fechaInicio',
+          tipoInput: 'date',
+          type: 'date',
           value: null,
           initValue: null,
           disabled: false,
+          initDisabled: false,
           error: false,
           required: true,
           mensajeError: 'La fecha es obligatoria y debe ser menor a la fecha fin.'
         },
         {
           id: 'InputFechaFinEmpresa',
+          serviceField: 'fechaFinalizacion',
+          tipoInput: 'date',
+          type: 'date',
           value: null,
           initValue: null,
           disabled: true,
+          initDisabled: true,
           error: false,
           required: false,
           mensajeError: 'La fecha debe ser mayor a la fecha inicio.'
@@ -118,20 +142,36 @@ class FormExperienciaLaboral extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (JSON.stringify(this.props.itemToEdit) != JSON.stringify(nextProps.itemToEdit) &&
-      nextProps.itemToEdit instanceof Object) {
+      nextProps && nextProps.itemToEdit instanceof Object) {
 
       let formInputs = _.cloneDeep(this.state.formInputs);
+      //Reseteamos los valores por defecto
+      formInputs.map((inputs) => {
+        inputs.value = inputs.initValue;
+        inputs.error = false;
+
+        if(inputs.initDisabled)
+          inputs.disabled = inputs.initDisabled;
+
+      });
 
       Object.keys(nextProps.itemToEdit).map((field) => {
-        let currentField = _.find(formInputs, { id: field });
+        let currentField = _.find(formInputs, { serviceField: field });
 
         if (currentField) {
-          currentField.initValue = nextProps.itemToEdit[field];
-          currentField.value = nextProps.itemToEdit[field];
+          if(currentField.tipoInput == 'date')
+            currentField.value = nextProps.itemToEdit[field] != null ? stringToDate(nextProps.itemToEdit[field]) : null;
+          else
+            currentField.value = nextProps.itemToEdit[field];
+
+          if(currentField.value && currentField.disabled != undefined) //Si hay valor por defecto no esta deshabilidato
+            currentField.disabled = false;
         }
       });
 
       this.setState({
+        openForm: true,
+        itemToEdit: nextProps.itemToEdit,
         formInputs: formInputs
       });
     }
@@ -142,6 +182,9 @@ class FormExperienciaLaboral extends React.PureComponent {
     formInputs.map((inputs) => {
       inputs.value = inputs.initValue;
       inputs.error = false;
+
+      if(inputs.initDisabled)
+        inputs.disabled = inputs.initDisabled;
     });
 
     this.setState({
@@ -151,7 +194,9 @@ class FormExperienciaLaboral extends React.PureComponent {
   }
 
   onDialogoClose = () => {
-    this.setState({ openForm: false });
+    this.setState({ openForm: false, itemToEdit: null });
+
+    this.props.handleOnCloseDialog && this.props.handleOnCloseDialog();
   }
 
   onChangeInput = (value, type, input, props) => {
@@ -234,10 +279,16 @@ class FormExperienciaLaboral extends React.PureComponent {
       return false;
     }
 
-    const experienciaLaboralAgregada = this.getExperienciaLaboral();
+    const itemToEdit = this.state.itemToEdit;
+    let experienciaLaboral = this.getExperienciaLaboral();
 
-    this.setState({ openForm: false }, () => {
-      this.props.handleExperienciaLaboralAgregada && this.props.handleExperienciaLaboralAgregada(experienciaLaboralAgregada);
+    this.setState({ openForm: false, itemToEdit: null }, () => {
+      if(itemToEdit) {
+        experienciaLaboral.id = itemToEdit.id;
+        this.props.handleExperienciaLaboralModificada && this.props.handleExperienciaLaboralModificada(experienciaLaboral);
+      } else {
+        this.props.handleExperienciaLaboralAgregada && this.props.handleExperienciaLaboralAgregada(experienciaLaboral);
+      }
     });
   }
 
@@ -248,7 +299,8 @@ class FormExperienciaLaboral extends React.PureComponent {
 
     const {
       openForm,
-      formInputs
+      formInputs,
+      itemToEdit
     } = this.state;
 
     //Set inputs
@@ -266,11 +318,11 @@ class FormExperienciaLaboral extends React.PureComponent {
           open={openForm}
           onDialogoOpen={this.onDialogoOpen}
           onDialogoClose={this.onDialogoClose}
-          titulo={'Agregar experiencia laboral'}
+          titulo={itemToEdit ? 'Modificar experiencia laboral' : 'Agregar experiencia laboral'}
           classTextoLink={classes.textoLink}
           buttonAction={true}
           buttonOptions={{
-            labelAccept: 'Agregar',
+            labelAccept: itemToEdit ? 'Modificar' : 'Agregar',
             onDialogoAccept: this.agregarExperienciaLaboral,
             onDialogoCancel: this.onDialogoClose
           }}
@@ -288,8 +340,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputNombreEmpresa'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputNombreEmpresa && InputNombreEmpresa.tipoInput || 'input'}
+                  type={InputNombreEmpresa && InputNombreEmpresa.type || 'text'}
                   value={InputNombreEmpresa && InputNombreEmpresa.value || ''}
                   error={InputNombreEmpresa && InputNombreEmpresa.error || false}
                   mensajeError={InputNombreEmpresa && InputNombreEmpresa.mensajeError || 'Campo erroneo'}
@@ -303,8 +355,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputDescripcionEmpresa'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputDescripcionEmpresa && InputDescripcionEmpresa.tipoInput || 'input'}
+                  type={InputDescripcionEmpresa && InputDescripcionEmpresa.type || 'text'}
                   value={InputDescripcionEmpresa && InputDescripcionEmpresa.value || ''}
                   error={InputDescripcionEmpresa && InputDescripcionEmpresa.error || false}
                   mensajeError={InputDescripcionEmpresa && InputDescripcionEmpresa.mensajeError || 'Campo erroneo'}
@@ -318,8 +370,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputDatosContactoEmpresa'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputDatosContactoEmpresa && InputDatosContactoEmpresa.tipoInput || 'input'}
+                  type={InputDatosContactoEmpresa && InputDatosContactoEmpresa.type || 'text'}
                   value={InputDatosContactoEmpresa && InputDatosContactoEmpresa.value || ''}
                   error={InputDatosContactoEmpresa && InputDatosContactoEmpresa.error || false}
                   mensajeError={InputDatosContactoEmpresa && InputDatosContactoEmpresa.mensajeError || 'Campo erroneo'}
@@ -333,8 +385,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputCuitEmpresa'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputCuitEmpresa && InputCuitEmpresa.tipoInput || 'input'}
+                  type={InputCuitEmpresa && InputCuitEmpresa.type || 'text'}
                   value={InputCuitEmpresa && InputCuitEmpresa.value || ''}
                   error={InputCuitEmpresa && InputCuitEmpresa.error || false}
                   mensajeError={InputCuitEmpresa && InputCuitEmpresa.mensajeError || 'Campo erroneo'}
@@ -348,8 +400,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                   onChange={this.onChangeInput}
                   onFocusOut={this.onFocusOutInput}
                   id={'InputCargoActividadEmpresa'}
-                  tipoInput={'input'}
-                  type={'text'}
+                  tipoInput={InputCargoActividadEmpresa && InputCargoActividadEmpresa.tipoInput || 'input'}
+                  type={InputCargoActividadEmpresa && InputCargoActividadEmpresa.type || 'text'}
                   value={InputCargoActividadEmpresa && InputCargoActividadEmpresa.value || ''}
                   error={InputCargoActividadEmpresa && InputCargoActividadEmpresa.error || false}
                   mensajeError={InputCargoActividadEmpresa && InputCargoActividadEmpresa.mensajeError || 'Campo erroneo'}
@@ -364,7 +416,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaInicioEmpresa'}
-                    tipoInput={'date'}
+                    tipoInput={InputFechaInicioEmpresa && InputFechaInicioEmpresa.tipoInput || 'input'}
+                    type={InputFechaInicioEmpresa && InputFechaInicioEmpresa.type || 'text'}
                     label={'Fecha de inicio'}
                     value={InputFechaInicioEmpresa && InputFechaInicioEmpresa.value || null}
                     error={InputFechaInicioEmpresa && InputFechaInicioEmpresa.error || false}
@@ -378,7 +431,8 @@ class FormExperienciaLaboral extends React.PureComponent {
                     onChange={this.onChangeInput}
                     onFocusOut={this.onFocusOutInput}
                     id={'InputFechaFinEmpresa'}
-                    tipoInput={'date'}
+                    tipoInput={InputFechaFinEmpresa && InputFechaFinEmpresa.tipoInput || 'input'}
+                    type={InputFechaFinEmpresa && InputFechaFinEmpresa.type || 'text'}
                     label={'Fecha de fin'}
                     value={InputFechaFinEmpresa && InputFechaFinEmpresa.value || null}
                     error={InputFechaFinEmpresa && InputFechaFinEmpresa.error || false}

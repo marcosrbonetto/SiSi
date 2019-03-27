@@ -163,6 +163,9 @@ class FormEstudiosRealizados extends React.PureComponent {
             currentField.value = nextProps.itemToEdit[field] != null ? stringToDate(nextProps.itemToEdit[field]) : null;
           else
             currentField.value = nextProps.itemToEdit[field];
+
+          if(currentField.value && currentField.disabled != undefined) //Si hay valor por defecto no esta deshabilidato
+            currentField.disabled = false;
         }
       });
 
@@ -181,7 +184,7 @@ class FormEstudiosRealizados extends React.PureComponent {
       inputs.error = false;
 
       if(inputs.initDisabled)
-          inputs.disabled = inputs.initDisabled;
+        inputs.disabled = inputs.initDisabled;
     });
 
     this.setState({
@@ -277,7 +280,7 @@ class FormEstudiosRealizados extends React.PureComponent {
     }
 
     const itemToEdit = this.state.itemToEdit;
-    let estudiosRealizado = this.getEstudiosRealizados(itemToEdit);
+    let estudiosRealizado = this.getEstudiosRealizados();
 
     this.setState({ openForm: false, itemToEdit: null }, () => {
       if(itemToEdit) {
