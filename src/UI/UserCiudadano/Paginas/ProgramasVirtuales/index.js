@@ -79,6 +79,7 @@ class ProgramasVirtuales extends React.PureComponent {
         });
       })
       .catch((error) => {
+        this.props.mostrarCargando(false);
         mostrarAlerta('Ocurrió un error al intentar obtener los programas.');
         console.error('Error Servicio "Rules_Preinscripcion.getProgramas": ' + error);
       });

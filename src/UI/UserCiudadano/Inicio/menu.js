@@ -24,8 +24,8 @@ const Menu = [
     exact: true,
     mostrarEnMenu: true,
     component: Programas,
-    nombre: "Programas",
-    titulo: "Programas",
+    nombre: "Programas Presenciales",
+    titulo: "Programas Presenciales",
   },
   {
     url: "/Inicio/ProgramasVirtuales",

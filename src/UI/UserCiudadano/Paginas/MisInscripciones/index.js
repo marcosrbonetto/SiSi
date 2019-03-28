@@ -22,7 +22,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import CancelIcon from '@material-ui/icons/Cancel';
+import CloseIcon from '@material-ui/icons/Close';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Typography from '@material-ui/core/Typography';
 import Button from "@material-ui/core/Button";
 import Icon from '@material-ui/core/Icon';
@@ -66,6 +67,7 @@ class MisInscripciones extends React.PureComponent {
 
     this.state = {
       dialogoOpen: false,
+      dialogoOpenAccesoDenegado: false,
       misInscripcionesVirtuales: misInscripcionesVirtuales,
       miInscripcionPresencial: miInscripcionPresencial
     };
@@ -141,13 +143,24 @@ class MisInscripciones extends React.PureComponent {
     this.setState({ dialogoOpen: false });
   }
 
+  onDialogoOpenAccesoDenegado = () => {
+    this.setState({ dialogoOpenAccesoDenegado: true });
+  }
+
+  onDialogoCloseAccesoDenegado = () => {
+    this.setState({ dialogoOpenAccesoDenegado: false });
+  }
+
   volverInicio = () => {
     this.props.redireccionar("/Inicio");
   }
 
   render() {
     const { classes } = this.props;
-    const { dialogoOpen, miInscripcionPresencial, misInscripcionesVirtuales } = this.state;
+    const { dialogoOpen,
+      dialogoOpenAccesoDenegado,
+      miInscripcionPresencial,
+      misInscripcionesVirtuales } = this.state;
 
     return (
       <div className={classes.mainContainer}>
@@ -166,7 +179,7 @@ class MisInscripciones extends React.PureComponent {
                     return <ListItem>
                       <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag + ' - ' + curso.nombrePrograma} />
                       <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'No'} onClick={this.onDialogoOpen}>
-                        <CancelIcon />
+                        <CloseIcon />
                       </Avatar>
                     </ListItem>;
                   })}
@@ -179,7 +192,11 @@ class MisInscripciones extends React.PureComponent {
                     return <ListItem>
                       <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag + ' - ' + curso.nombrePrograma} />
                       <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'Si'} onClick={this.onDialogoOpen}>
-                        <CancelIcon />
+                        <CloseIcon />
+                      </Avatar>
+                      {/* classes.iconoAcceso */}
+                      <Avatar className={classes.iconoAccesoDenegado} onClick={this.onDialogoOpenAccesoDenegado}>
+                        <ArrowForwardIcon />
                       </Avatar>
                     </ListItem>;
                   })}
@@ -215,6 +232,15 @@ class MisInscripciones extends React.PureComponent {
           }}
         >
           ¿Desea cancelar su preinscripción?
+        </MiControledDialog>
+
+        <MiControledDialog
+          open={dialogoOpenAccesoDenegado}
+          onDialogoOpen={this.onDialogoOpenAccesoDenegado}
+          onDialogoClose={this.onDialogoCloseAccesoDenegado}
+          titulo={'Sin Acceso'}
+        >
+          {'Actualmente no tiene acceso al curso, verifique el'} <br/> {'calendario para corroborar el comienzo del mismo.'}
         </MiControledDialog>
 
       </div>

@@ -20,7 +20,7 @@ const styles = theme => ({
   },
   iconoBoton: {
     fontSize: '14px',
-    lineHeight: '18px',
+    lineHeight: '12px',
     marginRight: '4px',
   },
   textCenter: {
@@ -31,7 +31,6 @@ const styles = theme => ({
     margin: '0px auto'
   },
   button: {
-    ...theme.button,
     width: '160px',
     margin: '0px auto',
   },
@@ -49,7 +48,25 @@ const styles = theme => ({
     borderRadius: '20px'
   },
   iconDesinscripcion: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    color: theme.color.error.main,
+    background: '#fff',
+    border: '1px solid ' + theme.color.error.main,
+    margin: 'auto 2px'
+  },
+  iconoAccesoDenegado: {
+    cursor: 'pointer',
+    color: '#bdbdbd',
+    background: '#fff',
+    border: '1px solid #bdbdbd',
+    margin: 'auto 2px'
+  },
+  iconoAcceso: {
+    cursor: 'pointer',
+    color: theme.color.ok.main,
+    background: '#fff',
+    border: '1px solid ' + theme.color.ok.main,
+    margin: 'auto 2px'
   }
 });
 
