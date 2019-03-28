@@ -11,12 +11,12 @@ import { mostrarCargando } from '@Redux/Actions/mainContent'
 
 //Material UI
 import Typography from '@material-ui/core/Typography';
-
-//Mis Componentes
-import MiCard from "@Componentes/MiCard";
-
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 
 import { dateToString } from "@Utils/functions";
 
@@ -52,45 +52,77 @@ class CardExperienciaLaboral extends React.PureComponent {
     this.props.handleEliminarExperienciaLaboral && this.props.handleEliminarExperienciaLaboral(idExpLab);
   }
 
+  handleEditarExperienciaLaboral = (event) => {
+    this.props.handleEditarExperienciaLaboral && this.props.handleEditarExperienciaLaboral(this.props.cardData);
+  }
+  
   render() {
     const { classes, cardData } = this.props;
 
     return (
       <React.Fragment>
-        <MiCard className={classes.container}>
-            <Typography variant="headline">
-              {cardData.nombre || '-'}
-              <Button onClick={this.handleEliminarExperienciaLaboral} idExpLab={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEliminar}>
-                <DeleteIcon />
-              </Button>
-            </Typography>
-            <Typography component="p">
-              <b>Descripción:</b> {cardData.descripcion || '-'}<br />
-              <b>Contacto:</b> {cardData.contacto || '-'}<br />
-              <b>CUIT:</b> {cardData.cuit || '-'}<br />
-              <b>Cargo/Actividad:</b> {cardData.cargo || '-'}<br />
-              <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
-              <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}
-            </Typography>
-        </MiCard>
+        <ListItem>
+
+          <ListItemText
+            primary={<Typography variant="headline">{cardData.nombre}</Typography>}
+            secondary={
+              <React.Fragment>
+                <Grid container>
+                  <Grid item xs={12} sm={12}>
+                    <Typography component="p">
+                      <b>Descripción:</b> {cardData.descripcion || '-'}<br />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography component="p">
+                      <b>Contacto:</b> {cardData.contacto || '-'}<br />
+                      <b>CUIT:</b> {cardData.cuit || '-'}<br />
+                      <b>Cargo/Actividad:</b> {cardData.cargo || '-'}<br />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography component="p">
+                      <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
+                      <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <Button title="Editar" onClick={this.handleEditarExperienciaLaboral} idEstRea={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEditar}>
+                  <EditIcon />
+                </Button>
+                <Button title="Eliminar" onClick={this.handleEliminarExperienciaLaboral} idExpLab={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEliminar}>
+                  <DeleteIcon />
+                </Button>
+              </React.Fragment>
+            }
+          />
+
+        </ListItem>
       </React.Fragment>
     );
   }
 }
 
 const styles = theme => ({
-  container: {
-    display: 'inline-block',
-    margin: '10px',
-    minWidth: '220px'
-  },
-  iconoEliminar: {
-    top: '-4px',
-    right: '-5px',
+  iconoEditar: {
+    top: '14px',
+    right: '56px',
+    position: 'absolute',
     background: '#cacaca',
     boxShadow: 'none',
     minWidth: '10px',
-    float: 'right',
+    borderRadius: '30px',
+    '&:hover': {
+      background: '#929090'
+    }
+  },
+  iconoEliminar: {
+    top: '14px',
+    right: '12px',
+    position: 'absolute',
+    background: '#cacaca',
+    boxShadow: 'none',
+    minWidth: '10px',
     borderRadius: '30px',
     '&:hover': {
       background: '#929090'

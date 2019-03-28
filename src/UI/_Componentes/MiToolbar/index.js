@@ -166,11 +166,15 @@ class MiToolbar extends React.Component {
             {titulo}
           </Typography>
 
+          {/* {this.state.datosUsuario && <div className={classes.loggedIcons}>
+            <MiNotificacion />
+          </div>} */}
+
+          <MiMenuApps />
+
           {/* Icono de Notificaciones */}
           {/* Icono del usuario */}
           {this.state.datosUsuario && <div className={classes.loggedIcons}>
-            <MiNotificacion />
-
             <IconButton onClick={this.onUsuarioPress} color="inherit">
               <Avatar alt="Menu del usuario" src={urlFotoPerfilMiniatura} className={classNames(classes.icono)} />
             </IconButton>
@@ -183,8 +187,6 @@ class MiToolbar extends React.Component {
               Iniciar Sesión
             </Button>
           </div>*/}
-
-          <MiMenuApps />
 
         </Toolbar>
 
@@ -306,9 +308,6 @@ const styles = theme => {
       marginBottom: '5px',
     },
     loggedIcons: {
-      textAlign: 'right',
-      minWidth: '100px',
-      right: '20px',
       '& > *': {
         display: 'inline-block'
       }

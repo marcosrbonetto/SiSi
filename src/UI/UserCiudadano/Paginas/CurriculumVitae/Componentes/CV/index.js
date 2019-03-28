@@ -11,6 +11,9 @@ import classNames from "classnames";
 
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
+import { push } from "connected-react-router";
+
+//Components
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Avatar from "@material-ui/core/Avatar";
@@ -40,6 +43,9 @@ const mapDispatchToProps = dispatch => ({
   mostrarCargando: (cargar) => {
     dispatch(mostrarCargando(cargar));
   },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class CV extends React.PureComponent {
@@ -47,7 +53,6 @@ class CV extends React.PureComponent {
     super(props);
 
     this.state = {
-      openDialog: false,
       urlFotoPerfil: '#'
     };
   }
@@ -70,17 +75,8 @@ class CV extends React.PureComponent {
     });
   }
 
-  onDialogoOpen = () => {
-    this.setState({ openDialog: true });
-  }
-
-  onDialogoClose = () => {
-    this.setState({ openDialog: false });
-  }
-
   handleOnLoading = () => {
     this.props.mostrarCargando(true);
-    this.onDialogoClose();
   }
 
   handleOnFinish = () => {
@@ -93,9 +89,12 @@ class CV extends React.PureComponent {
     mostrarAlerta('Ocurrió un error al intentar descargar el CV');
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const {
-      openDialog,
       urlFotoPerfil
     } = this.state;
 
@@ -111,30 +110,27 @@ class CV extends React.PureComponent {
     // }
     const fechaNacimiento = datosUsuario.fechaNacimiento && dateToString(new Date(datosUsuario.fechaNacimiento), 'DD/MM/YYYY') || '-'
 
-    const estudiosRealizados = _.orderBy(datosUsuario.estudios, ['tipoEstudio'], ['desc']);
-    const experienciasLaborales = _.orderBy(datosUsuario.experienciasLaborales, ['fechaFinalizacion'], ['desc']);
+    const estudiosRealizados = datosUsuario.estudios;
+    let gruposNivelesEstudios = _.groupBy(estudiosRealizados, (o) => { return o.tipoEstudio });
+    const experienciasLaborales = _.orderBy(datosUsuario.experienciasLaborales, ['fechaInicio', 'fechaFinalizacion'], ['desc','desc']);
 
     return (
       <React.Fragment>
-        <Button onClick={this.onDialogoOpen} variant="outlined" color="primary" size="small" className={classes.button}>
-          <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>assignment_ind</Icon>
-          Descargar
-        </Button>
         
-        <MiControledDialog
-          open={openDialog}
-          onDialogoOpen={this.onDialogoOpen}
-          onDialogoClose={this.onDialogoClose}
-          titulo={'Curriculum Vitae'}
-          buttonAction={true}
-        >
-          <div key="mainContent">
-          <Export fileName={'CV'} onLoading={this.handleOnLoading} onFinish={this.handleOnFinish} onError={this.handleOnError}>
+          <Export 
+          buttonVover={
+            <React.Fragment>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+            </React.Fragment>
+          }
+          fileName={'CV'} onLoading={this.handleOnLoading} onFinish={this.handleOnFinish} onError={this.handleOnError}>
             <Grid container>
               <Grid item xs={12} sm={12} className={classes.widthHoja}>
                 <Grid container>
                   <Grid item xs={12} sm={8}>
-                    <div className={classes.centerContainer}>
+                    <div className={classes.titlesContainer}>
                       <Typography variant="subheading" color="inherit" className={classes.usuario}>
                         {datosUsuario &&
                           datosUsuario.apellido + ', ' + datosUsuario.nombre}
@@ -269,38 +265,51 @@ class CV extends React.PureComponent {
               <br /><br /><br /><br />
               <Grid item xs={12} sm={12}>
                 <Grid container>
-                          
+
                     {estudiosRealizados.length > 0 && <React.Fragment>
-                    <Grid item xs={12} sm={8}>
-                      <div className={classes.centerContainer}>
-                        <Typography variant="subheading" color="inherit" className={classes.usuario}>
-                          Educación
-                        </Typography>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={4}></Grid>
-                
-                    <Grid item xs={12} sm={8}>
-                        {estudiosRealizados.map((estudio) => {
-                          let nombreNivelEd = '';
+                      <Grid item xs={12} sm={8}>
+                        <div className={classes.titlesContainer}>
+                          <Typography variant="subheading" color="inherit" className={classes.usuario}>
+                            Educación
+                          </Typography>
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} sm={4}></Grid>
+                  
+                      <Grid item xs={12} sm={8}>
+                        <List className={classes.root}>
+                          {Object.keys(gruposNivelesEstudios).reverse().map((value) => {
+                            
+                            var idTipoEstudio = parseInt(value);
 
-                          try {
-                            nombreNivelEd = _.find(arrayTipoEstudios, {value: parseInt(estudio.tipoEstudio)}).label;
-                          } catch (error) {}
+                            if (_.filter(gruposNivelesEstudios[idTipoEstudio], { tipoEstudio: idTipoEstudio }).length > 0) {
 
-                          return <List className={classes.root}>
-                            <ListItem>
-                              <ListItemText primary={estudio.nombre + ' - ' + nombreNivelEd} secondary={"Fecha Inicio: " + (estudio.fechaInicio ? estudio.fechaInicio : '-') + '/ Fecha Finalización: ' + (estudio.fechaFinalizacion ? estudio.fechaFinalizacion : '-')} />
-                            </ListItem>
-                          </List>
-                        })}
-                    </Grid>
-                    <Grid id item xs={12} sm={4}></Grid>
+                              var lista = _.orderBy(gruposNivelesEstudios[idTipoEstudio], ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
+                              var tipoEstudio = _.find(arrayTipoEstudios, { value: idTipoEstudio });
+
+                              return <React.Fragment>
+                                <Typography variant="subheading" className={classes.tituloNivel}>
+                                  {tipoEstudio.label}
+                                </Typography>
+                                {lista.map((cardData, index) => {
+
+                                    return <React.Fragment>
+                                    <ListItem className={classNames(classes.listItem, classes.listItemEstudios)}>
+                                      <ListItemText primary={cardData.nombre || '-'} secondary={"Fecha Inicio: " + (cardData.fechaInicio ? cardData.fechaInicio : '-') + '/ Fecha Finalización: ' + (cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-')} />
+                                    </ListItem>
+                                    </React.Fragment>;
+                                })}
+                              </React.Fragment>;                              
+                            }
+                          })}
+                        </List>
+                      </Grid>
+                      <Grid item xs={12} sm={4}></Grid>
                     </React.Fragment>}
 
                     {datosUsuario.habilidades && <React.Fragment>
                       <Grid item xs={12} sm={8}>
-                        <div className={classes.centerContainer}>
+                        <div className={classes.titlesContainer}>
                           <Typography variant="subheading" color="inherit" className={classes.usuario}>
                             Habilidades
                           </Typography>
@@ -323,7 +332,7 @@ class CV extends React.PureComponent {
 
                     {datosUsuario.idiomas && <React.Fragment>
                       <Grid item xs={12} sm={8}>
-                        <div className={classes.centerContainer}>
+                        <div className={classes.titlesContainer}>
                           <Typography variant="subheading" color="inherit" className={classes.usuario}>
                             Idiomas
                           </Typography>
@@ -345,7 +354,7 @@ class CV extends React.PureComponent {
 
                     {experienciasLaborales.length > 0 && <React.Fragment>
                     <Grid item xs={12} sm={8}>
-                      <div className={classes.centerContainer}>
+                      <div className={classes.titlesContainer}>
                         <Typography variant="subheading" color="inherit" className={classes.usuario}>
                           Experiencia Laboral
                         </Typography>
@@ -356,7 +365,7 @@ class CV extends React.PureComponent {
                     <Grid item xs={12} sm={8}>
                         {experienciasLaborales.map((expLab) => {
                           return <List className={classes.root}>
-                            <ListItem>
+                            <ListItem className={classes.listItem}>
                               <ListItemText primary={expLab.cargo + ' - ' + expLab.nombre} secondary={"Fecha Inicio: " + (expLab.fechaInicio ? expLab.fechaInicio : '-') + '/ Fecha Finalización: ' + (expLab.fechaFinalizacion ? expLab.fechaFinalizacion : '-')} />
                             </ListItem>
                           </List>
@@ -367,7 +376,7 @@ class CV extends React.PureComponent {
 
                     {datosUsuario.referencias && <React.Fragment>
                       <Grid item xs={12} sm={8}>
-                        <div className={classes.centerContainer}>
+                        <div className={classes.titlesContainer}>
                           <Typography variant="subheading" color="inherit" className={classes.usuario}>
                             Referencias
                           </Typography>
@@ -392,8 +401,6 @@ class CV extends React.PureComponent {
 
               </Grid>
             </Export>
-          </div>
-        </MiControledDialog>
       </React.Fragment>
     );
   }
@@ -411,6 +418,11 @@ const styles = theme => ({
   leftContainer: {
     display: 'flex',
     alignItems: 'center',
+  },
+  titlesContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    marginTop: '20px'
   },
   icono: {
     float: 'right',
@@ -446,6 +458,17 @@ const styles = theme => ({
   button: {
     marginTop: '6px'
   },
+  listItem: {
+    padding: '0px',
+    paddingLeft: '2px',
+  },
+  listItemEstudios: {
+    marginLeft: '16px'
+  },
+  tituloNivel: {
+    fontSize: '18px',
+    fontWeight: '500'
+  }
 });
 
 let componente = CV;

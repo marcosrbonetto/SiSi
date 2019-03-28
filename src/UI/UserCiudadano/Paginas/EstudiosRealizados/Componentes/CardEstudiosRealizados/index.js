@@ -13,16 +13,16 @@ import { mostrarCargando } from '@Redux/Actions/mainContent'
 
 //Material UI
 import Typography from '@material-ui/core/Typography';
-
-//Mis Componentes
-import MiCard from "@Componentes/MiCard";
-
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 
 import { dateToString } from "@Utils/functions";
 
-import {arrayTipoEstudios} from '@DatosEstaticos/EstudiosRealizados'
+import { arrayTipoEstudios } from '@DatosEstaticos/EstudiosRealizados'
 
 const mapStateToProps = state => {
   return {
@@ -56,6 +56,10 @@ class CardEstudiosRealizados extends React.PureComponent {
     this.props.handleEliminarEstudiosRealizados && this.props.handleEliminarEstudiosRealizados(idEstRea);
   }
 
+  handleEditarEstudiosRealizados = (event) => {
+    this.props.handleEditarEstudiosRealizados && this.props.handleEditarEstudiosRealizados(this.props.cardData);
+  }
+
   render() {
     const { classes, cardData } = this.props;
 
@@ -63,44 +67,76 @@ class CardEstudiosRealizados extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <MiCard className={classes.container}>
-            <Typography variant="headline">
-              {cardData.nombre || '-'}
-              <Button onClick={this.handleEliminarEstudiosRealizados} idEstRea={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEliminar}>
-                <DeleteIcon />
-              </Button>
-            </Typography>
-            <Typography component="p">
-              <b>Tipo:</b> {tipoEstudio && tipoEstudio.label || '-'}<br />
-              <b>Descripción:</b> {cardData.descripcion || '-'}<br />
-              <b>Lugar de Cursado:</b> {cardData.lugarDeCursado || '-'}<br />
-              <b>Duración:</b> {cardData.duracion || '-'}<br />
-              <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
-              <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}<br />
-            </Typography>
-        </MiCard>
+        <ListItem>
+
+          <ListItemText
+            primary={<Typography variant="subheading" className={classes.titulo}>{cardData.nombre}</Typography>}
+            secondary={
+              <React.Fragment>
+                <Grid container>
+                  <Grid item xs={12} sm={12}>
+                    <Typography component="p">
+                      <b>Descripción:</b> {cardData.descripcion || '-'}<br />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography component="p">
+                      <b>Tipo:</b> {tipoEstudio && tipoEstudio.label || '-'}<br />
+                      <b>Lugar de Cursado:</b> {cardData.lugarDeCursado || '-'}<br />
+                      <b>Duración:</b> {cardData.duracion || '-'}<br />
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography component="p">
+                      <b>Desde:</b> {cardData.fechaInicio ? cardData.fechaInicio : '-'}<br />
+                      <b>Hasta:</b> {cardData.fechaFinalizacion ? cardData.fechaFinalizacion : '-'}<br />
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <Button title="Editar" onClick={this.handleEditarEstudiosRealizados} idEstRea={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEditar}>
+                  <EditIcon />
+                </Button>
+                <Button title="Eliminar" onClick={this.handleEliminarEstudiosRealizados} idEstRea={cardData.id || 0} size="small" color="secondary" aria-label="Add" className={classes.iconoEliminar}>
+                  <DeleteIcon />
+                </Button>
+              </React.Fragment>
+            }
+          />
+
+        </ListItem>
+
       </React.Fragment>
     );
   }
 }
 
 const styles = theme => ({
-  container: {
-    display: 'inline-block',
-    margin: '10px',
-    minWidth: '220px'
-  },
-  iconoEliminar: {
-    top: '-4px',
-    right: '-5px',
+  iconoEditar: {
+    top: '14px',
+    right: '56px',
+    position: 'absolute',
     background: '#cacaca',
     boxShadow: 'none',
     minWidth: '10px',
-    float: 'right',
     borderRadius: '30px',
     '&:hover': {
       background: '#929090'
     }
+  },
+  iconoEliminar: {
+    top: '14px',
+    right: '12px',
+    position: 'absolute',
+    background: '#cacaca',
+    boxShadow: 'none',
+    minWidth: '10px',
+    borderRadius: '30px',
+    '&:hover': {
+      background: '#929090'
+    }
+  },
+  titulo: {
+    fontSize: '20px'
   }
 });
 

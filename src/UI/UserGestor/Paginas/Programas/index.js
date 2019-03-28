@@ -20,7 +20,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import LockIcon from '@material-ui/icons/Lock';
+import EmailIcon from '@material-ui/icons/Email';
+import TextField from '@material-ui/core/TextField';
 
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
@@ -52,13 +53,14 @@ class Programas extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.idUsuarioAEliminar = null;
-
+    this.idProgramaAExportarExcel = null;
+    
     this.state = {
-      programaFiltroSeleccionado: -1,
       arrayProgramas: [],
       valueInputNombre: '',
-      rowList: []
+      rowList: [],
+      inputEmail: this.props.loggedUser.datos.email,
+      errorInputEmail: false
     };
   }
 
@@ -88,11 +90,11 @@ class Programas extends React.PureComponent {
           const itemPrograma = {
             nombre: programa.nombre,
             descripcion: programa.descripcion != '' ? programa.descripcion : '',
-            // acciones: <React.Fragment>
-            //   <Button idPrograma={programa.id} onClick={this.onDialogOpenCerrarPrograma} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-            //     <LockIcon />
-            //   </Button>
-            // </React.Fragment>,
+            acciones: <React.Fragment>
+              <Button title="Enviar Excel" idPrograma={programa.id} onClick={this.onDialogOpenExportarExcelPrograma} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+                <EmailIcon />
+              </Button>
+            </React.Fragment>,
             data: {
               ...programa
             }
@@ -116,21 +118,21 @@ class Programas extends React.PureComponent {
       });
   }
 
-  onDialogOpenCerrarPrograma = (event) => {
+  onDialogOpenExportarExcelPrograma = (event) => {
     const idPrograma = event.currentTarget.attributes.idPrograma.value;
     if (!idPrograma) return false;
-    this.idProgramaACerrar = idPrograma;
+    this.idProgramaAExportarExcel = idPrograma;
 
     this.setState({
-      dialogCerrarPrograma: true
+      dialogExportarExcelPrograma: true
     })
   }
 
-  onDialogCloseCerrarPrograma = () => {
-    this.idProgramaAEliminar = null;
+  onDialogCloseExportarExcelPrograma = () => {
+    this.idProgramaAExportarExcel = null;
 
     this.setState({
-      dialogCerrarPrograma: false
+      dialogExportarExcelPrograma: false
     })
   }
 
@@ -157,12 +159,73 @@ class Programas extends React.PureComponent {
     })
   }
 
+  handleInputEmailOnCange = (event) => {
+    this.setState({
+      inputEmail: event.target.value
+    });
+  }
+
+  handleCursoCancelado = () => {
+    this.setState({
+      dialogExportarExcelPrograma: false,
+      inputEmail: this.props.loggedUser.datos.email,
+      errorInputEmail: false
+    })
+  }
+
+  handleCursoAceptado = () => {
+    if (this.state.inputEmail == '' || (this.state.inputEmail != '' && !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.state.inputEmail))) {
+      this.setState({
+        errorInputEmail: true
+      });
+      return false;
+    }
+    
+    this.props.mostrarCargando(true);
+
+    const idPrograma = this.idProgramaAExportarExcel;
+    this.idProgramaAExportarExcel = null;
+
+    const email = this.state.inputEmail;
+
+    this.setState({
+      dialogExportarExcelPrograma: false,
+      inputEmail: this.props.loggedUser.datos.email,
+      errorInputEmail: false,
+    }, () => {
+      const token = this.props.loggedUser.token;
+      Rules_Gestor.exportarPreinscriptos(token, {
+        "email": email,
+        "idPrograma": idPrograma
+      }).then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta(datos.error);
+          return false;
+        }
+
+        if (datos.return)
+          mostrarMensaje('Correo enviado con éxito al correo: ' + email);
+        else
+          mostrarAlerta('Ocurrió un error al intentar enviar el excel.');
+
+      })
+        .catch((error) => {
+          this.props.mostrarCargando(true);
+          mostrarAlerta('Ocurrió un error al intentar enviar el excel.');
+          console.error('Error Servicio "Rules_Gestor.getProgramasYCursos": ' + error);
+        });
+    });
+  }
+
   render() {
     const { classes } = this.props;
     const {
-      dialogCerrarPrograma,
+      dialogExportarExcelPrograma,
       rowList,
       valueInputNombre,
+      inputEmail,
+      errorInputEmail
     } = this.state;
 
     return (
@@ -224,7 +287,7 @@ class Programas extends React.PureComponent {
 
                   { id: 'descripcion', type: 'string', numeric: false, disablePadding: false, label: 'Descripción' },
 
-                  // { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
+                  { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
                 rows={rowList || []}
                 order={'asc'}
@@ -236,16 +299,31 @@ class Programas extends React.PureComponent {
         </Grid>
 
         <MiControledDialog
-          open={dialogCerrarPrograma}
-          onDialogoOpen={this.onDialogOpenCerrarPrograma}
-          onDialogoClose={this.onDialogCloseCerrarPrograma}
+          open={dialogExportarExcelPrograma}
+          onDialogoOpen={this.onDialogOpenExportarExcelPrograma}
+          onDialogoClose={this.onDialogCloseExportarExcelPrograma}
           buttonOptions={{
-            onDialogoAccept: this.cierreCursoAceptado,
-            onDialogoCancel: this.cierreCursoCancelado,
+            onDialogoAccept: this.handleCursoAceptado,
+            onDialogoCancel: this.handleCursoCancelado,
           }}
-          titulo={'Cierre de curso'}
+          titulo={'Envío Excel por correo'}
+          classMaxWidth={classes.dialogWidth}
         >
-          ¿Esta segura que desea cerrar el curso seleccionado?
+          
+
+          <TextField
+            error={errorInputEmail}
+            type={'text'}
+            label={'Ingrese el correo al que se le enviará el excel:'}
+            value={inputEmail}
+            margin="none"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={this.handleInputEmailOnCange}
+            helperText={errorInputEmail && 'Email erroneo'}
+            className={classes.inputWidth}
+          />
         </MiControledDialog>
       </section>
     );

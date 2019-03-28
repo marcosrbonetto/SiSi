@@ -58,7 +58,10 @@ class MiCard extends React.PureComponent {
           </CardContent>
           {seccionBotones && <div 
           className={classNames(classes.classSeccionTopBottom, seccionBotones.className, 
-          (seccionBotones.align == 'left' && classes.contentAlignLeft) || (seccionBotones.align == 'center' && classes.contentAlignCenter) || (seccionBotones.align == 'right' && classes.contentAlignRight))}>
+          (seccionBotones.align == 'left' && classes.contentAlignLeft) || 
+          (seccionBotones.align == 'center' && classes.contentAlignCenter) || 
+          (seccionBotones.align == 'right' && classes.contentAlignRight) ||
+          (seccionBotones.align == 'space-between' && classes.contentAlignSpaceBetween))}>
             {seccionBotones.content}
           </div>}
         </Card>
@@ -107,6 +110,9 @@ const styles = theme => ({
   },
   contentAlignRight: {
     justifyContent: 'flex-end'
+  },
+  contentAlignSpaceBetween: {
+    justifyContent: 'space-between'
   }
 });
 

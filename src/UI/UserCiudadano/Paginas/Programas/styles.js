@@ -23,9 +23,7 @@ const styles = theme => ({
     margin: '0px auto'
   },
   button: {
-    ...theme.button,
-    width: '160px',
-    margin: '0px auto',
+    fontSize: '16px',
   },
   iconoBoton: {
     fontSize: '14px',
@@ -46,7 +44,10 @@ const styles = theme => ({
   },
   buttonModifDatosAdicionales: {
     width: 'auto',
-    borderRadius: '20px'
+  },
+  buttonDesinscribirme: {
+    width: '200px',
+    margin: '0px auto',
   }
 });
 

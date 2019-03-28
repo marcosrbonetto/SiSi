@@ -7,6 +7,9 @@ import ProgramasVirtuales from "@UI/UserCiudadano/Paginas/ProgramasVirtuales/ind
 import Preinscripciones from "@UI/UserGestor/Paginas/Preinscripciones/index";
 import MisInscripciones from "@UI/UserCiudadano/Paginas/MisInscripciones/index";
 
+import CurriculumVitae from "@UI/UserCiudadano/Paginas/CurriculumVitae/index";
+import FormDatosAdicionales from "@UI/UserCiudadano/Paginas/FormDatosAdicionales/index";
+
 const Menu = [
   {
     url: "/Inicio",
@@ -55,6 +58,22 @@ const Menu = [
     component: EstudiosRealizados,
     nombre: "Estudios Realizados",
     titulo: "Estudios Realizados",
+  },
+  {
+    url: "/Inicio/CurriculumVitae",
+    exact: true,
+    mostrarEnMenu: true,
+    component: CurriculumVitae,
+    nombre: "Curriculum Vitae",
+    titulo: "Curriculum Vitae",
+  },
+  {
+    url: "/Inicio/FormDatosAdicionales",
+    exact: true,
+    mostrarEnMenu: true,
+    component: FormDatosAdicionales,
+    nombre: "Datos Adicionales",
+    titulo: "Datos Adicionales",
   },
   {
     url: window.Config.URL_ROOT + "/InicioGestor/Preinscripciones",

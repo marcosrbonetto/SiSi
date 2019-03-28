@@ -17,7 +17,7 @@ import { mostrarAlerta, mostrarMensaje, stringToDate, dateToString } from "@Util
 //Material UI
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 
 //Mis Componentes
@@ -53,14 +53,32 @@ class DatosExperienciaLaboral extends React.PureComponent {
     super(props);
 
     const listaExperienciaLaboral = props.loggedUser.datos.experienciasLaborales;
-    
+
     this.state = {
-      listaExperienciaLaboral: listaExperienciaLaboral && listaExperienciaLaboral.length > 0 && listaExperienciaLaboral || []
+      listaExperienciaLaboral: listaExperienciaLaboral && listaExperienciaLaboral.length > 0 && listaExperienciaLaboral || [],
+      itemToEdit: null
     };
   }
 
   componentWillMount() {
 
+  }
+
+  modificarExperienciaLaboral = (ExperienciaLaboralModificada) => {
+    if (!ExperienciaLaboralModificada) return false;
+
+    let listaExperienciaLaboral = _.cloneDeep(this.state.listaExperienciaLaboral);
+
+    _.remove(listaExperienciaLaboral, function (item) {
+      return item.id == ExperienciaLaboralModificada.id;
+    });
+
+    this.setState({
+      listaExperienciaLaboral: [...listaExperienciaLaboral, ExperienciaLaboralModificada]
+    }, () => {
+      console.log(this.state.listaExperienciaLaboral);
+      this.guardarExperienciaLaborales();
+    });
   }
 
   agregarExperienciaLaboral = (experienciaLaboralAgregada) => {
@@ -121,25 +139,46 @@ class DatosExperienciaLaboral extends React.PureComponent {
     this.props.redireccionar("/Inicio");
   }
 
+  editarExperienciaLaboral = (itemToEdit) => {
+    this.setState({
+      itemToEdit: itemToEdit
+    });
+  }
+
+  handleOnCloseDialog = () => {
+    this.setState({
+      itemToEdit: null
+    });
+  }
+
   render() {
     const { classes, loggedUser } = this.props;
-    const { listaExperienciaLaboral } = this.state;
+    let { listaExperienciaLaboral, itemToEdit } = this.state;
 
     let tieneTrabajo = _.filter(listaExperienciaLaboral, (experienciaLaboral) => {
       return experienciaLaboral.fechaFinalizacion == '' || experienciaLaboral.fechaFinalizacion == null || experienciaLaboral.fechaFinalizacion == undefined;
     });
-    const actualizarOcupacion = !loggedUser.datos.ocupacionId && tieneTrabajo.length > 0;
+    const actualizarOcupacion = (!loggedUser.datos.ocupacionId || loggedUser.datos.ocupacionId == 31) && tieneTrabajo.length > 0;
+
+    listaExperienciaLaboral = _.orderBy(listaExperienciaLaboral, ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
 
     return (
       <React.Fragment>
         <MiCard
           informacionAlerta={'Cargá acá tu último trabajo formal o informal. Por ej.: Atención del público en Centro de Salud. Recordá que es obligatorio. Podes cargar mas de una actividad.'}
           seccionBotones={{
-            align: 'left',
+            align: 'space-between',
             content: <React.Fragment>
-            <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-              Atrás</Button>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+
+              <FormExperienciaLaboral
+                handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
+                handleExperienciaLaboralModificada={this.modificarExperienciaLaboral}
+                itemToEdit={itemToEdit}
+                handleOnCloseDialog={this.handleOnCloseDialog}
+              />
             </React.Fragment>
           }}
         >
@@ -150,22 +189,24 @@ class DatosExperienciaLaboral extends React.PureComponent {
             checked={true}
           />}
 
-          <FormExperienciaLaboral
-            handleExperienciaLaboralAgregada={this.agregarExperienciaLaboral}
-          />
-
           {actualizarOcupacion &&
             <Typography variant="body2" className={classes.textoOcupacion}>
               <i className={classNames(classes.iconOcupacion, "material-icons")}>error</i> Segun sus experiencias laborales cargadas usted no se encuentra desocupado actualmente, actualice su ocupación de MuniOnline entrando <b style={{ cursor: 'pointer' }} onClick={this.handleChangeOcupacion}>aquí</b>.
             </Typography>}
 
           <div className={classes.itemsContainer}>
-            {listaExperienciaLaboral.map((cardData) => {
-              return <CardExperienciaLaboral
-                cardData={cardData}
-                handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}
-              />
-            })}
+            <List className={classes.root}>
+              {listaExperienciaLaboral.map((cardData, index) => {
+                return <React.Fragment>
+                  {index == 0 && <hr />}
+                  <CardExperienciaLaboral
+                    cardData={cardData}
+                    handleEliminarExperienciaLaboral={this.eliminarExperienciaLaboral}
+                    handleEditarExperienciaLaboral={this.editarExperienciaLaboral}
+                  /><hr />
+                </React.Fragment>
+              })}
+            </List>
           </div>
 
         </MiCard>
@@ -175,6 +216,9 @@ class DatosExperienciaLaboral extends React.PureComponent {
 }
 
 const styles = theme => ({
+  root: {
+    width: '100%'
+  },
   itemsContainer: {
     display: 'flex',
     flexWrap: 'wrap'
@@ -183,8 +227,11 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  iconoBoton: {
+  iconoBotonAtras: {
     fontSize: '16px',
+  },
+  iconoBoton: {
+    fontSize: '20px',
   },
   iconOcupacion: {
     fontSize: '22px',

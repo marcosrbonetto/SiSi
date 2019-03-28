@@ -17,7 +17,8 @@ import { mostrarAlerta, mostrarMensaje, stringToDate, dateToString } from "@Util
 //Material UI
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
 
 //Mis Componentes
 import MiCard from "@Componentes/MiNewCard";
@@ -27,6 +28,8 @@ import CardEstudiosRealizados from '@ComponentesEstudiosRealizados/CardEstudiosR
 import FormEstudiosRealizados from '@ComponentesEstudiosRealizados/FormEstudiosRealizados'
 
 import Rules_EstudiosRealizados from "@Rules/Rules_EstudiosRealizados";
+
+import { arrayTipoEstudios } from '@DatosEstaticos/EstudiosRealizados'
 
 const mapStateToProps = state => {
   return {
@@ -52,14 +55,32 @@ class DatosEstudiosRealizados extends React.PureComponent {
     super(props);
 
     let listaEstudiosRealizados = props.loggedUser.datos.estudios;
-    
+
     this.state = {
-      listaEstudiosRealizados: listaEstudiosRealizados && listaEstudiosRealizados.length > 0 && listaEstudiosRealizados || []
+      listaEstudiosRealizados: listaEstudiosRealizados && listaEstudiosRealizados.length > 0 && listaEstudiosRealizados || [],
+      itemToEdit: null
     };
   }
 
   componentWillMount() {
 
+  }
+
+  modificarEstudiosRealizados = (EstudiosRealizadosModificada) => {
+    if (!EstudiosRealizadosModificada) return false;
+
+    let listaEstudiosRealizados = _.cloneDeep(this.state.listaEstudiosRealizados);
+
+    _.remove(listaEstudiosRealizados, function (item) {
+      return item.id == EstudiosRealizadosModificada.id;
+    });
+
+    this.setState({
+      listaEstudiosRealizados: [...listaEstudiosRealizados, EstudiosRealizadosModificada]
+    }, () => {
+      console.log(this.state.listaEstudiosRealizados);
+      this.guardarEstudiosRealizados();
+    });
   }
 
   agregarEstudiosRealizados = (EstudiosRealizadosAgregada) => {
@@ -116,20 +137,41 @@ class DatosEstudiosRealizados extends React.PureComponent {
     this.props.redireccionar("/Inicio");
   }
 
+  editarEstudiosRealizados = (itemToEdit) => {
+    this.setState({
+      itemToEdit: itemToEdit
+    });
+  }
+
+  handleOnCloseDialog = () => {
+    this.setState({
+      itemToEdit: null
+    });
+  }
+
   render() {
     const { classes } = this.props;
-    const { listaEstudiosRealizados } = this.state;
+    let { listaEstudiosRealizados, itemToEdit } = this.state;
 
+    let gruposNiveles = _.groupBy(listaEstudiosRealizados, (o) => { return o.tipoEstudio });
+    
     return (
       <React.Fragment>
         <MiCard
           informacionAlerta={'Cargá acá tus estudios realizados, desde el secundario hasta el nivel que haya alzcanzado'}
           seccionBotones={{
-            align: 'left',
+            align: 'space-between',
             content: <React.Fragment>
-            <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-              <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-              Atrás</Button> 
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBotonAtras, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Volver</Button>
+
+              <FormEstudiosRealizados
+                handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}
+                handleEstudiosRealizadosModificada={this.modificarEstudiosRealizados}
+                itemToEdit={itemToEdit}
+                handleOnCloseDialog={this.handleOnCloseDialog}
+              />
             </React.Fragment>
           }}
         >
@@ -140,17 +182,39 @@ class DatosEstudiosRealizados extends React.PureComponent {
             checked={true}
           />}
 
-          <FormEstudiosRealizados
-            handleEstudiosRealizadosAgregada={this.agregarEstudiosRealizados}
-          />
-
           <div className={classes.itemsContainer}>
-            {listaEstudiosRealizados.map((cardData) => {
-              return <CardEstudiosRealizados
-                cardData={cardData}
-                handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
-              />
-            })}
+            <List className={classes.root}>
+              {Object.keys(gruposNiveles).reverse().map((value) => {
+                
+                var idTipoEstudio = parseInt(value);
+
+                if (_.filter(gruposNiveles[idTipoEstudio], { tipoEstudio: idTipoEstudio }).length > 0) {
+
+                  var lista = _.orderBy(gruposNiveles[idTipoEstudio], ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
+                  var tipoEstudio = _.find(arrayTipoEstudios, { value: idTipoEstudio });
+
+                  return <React.Fragment>
+                    <Typography variant="headline" style={{marginTop: '10px'}}>
+                      <b>{tipoEstudio.label}</b>
+                    </Typography>
+                    <hr />
+                    {lista.map((cardData, index) => {
+                        return <React.Fragment>
+                          
+                          <CardEstudiosRealizados
+                            cardData={cardData}
+                            handleEliminarEstudiosRealizados={this.eliminarEstudiosRealizados}
+                            handleEditarEstudiosRealizados={this.editarEstudiosRealizados}
+                          />
+                          
+                        </React.Fragment>;
+                    })}
+                  </React.Fragment>;
+
+                }
+
+              })}
+            </List>
           </div>
 
         </MiCard>
@@ -169,8 +233,11 @@ const styles = theme => ({
     textDecoration: 'underline',
     marginLeft: '20px',
   },
-  iconoBoton: {
+  iconoBotonAtras: {
     fontSize: '16px',
+  },
+  iconoBoton: {
+    fontSize: '20px',
   },
 });
 

@@ -10,6 +10,7 @@ import classNames from "classnames";
 //Redux
 import { mostrarCargando } from '@Redux/Actions/mainContent'
 import { actualizarPreinscipcion } from '@Redux/Actions/usuario';
+import { push } from "connected-react-router";
 
 //Material UI
 import Divider from '@material-ui/core/Divider';
@@ -54,7 +55,10 @@ const mapDispatchToProps = dispatch => ({
   },
   actualizarPreinscipcion: (data) => {
     dispatch(actualizarPreinscipcion(data));
-  }
+  },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class SeleccionPrograma extends React.PureComponent {
@@ -286,7 +290,7 @@ class SeleccionPrograma extends React.PureComponent {
           </span>`;
         }
       }
-      
+
       return {
         dialogoOpenInfoCurso: true,
         dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar ? ' - ' + cursoSeleccionado.lugar : ''),
@@ -404,6 +408,10 @@ class SeleccionPrograma extends React.PureComponent {
 
   }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
+  }
+
   render() {
     const {
       classes,
@@ -453,8 +461,15 @@ class SeleccionPrograma extends React.PureComponent {
           informacionAlerta={tituloPrograma}
           classInformacionAlerta={classTituloPrograma}
           seccionBotones={{
-            align: 'center',
-            content: <Button variant="contained" className={classes.buttonSiSi} onClick={listaCursos.length == 1 ? this.onDialogoOpenInfoCurso : this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
+            align: 'space-between',
+            content: <React.Fragment>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+
+              <Button onClick={listaCursos.length == 1 ? this.onDialogoOpenInfoCurso : this.onDialogoOpen} variant="outlined" color="primary" className={classes.button}>
+              PRE - INSCRIBIRME</Button>
+            </React.Fragment>
           }}
         >
           <Typography variant="subheading" className={classTextoInformativo}>{textoInformativo}</Typography>
@@ -551,8 +566,8 @@ class SeleccionPrograma extends React.PureComponent {
             <div className={classes.containerBotonera}>
               <Divider />
               <div className={classes.botonesBotonera}>
-                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button>
-                <Button variant="contained" className={classes.buttonSiSi} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'PRE - INSCRIBIRME'}</Button>
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button> 
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.procesarPreInscripcion}>PRE - INSCRIBIRME</Button>
               </div>
             </div>
           }
@@ -663,20 +678,24 @@ class SeleccionPrograma extends React.PureComponent {
           classContainterContent={classes.contenedorInfoPreInscripcion}
           botonera={true}
         >
-          <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>
+          {(enfilaDeEspera &&
+            <Icon className={classes.iconoListaEsperaPreInscripcion}>error_outline</Icon>)
+            || <Icon className={classes.iconoOKPreInscripcion}>check_circle_outline</Icon>}
+
           <Typography variant={'title'} style={{ fontSize: '30px' }}>
-            Tu preinscripción {cursoPreinscripto} fue realizada con éxito
+            Tu preinscripción {cursoPreinscripto} {enfilaDeEspera ? 'se encuentra en lista de espera' : 'fue realizada con éxito'}
           </Typography>
           <br />
           <Typography variant="subheading">
             Te enviamos un mail a {loggedUser.datos.email} con el comprobante del registro
           </Typography>
-          <br /><br />
+          <br />
           {enfilaDeEspera &&
             <React.Fragment>
-              <Typography variant="subheading">El curso al cual te preinscribiste ya tiene el cupo completo. Si lo deseas te podemos anotar en una lista de espera.</Typography><br /> <br />
-              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoEliminarPreInscripcion}>Elegir otro Curso</Button>
-              <Button variant="contained" className={classes.onDialogoCloseInfoPreInscripcion} >{'Anotarme en la lista de espera'}</Button></React.Fragment>
+              <Typography variant="subheading">El curso al cual te preinscribiste ya tiene el cupo completo por lo que actualmente se encuentra en lista de espera. Usted puede:</Typography><br />
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoPreInscripcion} >Seguir en la lista de espera</Button>
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoEliminarPreInscripcion}>Cancelar preinscripción</Button>
+            </React.Fragment>
           }
           {!enfilaDeEspera &&
             <React.Fragment>
@@ -693,12 +712,6 @@ const styles = theme => ({
   bottomContent: {
     display: 'flex',
     alignItems: 'flex-end',
-  },
-  button: {
-    ...theme.button
-  },
-  buttonSiSi: {
-    ...theme.buttonSiSi
   },
   itemLista: {
     minWidth: '400px',
@@ -717,10 +730,19 @@ const styles = theme => ({
       width: '100%',
     }
   },
+  iconoBoton: {
+    fontSize: '16px',
+  },
   botonesBotonera: {
     textAlign: 'center',
     margin: '12px auto',
     marginTop: '18px',
+  },
+  iconoListaEsperaPreInscripcion: {
+    color: '#ffb300',
+    fontSize: '100px',
+    display: 'block',
+    margin: '0px auto',
   },
   iconoOKPreInscripcion: {
     color: theme.color.ok.main,
