@@ -77,7 +77,7 @@ const reducer = (state = initialState, action) => {
       if(!(loggedUser && loggedUser.datos)) return state;
 
       if(action.payload)
-        loggedUser.datos['preinscripcionVirtuales'] = action.payload;
+        loggedUser.datos['preinscripcionesVirtuales'] = action.payload;
       
       return { ...state, loggedUser: loggedUser };
     }

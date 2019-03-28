@@ -204,7 +204,7 @@ class SeleccionPrograma extends React.PureComponent {
           </span>`;
         }
       }
-      
+
       return {
         dialogoOpenInfoCurso: true,
         dialogTituloCurso: cursoSeleccionado.nombre + (cursoSeleccionado.lugar ? ' - ' + cursoSeleccionado.lugar : ''),
@@ -287,7 +287,10 @@ class SeleccionPrograma extends React.PureComponent {
           console.error('Error Servicio "Rules_Preinscripcion.insertPreinscripcion": ' + error);
         });
     });
+  }
 
+  volverInicio = () => {
+    this.props.redireccionar("/Inicio");
   }
 
   render() {
@@ -327,8 +330,15 @@ class SeleccionPrograma extends React.PureComponent {
           informacionAlerta={tituloPrograma}
           classInformacionAlerta={classTituloPrograma}
           seccionBotones={{
-            align: 'center',
-            content: <Button variant="contained" className={classes.buttonSiSi} onClick={listaCursos.length == 1 ? this.onDialogoOpenInfoCurso : this.onDialogoOpen}>{textoBoton || 'PRE - INSCRIBIRME'}</Button>
+            align: 'space-between',
+            content: <React.Fragment>
+              <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
+                <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
+                Atrás</Button>
+
+              <Button onClick={listaCursos.length == 1 ? this.onDialogoOpenInfoCurso : this.onDialogoOpen} variant="outlined" color="primary" className={classes.button}>
+                INSCRIBIRME</Button>
+            </React.Fragment>
           }}
         >
           <Typography variant="subheading" className={classTextoInformativo}>{textoInformativo}</Typography>
@@ -366,12 +376,14 @@ class SeleccionPrograma extends React.PureComponent {
                         {
                           cursos && cursos.length &&
                           cursos.map((curso) => {
+                            var result = _.filter(loggedUser.datos.preinscripcionesVirtuales || [], (o) => o.curso && o.curso.id == curso.id);
+
                             return <ListItem
                               className={classes.itemLista}
-                              onClick={this.onClickCurso}
+                              onClick={result.length == 0 && this.onClickCurso}
                               idCurso={curso.id}>
                               <ListItemText
-                                primary={curso.nombre + (curso.lugar ? " - " + curso.lugar : '')}
+                                primary={<React.Fragment>{curso.nombre + (curso.lugar ? " - " + curso.lugar : '')} {(result.length > 0 ? <span className={classes.tagInscripto}> Inscripto</span> : '')}</React.Fragment>}
                                 secondary={(curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')}
                               />
                             </ListItem>
@@ -425,8 +437,8 @@ class SeleccionPrograma extends React.PureComponent {
             <div className={classes.containerBotonera}>
               <Divider />
               <div className={classes.botonesBotonera}>
-                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button>
-                <Button variant="contained" className={classes.buttonSiSi} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'PRE - INSCRIBIRME'}</Button>
+                <Button variant="outlined" color="primary"  className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button> 
+                <Button variant="outlined" color="primary"  className={classes.button} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'INSCRIBIRME'}</Button>
               </div>
             </div>
           }
@@ -467,12 +479,6 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  button: {
-    ...theme.button
-  },
-  buttonSiSi: {
-    ...theme.buttonSiSi
-  },
   itemLista: {
     minWidth: '400px',
     cursor: 'pointer',
@@ -489,6 +495,9 @@ const styles = theme => ({
     '& > *': {
       width: '100%',
     }
+  },
+  iconoBoton: {
+    fontSize: '16px',
   },
   botonesBotonera: {
     textAlign: 'center',
@@ -545,6 +554,15 @@ const styles = theme => ({
   },
   lista: {
     width: '100%'
+  },
+  tagInscripto: {
+    display: 'inline-block',
+    fontWeight: '400',
+    border: '1px solid ' + theme.color.ok.main,
+    borderRadius: '6px',
+    padding: '0px 7px',
+    marginLeft: '7px',
+    color: theme.color.ok.main,
   }
 });
 

@@ -116,12 +116,6 @@ class ProgramasVirtuales extends React.PureComponent {
                     </React.Fragment>
                   })}
 
-                  <div className={classes.textCenter}>
-                    <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
-                      <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>arrow_back_ios</Icon>
-                      Atrás</Button>
-                  </div>
-
                 </Grid>
 
                 ||

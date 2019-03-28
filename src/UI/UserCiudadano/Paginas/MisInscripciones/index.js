@@ -62,7 +62,7 @@ class MisInscripciones extends React.PureComponent {
     this.esPreinscripcionVirtual = null;
     this.idCursoADesinscribir = null;
 
-    const misInscripcionesVirtuales = props.loggedUser.datos.preinscripcionVirtuales || [];
+    const misInscripcionesVirtuales = props.loggedUser.datos.preinscripcionesVirtuales || [];
     const miInscripcionPresencial = props.loggedUser.datos.preinscripcion ? [props.loggedUser.datos.preinscripcion] : [];
 
     this.state = {
@@ -168,7 +168,8 @@ class MisInscripciones extends React.PureComponent {
         <Grid container justify={'center'}>
           <Grid item xs={12} sm={8}>
 
-            <MiCard titulo="Mis Inscripciones">
+            <MiCard>
+            <Typography variant="title" gutterBottom>Pre-inscripción Presencial</Typography>
 
               <List className={classes.root}>
                 {miInscripcionPresencial &&
@@ -184,6 +185,18 @@ class MisInscripciones extends React.PureComponent {
                     </ListItem>;
                   })}
 
+                  {(!miInscripcionPresencial ||
+                    miInscripcionPresencial.length == 0) &&
+                  <Typography variant="body1" gutterBottom className={classes.informacion} style={{ textAlign: 'center', marginBottom: '0px' }}>
+                    No posee inscripción.</Typography>}
+
+              </List>
+            </MiCard>
+            <br/><br/>
+            <MiCard>
+            <Typography variant="title" gutterBottom>Inscripciones Virtuales</Typography>
+
+              <List className={classes.root}>
                 {misInscripcionesVirtuales &&
                   misInscripcionesVirtuales.length > 0 &&
                   misInscripcionesVirtuales.map((inscripcion) => {
@@ -204,14 +217,12 @@ class MisInscripciones extends React.PureComponent {
 
                 {(!misInscripcionesVirtuales ||
                   misInscripcionesVirtuales.length == 0) &&
-                  (!miInscripcionPresencial ||
-                    miInscripcionPresencial.length == 0) &&
                   <Typography variant="body1" gutterBottom className={classes.informacion} style={{ textAlign: 'center', marginBottom: '0px' }}>
                     No posee inscripciones.</Typography>}
               </List>
 
             </MiCard>
-            
+
             <br />
             <div className={classes.textCenter}>
               <Button onClick={this.volverInicio} variant="outlined" color="primary" className={classes.button}>
@@ -240,7 +251,7 @@ class MisInscripciones extends React.PureComponent {
           onDialogoClose={this.onDialogoCloseAccesoDenegado}
           titulo={'Sin Acceso'}
         >
-          {'Actualmente no tiene acceso al curso, verifique el'} <br/> {'calendario para corroborar el comienzo del mismo.'}
+          {'Actualmente no tiene acceso al curso, verifique el'} <br /> {'calendario para corroborar el comienzo del mismo.'}
         </MiControledDialog>
 
       </div>
