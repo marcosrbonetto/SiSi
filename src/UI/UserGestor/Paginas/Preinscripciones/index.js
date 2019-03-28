@@ -814,7 +814,7 @@ class Home extends React.PureComponent {
                 ]}
                 rows={rowList || []}
                 sortTable={false}
-                rowsPerPage={5}
+                rowsPerPage={30}
               />
             </MiCard>
           </Grid>

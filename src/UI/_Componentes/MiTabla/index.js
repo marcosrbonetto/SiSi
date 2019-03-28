@@ -384,6 +384,7 @@ class MiTabla extends React.PureComponent {
                             count = _ref.count;
                         return "".concat(from, "-").concat(to, " de ").concat(count);
                     }}
+                    rowsPerPageOptions={[5, 10, 30, 50, 100]}
                 />}
             </Paper>
         );
