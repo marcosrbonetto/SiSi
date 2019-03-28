@@ -20,7 +20,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from "@material-ui/core/Button";
-import CancelIcon from '@material-ui/icons/Cancel';
+import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -267,7 +267,7 @@ class Home extends React.PureComponent {
               <i class="material-icons">edit</i>
             </Button>
             <Button title="Desinscribir" idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
-              <CancelIcon title="Desinscribir" />
+              <CloseIcon title="Desinscribir" />
             </Button>
           </React.Fragment>,
           data: {

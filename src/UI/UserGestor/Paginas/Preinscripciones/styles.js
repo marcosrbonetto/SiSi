@@ -31,23 +31,28 @@ const styles = theme => ({
     marginTop: '8px',
   },
   iconoAceptar: {
-    background: theme.color.ok.main,
+    background: '#fff',
+    border: '1px solid ' +theme.color.ok.main,
+    color: theme.color.ok.main,
     boxShadow: 'none',
     minWidth: '10px',
     borderRadius: '30px',
     marginRight: '4px',
     '&:hover': {
       background: theme.color.ok.main,
+      color: '#fff'
     }
   },
   iconoEliminar: {
-    background: '#cacaca',
+    background: '#fff',
+    border: '1px solid ' + theme.color.error.main,
+    color: theme.color.error.main,
     boxShadow: 'none',
     minWidth: '10px',
     borderRadius: '30px',
-    marginRight: '4px',
     '&:hover': {
-      background: '#929090'
+      background: theme.color.error.main,
+      color: '#fff'
     }
   },
   tituloReporte: {

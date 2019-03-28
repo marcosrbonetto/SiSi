@@ -157,7 +157,7 @@ class Cursos extends React.PureComponent {
           <LockIcon title="Activar" />
         </Button>
         :
-        <Button title="Cerrar" idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+        <Button title="Cerrar" idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoAceptar}>
           <LockOpenIcon title="Cerrar" />
         </Button>
       }
