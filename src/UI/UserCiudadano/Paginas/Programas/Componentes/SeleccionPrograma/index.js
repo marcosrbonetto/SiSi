@@ -454,12 +454,15 @@ class SeleccionPrograma extends React.PureComponent {
 
     const dialogInformacionCursoHTML = dialogInformacionCurso ? <div dangerouslySetInnerHTML={{ __html: dialogInformacionCurso }} /> : '';
 
+    const textoInformativoHTML = textoInformativo ? <div dangerouslySetInnerHTML={{ __html: textoInformativo }} /> : '';
+
     return (
       <React.Fragment>
         <IndicadorCargando visible={cargandoVisible} />
         <MiCard
           informacionAlerta={tituloPrograma}
           classInformacionAlerta={classTituloPrograma}
+          contentClassName={classes.infoPrograma}
           seccionBotones={{
             align: 'space-between',
             content: <React.Fragment>
@@ -472,7 +475,7 @@ class SeleccionPrograma extends React.PureComponent {
             </React.Fragment>
           }}
         >
-          <Typography variant="subheading" className={classTextoInformativo}>{textoInformativo}</Typography>
+          <Typography variant="subheading" className={classTextoInformativo}>{textoInformativoHTML}</Typography>
         </MiCard>
 
         <MiControledDialog
@@ -794,6 +797,10 @@ const styles = theme => ({
   },
   lista: {
     width: '100%'
+  },
+  infoPrograma: {
+    maxHeight: '300px',
+    overflowY: 'auto',
   }
 });
 

@@ -58,28 +58,34 @@ class SeleccionPrograma extends React.PureComponent {
 
     const arrayCursos = props.arrayCursos || [];
     let infoCurso;
-    let arrayCursosXTag;
+    let cursosXTags;
     if (arrayCursos.length == 1) {
       infoCurso = this.getInfoCurso(arrayCursos[0]);
     } else {
-      const tags1 = _.groupBy(arrayCursos, (o) => { return o.tag });
-      
-      Object.keys(tags1).map((tag1) => {
-        let cursosXTag = {
-          'tag1': tags1,
+      cursosXTags = [];
+      const tags = _.groupBy(arrayCursos, (o) => { return o.tag });
 
+      Object.keys(tags).map((tag) => {
+        let cursosXTag = {
+          'tag': tag,
+          'categorias': []
         };
 
-        // EN PROCESO
-        _.groupBy(b['adri'], (o) => { return o.tag.split(';')[1] });
-        
+        const categorias = _.groupBy(tags[tag], (o) => { return o.tag.split(';')[1] });
 
-        arrayCursosXTag.push();
+        Object.keys(categorias).map((categoria) => {
+          let cursosXCategoria = {
+            'tag': categoria == "undefined" ? 'Otros' : categoria,
+            'cursos': categorias[categoria]
+          };
+
+          cursosXTag.categorias.push(cursosXCategoria);
+        });
+
+        cursosXTags.push(cursosXTag);
       });
-      // var tags1 = _.groupBy(tags1, (o) => { return o.tag.split(';')[0] });
-      // 
-      
-      if (arrayCursosXTag.null && Object.keys(arrayCursosXTag).length == 1) arrayCursosXTag = null;
+
+      if (cursosXTags.null && Object.keys(cursosXTags).length == 1) cursosXTags = null;
     }
 
     this.state = {
@@ -93,7 +99,7 @@ class SeleccionPrograma extends React.PureComponent {
       inputBuscador: '',
       cursos: arrayCursos,
       listaCursos: arrayCursos,
-      arrayCursosXTag: arrayCursosXTag,
+      cursosXTags: cursosXTags,
       cursoPreinscripto: '',
       cargandoVisible: false,
     };
@@ -324,7 +330,7 @@ class SeleccionPrograma extends React.PureComponent {
     const {
       dialogoOpen,
       listaCursos,
-      arrayCursosXTag,
+      cursosXTags,
       inputBuscador,
       dialogoOpenInfoCurso,
       dialogTituloCurso,
@@ -335,9 +341,11 @@ class SeleccionPrograma extends React.PureComponent {
       cargandoVisible
     } = this.state;
 
-    const arrayCursosXTag = arrayCursosXTag ? _.orderBy(Object.keys(arrayCursosXTag), [], ['asc']) : [];
+    const arrayCursosXTag = cursosXTags ? _.orderBy(cursosXTags, ['tag'], ['asc']) : [];
 
     const dialogInformacionCursoHTML = dialogInformacionCurso ? <div dangerouslySetInnerHTML={{ __html: dialogInformacionCurso }} /> : '';
+
+    const textoInformativoHTML = textoInformativo ? <div dangerouslySetInnerHTML={{ __html: textoInformativo }} /> : '';
 
     return (
       <React.Fragment>
@@ -345,6 +353,7 @@ class SeleccionPrograma extends React.PureComponent {
         <MiCard
           informacionAlerta={tituloPrograma}
           classInformacionAlerta={classTituloPrograma}
+          contentClassName={classes.infoPrograma}
           seccionBotones={{
             align: 'space-between',
             content: <React.Fragment>
@@ -357,7 +366,7 @@ class SeleccionPrograma extends React.PureComponent {
             </React.Fragment>
           }}
         >
-          <Typography variant="subheading" className={classTextoInformativo}>{textoInformativo}</Typography>
+          <Typography variant="subheading" className={classTextoInformativo}>{textoInformativoHTML}</Typography>
         </MiCard>
 
         <MiControledDialog
@@ -367,7 +376,7 @@ class SeleccionPrograma extends React.PureComponent {
           titulo={arrayCursosXTag && arrayCursosXTag.length > 0 ? 'Categorias / Cursos' : 'Cursos'}
         >
           <div key="headerContent">
-            {!(arrayCursosXTag && arrayCursosXTag.length) &&
+            {!(arrayCursosXTag && arrayCursosXTag.length > 0) &&
               <MiInput
                 onChange={this.onChangeInputBusqueda}
                 icono={'search'}
@@ -378,43 +387,59 @@ class SeleccionPrograma extends React.PureComponent {
               />}
           </div>
           <div key="mainContent">
-            {(arrayCursosXTag && arrayCursosXTag.length &&
+            {(arrayCursosXTag && arrayCursosXTag.length > 0 &&
               <section className={classes.containerPanelCategoria}>
-                {arrayCursosXTag.map((categoria, index) => {
-                  const cursos = arrayCursosXTag[categoria];
-debugger;
-                  return <ExpansionPanel className={classes.panelCategoria}>
-                    <ExpansionPanelSummary className={classes.containerTituloCategoria} expandIcon={<ExpandMoreIcon className={classes.iconoCategoria} />}>
-                      <Typography className={classes.tituloCategoria}>{categoria}</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails className={classes.containerListaCursos}>
-                      <List className={classes.lista}>
-                        {
-                          cursos && cursos.length &&
-                          cursos.map((curso) => {
-                            var result = _.filter(loggedUser.datos.preinscripcionesVirtuales || [], (o) => o.curso && o.curso.id == curso.id);
+                {arrayCursosXTag.map((tag, index) => {
 
-                            return <ListItem
-                              className={classes.itemLista}
-                              onClick={result.length == 0 && this.onClickCurso}
-                              idCurso={curso.id}>
-                              <ListItemText
-                                primary={<React.Fragment>{curso.nombre + (curso.lugar ? " - " + curso.lugar : '')} {(result.length > 0 ? <span className={classes.tagInscripto}> Inscripto</span> : '')}</React.Fragment>}
-                                secondary={(curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')}
-                              />
-                            </ListItem>
-                          })
-                          ||
-                          <ListItem className={classes.itemLista}>
-                            <ListItemText
-                              primary={'No se encontraron cursos'}
-                            />
-                          </ListItem>
-                        }
-                      </List>
-                    </ExpansionPanelDetails>
-                  </ExpansionPanel>
-                })}
+                  return <ExpansionPanel className={classes.panel}>
+                    <ExpansionPanelSummary className={classes.containerTitulo} expandIcon={<ExpandMoreIcon className={classes.iconoTag} />}>
+                      <Typography className={classes.tituloTag}>{tag.tag}</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails className={classes.containerListaSubTags}>
+
+
+                      {tag.categorias.map((categoria) => {
+
+                        const cursos = categoria.cursos;
+                        return <ExpansionPanel className={classes.panelCategoria}>
+                            <ExpansionPanelSummary className={classes.containerTituloCategoria} expandIcon={<ExpandMoreIcon className={classes.iconoCategoria} />}>
+                              <Typography className={classes.tituloCategoria}>{categoria.tag}</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails className={classes.containerListaCursos}>
+                              <List className={classes.lista}>
+                                {
+                                  cursos && cursos.length &&
+                                  cursos.map((curso) => {
+                                    var result = _.filter(loggedUser.datos.preinscripcionesVirtuales || [], (o) => o.curso && o.curso.id == curso.id);
+
+                                    return <ListItem
+                                      className={classes.itemLista}
+                                      onClick={result.length == 0 && this.onClickCurso}
+                                      idCurso={curso.id}>
+                                      <ListItemText
+                                        primary={<React.Fragment>{curso.nombre + (curso.lugar ? " - " + curso.lugar : '')} {(result.length > 0 ? <span className={classes.tagInscripto}> Inscripto</span> : '')}</React.Fragment>}
+                                        secondary={(curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')}
+                                      />
+                                    </ListItem>
+                                  })
+                                  ||
+                                  <ListItem className={classes.itemLista}>
+                                    <ListItemText
+                                      primary={'No se encontraron cursos'}
+                                    />
+                                  </ListItem>
+                                }
+                              </List>
+                            </ExpansionPanelDetails>
+                          </ExpansionPanel>;
+
+                      })}
+
+
+                      </ExpansionPanelDetails>
+                  </ExpansionPanel>;
+                })
+                }
               </section>
             ) ||
               <List className={classes.lista}>
@@ -453,8 +478,8 @@ debugger;
             <div className={classes.containerBotonera}>
               <Divider />
               <div className={classes.botonesBotonera}>
-                <Button variant="outlined" color="primary"  className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button> 
-                <Button variant="outlined" color="primary"  className={classes.button} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'INSCRIBIRME'}</Button>
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button>
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'INSCRIBIRME'}</Button>
               </div>
             </div>
           }
@@ -548,22 +573,52 @@ const styles = theme => ({
     textDecoration: 'underline',
     marginLeft: '24px'
   },
-  panelCategoria: {
+  panel: {
+    width: '100%',
     background: theme.color.ok.main,
     borderRadius: '4px !important',
+    boxShadow: 'none'
+  },
+  panelCategoria: {
+    width: '100%',
+    background: '#fff',
+    borderBottomRightRadius: '4px !important',
+    borderBottomLeftRadius: '4px !important',
+  },
+  iconoTag: {
+    color: '#fff'
   },
   iconoCategoria: {
+    color: theme.color.ok.main,
+  },
+  tituloTag: {
     color: '#fff'
   },
   tituloCategoria: {
-    color: '#fff'
+    color: theme.color.ok.main,
   },
   containerListaCursos: {
     background: '#fff'
   },
-  containerTituloCategoria: {
+  containerListaSubTags: {
+    padding: '0px',
+    background: '#fff',
+    border: '1px solid #fff'
+  },
+  containerTitulo: {
     marginTop: '8px',
     borderRadius: '4px !important',
+  },
+  containerTituloCategoria: {
+    marginTop: '8px',
+    borderBottomRightRadius: '4px !important',
+    borderBottomLeftRadius: '4px !important',
+    background: '#fff',
+    minHeight: '34px',
+    margin: '4px auto',
+    '& > div': {
+      margin: '0px'
+    }
   },
   containerPanelCategoria: {
     marginBottom: '10px'
@@ -579,6 +634,10 @@ const styles = theme => ({
     padding: '0px 7px',
     marginLeft: '7px',
     color: theme.color.ok.main,
+  },
+  infoPrograma: {
+    maxHeight: '300px',
+    overflowY: 'auto',
   }
 });
 
