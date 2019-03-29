@@ -63,7 +63,7 @@ class SeleccionPrograma extends React.PureComponent {
       infoCurso = this.getInfoCurso(arrayCursos[0]);
     } else {
       cursosXTags = [];
-      const tags = _.groupBy(arrayCursos, (o) => { return o.tag });
+      const tags = _.groupBy(arrayCursos, (o) => { return o.tag.split(';')[0] });
 
       Object.keys(tags).map((tag) => {
         let cursosXTag = {
@@ -478,7 +478,7 @@ class SeleccionPrograma extends React.PureComponent {
             <div className={classes.containerBotonera}>
               <Divider />
               <div className={classes.botonesBotonera}>
-                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button>
+                <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoCurso}>Otro Curso</Button> 
                 <Button variant="outlined" color="primary" className={classes.button} onClick={this.procesarPreInscripcion}>{textoBotonDialog || 'INSCRIBIRME'}</Button>
               </div>
             </div>
@@ -603,19 +603,16 @@ const styles = theme => ({
   containerListaSubTags: {
     padding: '0px',
     background: '#fff',
-    border: '1px solid #fff'
+    border: '1px solid #fff',
+    display: 'block !important'
   },
   containerTitulo: {
     marginTop: '8px',
     borderRadius: '4px !important',
   },
   containerTituloCategoria: {
-    marginTop: '8px',
-    borderBottomRightRadius: '4px !important',
-    borderBottomLeftRadius: '4px !important',
     background: '#fff',
     minHeight: '34px',
-    margin: '4px auto',
     '& > div': {
       margin: '0px'
     }

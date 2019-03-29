@@ -203,7 +203,7 @@ class MisInscripciones extends React.PureComponent {
                     const curso = inscripcion.curso;
 
                     return <ListItem>
-                      <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag + ' - ' + curso.nombrePrograma} />
+                      <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag.split(';')[0] + (curso.tag.split(';')[1] != undefined ? ' - ' + curso.tag.split(';')[1] : '') + ' - ' + curso.nombrePrograma} />
                       <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'Si'} onClick={this.onDialogoOpen}>
                         <CloseIcon />
                       </Avatar>
