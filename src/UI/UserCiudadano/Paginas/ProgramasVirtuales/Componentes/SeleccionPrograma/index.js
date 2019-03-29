@@ -58,12 +58,28 @@ class SeleccionPrograma extends React.PureComponent {
 
     const arrayCursos = props.arrayCursos || [];
     let infoCurso;
-    let cursosXTag;
+    let arrayCursosXTag;
     if (arrayCursos.length == 1) {
       infoCurso = this.getInfoCurso(arrayCursos[0]);
     } else {
-      cursosXTag = _.groupBy(arrayCursos, (o) => { return o.tag });
-      if (cursosXTag.null && Object.keys(cursosXTag).length == 1) cursosXTag = null;
+      const tags1 = _.groupBy(arrayCursos, (o) => { return o.tag });
+      
+      Object.keys(tags1).map((tag1) => {
+        let cursosXTag = {
+          'tag1': tags1,
+
+        };
+
+        // EN PROCESO
+        _.groupBy(b['adri'], (o) => { return o.tag.split(';')[1] });
+        
+
+        arrayCursosXTag.push();
+      });
+      // var tags1 = _.groupBy(tags1, (o) => { return o.tag.split(';')[0] });
+      // 
+      
+      if (arrayCursosXTag.null && Object.keys(arrayCursosXTag).length == 1) arrayCursosXTag = null;
     }
 
     this.state = {
@@ -77,7 +93,7 @@ class SeleccionPrograma extends React.PureComponent {
       inputBuscador: '',
       cursos: arrayCursos,
       listaCursos: arrayCursos,
-      cursosXTag: cursosXTag,
+      arrayCursosXTag: arrayCursosXTag,
       cursoPreinscripto: '',
       cargandoVisible: false,
     };
@@ -308,7 +324,7 @@ class SeleccionPrograma extends React.PureComponent {
     const {
       dialogoOpen,
       listaCursos,
-      cursosXTag,
+      arrayCursosXTag,
       inputBuscador,
       dialogoOpenInfoCurso,
       dialogTituloCurso,
@@ -319,7 +335,7 @@ class SeleccionPrograma extends React.PureComponent {
       cargandoVisible
     } = this.state;
 
-    const arrayCursosXTag = cursosXTag ? _.orderBy(Object.keys(cursosXTag), [], ['asc']) : [];
+    const arrayCursosXTag = arrayCursosXTag ? _.orderBy(Object.keys(arrayCursosXTag), [], ['asc']) : [];
 
     const dialogInformacionCursoHTML = dialogInformacionCurso ? <div dangerouslySetInnerHTML={{ __html: dialogInformacionCurso }} /> : '';
 
@@ -365,8 +381,8 @@ class SeleccionPrograma extends React.PureComponent {
             {(arrayCursosXTag && arrayCursosXTag.length &&
               <section className={classes.containerPanelCategoria}>
                 {arrayCursosXTag.map((categoria, index) => {
-                  const cursos = cursosXTag[categoria];
-
+                  const cursos = arrayCursosXTag[categoria];
+debugger;
                   return <ExpansionPanel className={classes.panelCategoria}>
                     <ExpansionPanelSummary className={classes.containerTituloCategoria} expandIcon={<ExpandMoreIcon className={classes.iconoCategoria} />}>
                       <Typography className={classes.tituloCategoria}>{categoria}</Typography>
