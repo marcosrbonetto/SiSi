@@ -249,7 +249,7 @@ class Programas extends React.PureComponent {
             onDialogoCancel: this.cancelarDesinscripcion
           }}
         >
-          ¿Desea cancelar su preinscripción? Esta acción no se puedrá deshacer
+          ¿Desea cancelar su preinscripción? Esta acción no se podrá deshacer
         </MiControledDialog>
 
       </div>

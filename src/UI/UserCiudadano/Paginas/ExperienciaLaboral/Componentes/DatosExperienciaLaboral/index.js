@@ -160,7 +160,7 @@ class DatosExperienciaLaboral extends React.PureComponent {
     });
     const actualizarOcupacion = (!loggedUser.datos.ocupacionId || loggedUser.datos.ocupacionId == 31) && tieneTrabajo.length > 0;
 
-    listaExperienciaLaboral = _.orderBy(listaExperienciaLaboral, ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
+    listaExperienciaLaboral = _.orderBy(listaExperienciaLaboral, ['fechaInicio', 'fechaFinalizacion'], ['desc', 'desc']);
 
     return (
       <React.Fragment>

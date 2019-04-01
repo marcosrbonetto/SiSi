@@ -76,7 +76,7 @@ class FormDatosExtrasCV extends React.PureComponent {
           valiateCondition: /^[^]{0,150}$/,
           error: false,
           required: false,
-          mensajeError: 'Este campo es opcional y debe contener 11 números.'
+          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
         }
       ]
     };
