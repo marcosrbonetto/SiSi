@@ -71,15 +71,11 @@ class Programas extends React.PureComponent {
       textoPreinscripcion = cursoPreinscripcion.nombre + lugar + diaHorario;
     }
 
-    const datosUsuario = props.loggedUser.datos;
-    const tieneExperienciasLaborales = datosUsuario.experienciasLaborales.length > 0;
-
     this.state = {
       tienePreInscripcion: tienePreInscripcion ? true : false,
       preinscripcion: tienePreInscripcion ? textoPreinscripcion : null,
       dialogoOpen: false,
-      listaProgramas: undefined,
-      preguntarPorTrabajo: !tieneExperienciasLaborales && !tienePreInscripcion
+      listaProgramas: undefined
     };
   }
 
@@ -103,18 +99,6 @@ class Programas extends React.PureComponent {
     this.setState({
       tienePreInscripcion: tienePreInscripcion
     });
-  }
-
-  onDialogoOpenTieneTrabajo = () => {
-    this.setState({ preguntarPorTrabajo: true });
-  }
-
-  onDialogoCloseTieneTrabajo = () => {
-    this.setState({ preguntarPorTrabajo: false });
-  }
-
-  agregarTrabajo = () => {
-    this.props.redireccionar('/Inicio/ExperienciaLaboral');
   }
 
   cargarProgramas = () => {
@@ -149,7 +133,14 @@ class Programas extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    Rules_Preinscripcion.deletePreinscripcion(token)
+    let idCurso = 0;
+    try {
+      idCurso = this.props.loggedUser.datos.preinscripcion.curso.id;
+    } catch (error) {
+      idCurso = 0;
+    }
+
+    Rules_Preinscripcion.deletePreinscripcion(token, idCurso)
       .then((datos) => {
         this.props.mostrarCargando(false);
         if (!datos.ok) {
@@ -180,11 +171,11 @@ class Programas extends React.PureComponent {
 
   render() {
     const { classes } = this.props;
-    const { tienePreInscripcion, dialogoOpen, listaProgramas, preinscripcion, preguntarPorTrabajo } = this.state;
+    const { tienePreInscripcion, dialogoOpen, listaProgramas, preinscripcion } = this.state;
 
     return (
       <div className={classes.mainContainer}>
-        {!preguntarPorTrabajo &&
+        
           <Grid container spacing={16} justify="center">
 
             {/* {(this.estudioAlcanzadoNoConfig &&
@@ -246,7 +237,7 @@ class Programas extends React.PureComponent {
             {/*}*/}
 
           </Grid>
-        }
+        
 
         <MiControledDialog
           open={dialogoOpen}
@@ -261,20 +252,6 @@ class Programas extends React.PureComponent {
           ¿Desea cancelar su preinscripción? Esta acción no se puedrá deshacer
         </MiControledDialog>
 
-        <MiControledDialog
-          open={preguntarPorTrabajo}
-          onDialogoOpen={this.onDialogoOpenTieneTrabajo}
-          onDialogoClose={this.onDialogoCloseTieneTrabajo}
-          titulo={'Experiencia Laboral'}
-          buttonOptions={{
-            labelAccept: 'Si',
-            labelCancel: 'No',
-            onDialogoAccept: this.agregarTrabajo,
-            onDialogoCancel: this.onDialogoCloseTieneTrabajo
-          }}
-        >
-          ¿Usted trabaja actualmente?
-        </MiControledDialog>
       </div>
     );
   }

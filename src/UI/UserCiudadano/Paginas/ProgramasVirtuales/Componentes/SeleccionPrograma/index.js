@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import { push } from "connected-react-router";
 import _ from "lodash";
 
 //Styles
@@ -49,7 +50,10 @@ const mapDispatchToProps = dispatch => ({
   },
   actualizarPreinscipcion: (data) => {
     dispatch(actualizarPreinscipcion(data));
-  }
+  },
+  redireccionar: url => {
+    dispatch(push(url));
+  },
 });
 
 class SeleccionPrograma extends React.PureComponent {

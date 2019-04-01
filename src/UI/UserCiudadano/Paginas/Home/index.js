@@ -98,6 +98,14 @@ class Home extends React.PureComponent {
     this.props.redireccionar('/Inicio/CurriculumVitae');
   }
 
+  onClickMisInscripciones = () => {
+    this.props.redireccionar('/Inicio/MisInscripciones');
+  }
+
+  onClickInscripcionVirtual = () => {
+    this.props.redireccionar('/Inicio/ProgramasVirtuales');
+  }
+
   render() {
     const { openOcupacionInfo } = this.state;
     const {
@@ -116,6 +124,10 @@ class Home extends React.PureComponent {
 
     const tienePreinscripcion = datosUsuario.preinscripcion ? true : false;
     const programa = tienePreinscripcion && <span>Te preinscribiste a {datosUsuario.preinscripcion.curso.nombrePrograma}</span> || 'Todavía no te has preinscripto a ningún programa';
+
+    const tieneInscripcionVirtuales = datosUsuario.preinscripcionesVirtuales.length > 0 ? true : false;
+    const cantCursosVirtuales = tieneInscripcionVirtuales ? datosUsuario.preinscripcionesVirtuales.length : 0;
+    const inscripcionVirtuales = tieneInscripcionVirtuales ? 'Actualmente está inscripto a ' + (cantCursosVirtuales > 0 ? cantCursosVirtuales + ' cursos virtuales.' : ' un curso virtual.' ) : 'Todavía no te has preinscripto a ningún curso virtual';
 
     const tieneExperienciasLaborales = datosUsuario.experienciasLaborales.length > 0;
     const experienciasLaborales = tieneExperienciasLaborales && 'Actualmente posee ' + datosUsuario.experienciasLaborales.length + ' experencias laborales cargadas.' || 'No ha cargado experiencias laborales';
@@ -212,14 +224,48 @@ class Home extends React.PureComponent {
 
               <div>
                 <Typography variant="body1" className={classes.titulo}>
-                  Si Estudio, Si Trabajo
+                  SiSi Presencial
                 </Typography>
                 <Typography variant="body1">
                   {programa}
                 </Typography>
                 <Button onClick={this.onClickPreinscipcion} variant="outlined" color="primary" size="small" className={classes.button}>
                   <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{tienePreinscripcion ? 'list_alt' : 'create'}</Icon>
-                  {tienePreinscripcion ? 'Ver Preinscripción' : 'Inscribirme'}
+                  {tienePreinscripcion ? 'Ver Preinscripción' : 'Pre - Inscribirme'}
+                </Button>
+              </div>
+
+              <br />
+              <Divider />
+              <br />
+
+              <div>
+                <Typography variant="body1" className={classes.titulo}>
+                SiSi Virtual
+                </Typography>
+                <Typography variant="body1">
+                  {inscripcionVirtuales}
+                </Typography>
+                <Button onClick={this.onClickInscripcionVirtual} variant="outlined" color="primary" size="small" className={classes.button}>
+                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>{'create'}</Icon>
+                  {'Inscribirme'}
+                </Button>
+              </div>
+
+              <br />
+              <Divider />
+              <br />
+
+              <div>
+                <Typography variant="body1" className={classes.titulo}>
+                Mis Inscripciones
+                </Typography>
+                <Typography variant="body1">
+                  Ingresa para ver tus inscripciones actuales.
+                </Typography>
+                <Button onClick={this.onClickMisInscripciones} variant="outlined" color="primary" size="small" className={classes.button}>
+                  <Icon className={classNames(classes.iconoBoton, classes.secondaryColor)}>list_alt</Icon>
+                  {'Ver Mis Inscripciones'}
                 </Button>
               </div>
 

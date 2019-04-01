@@ -132,8 +132,8 @@ class SeleccionPrograma extends React.PureComponent {
     };
   }
 
-  componentWillMount() {
-
+  componentDidMount() {
+    
   }
 
   onChangeInput = (value, type, input, props) => {
@@ -207,7 +207,14 @@ class SeleccionPrograma extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    Rules_Preinscripcion.deletePreinscripcion(token)
+    let idCurso = 0;
+    try {
+      idCurso = this.props.loggedUser.datos.preinscripcion.curso.id;
+    } catch (error) {
+      idCurso = 0;
+    }
+
+    Rules_Preinscripcion.deletePreinscripcion(token, idCurso)
       .then((datos) => {
         this.props.mostrarCargando(false);
 
@@ -696,7 +703,7 @@ class SeleccionPrograma extends React.PureComponent {
           {enfilaDeEspera &&
             <React.Fragment>
               <Typography variant="subheading">El curso al cual te preinscribiste ya tiene el cupo completo por lo que actualmente se encuentra en lista de espera. Usted puede:</Typography><br />
-              <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoCloseInfoPreInscripcion} >Seguir en la lista de espera</Button>
+              <Button variant="outlined" color="primary" className={classes.button} onClick={this.handleFinalizar} >Seguir en la lista de espera</Button>
               <Button variant="outlined" color="primary" className={classes.button} onClick={this.onDialogoEliminarPreInscripcion}>Cancelar preinscripción</Button>
             </React.Fragment>
           }
