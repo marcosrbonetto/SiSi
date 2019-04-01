@@ -27,16 +27,17 @@ const getPreinsciptos = (token, body) => {
     });
 };
 
-const deletePreinscripcion = (token, idUsuario) => {
+const deletePreinscripcion = (token, body) => {
 
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/BorrarPreinscripcion?idUsuario='+idUsuario, {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/BorrarPreinscripcion', {
             method: "DELETE",
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json",
                 "Token": token
-            }
+            },
+            body: JSON.stringify(body)
         })
             .then(res => {
 

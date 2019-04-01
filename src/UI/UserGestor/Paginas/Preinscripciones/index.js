@@ -61,6 +61,8 @@ class Home extends React.PureComponent {
     super(props);
 
     this.idUsuarioAEliminar = null;
+    this.idCursoUsuarioAEliminar = null;
+
     this.idUsuarioAPreinscribir = null;
 
     this.state = {
@@ -266,7 +268,7 @@ class Home extends React.PureComponent {
             <Button onClick={this.onDialogOpenPreinscripcion} idUsuario={preinscripto.idUsuario} size="small" color="secondary" className={this.props.classes.iconoAceptar}>
               <i class="material-icons">edit</i>
             </Button>
-            <Button title="Desinscribir" idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+            <Button title="Desinscribir" idCurso={preinscripto.idCurso} idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
               <CloseIcon title="Desinscribir" />
             </Button>
           </React.Fragment>,
@@ -332,8 +334,12 @@ class Home extends React.PureComponent {
 
   onDialogOpenCancelacion = (event) => {
     const idUsuario = event.currentTarget.attributes.idUsuario.value;
-    if (!idUsuario) return false;
+    const idCurso = event.currentTarget.attributes.idCurso.value;
+
+    if (!idUsuario || !idCurso) return false;
+    
     this.idUsuarioAEliminar = idUsuario;
+    this.idCursoUsuarioAEliminar = idCurso;
 
     this.setState({
       dialogCancelacion: true
@@ -342,6 +348,7 @@ class Home extends React.PureComponent {
 
   onDialogCloseCancelacion = () => {
     this.idUsuarioAEliminar = null;
+    this.idCursoUsuarioAEliminar = null;
 
     this.setState({
       dialogCancelacion: false
@@ -349,16 +356,20 @@ class Home extends React.PureComponent {
   }
 
   desinscripcionAceptada = () => {
-    if (!this.idUsuarioAEliminar) return false;
+    if (!this.idUsuarioAEliminar || !this.idCursoUsuarioAEliminar) return false;
 
     const idUsuario = this.idUsuarioAEliminar;
+    const idCurso = this.idCursoUsuarioAEliminar;
 
     this.onDialogCloseCancelacion();
 
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    Rules_Gestor.deletePreinscripcion(token, idUsuario)
+    Rules_Gestor.deletePreinscripcion(token, {
+      idUsuario: idUsuario,
+      idCurso: idCurso,
+    })
       .then((datos) => {
 
         if (!datos.ok) {
@@ -380,6 +391,7 @@ class Home extends React.PureComponent {
         mostrarMensaje('Se ha desinscripto al usuario exitosamente!');
       })
       .catch((error) => {
+        this.props.mostrarCargando(false);
         mostrarAlerta('Ocurrió un error al intentar desinscribir al usuario.');
         console.error('Error Servicio "Rules_Gestor.deletePreinscripcion": ' + error);
       });
@@ -579,7 +591,8 @@ class Home extends React.PureComponent {
       "nombre": usuario.data.nombre,
       "apellido": usuario.data.apellido,
       "cuit": usuario.data.cuit,
-      "email": usuario.data.email
+      "email": usuario.data.email,
+      "telefono": (usuario.data.telefonoCelular != '' ? usuario.data.telefonoCelular : usuario.data.telefonoFijo) || '',
     };
 
     if (curso &&
@@ -612,7 +625,8 @@ class Home extends React.PureComponent {
         "nombre": usuario.data.nombre,
         "apellido": usuario.data.apellido,
         "cuit": usuario.data.cuit,
-        "email": usuario.data.email
+        "email": usuario.data.email,
+        "telefono": (usuario.data.telefonoCelular != '' ? usuario.data.telefonoCelular : usuario.data.telefonoFijo) || '',
       };
     }
 

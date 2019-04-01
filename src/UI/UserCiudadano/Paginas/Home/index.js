@@ -127,7 +127,7 @@ class Home extends React.PureComponent {
 
     const tieneInscripcionVirtuales = datosUsuario.preinscripcionesVirtuales.length > 0 ? true : false;
     const cantCursosVirtuales = tieneInscripcionVirtuales ? datosUsuario.preinscripcionesVirtuales.length : 0;
-    const inscripcionVirtuales = tieneInscripcionVirtuales ? 'Actualmente está inscripto a ' + (cantCursosVirtuales > 0 ? cantCursosVirtuales + ' cursos virtuales.' : ' un curso virtual.' ) : 'Todavía no te has preinscripto a ningún curso virtual';
+    const inscripcionVirtuales = tieneInscripcionVirtuales ? 'Actualmente está inscripto a ' + (cantCursosVirtuales > 0 ? cantCursosVirtuales + ' cursos virtuales.' : ' un curso virtual.' ) : 'Todavía no te has inscripto a ningún curso virtual';
 
     const tieneExperienciasLaborales = datosUsuario.experienciasLaborales.length > 0;
     const experienciasLaborales = tieneExperienciasLaborales && 'Actualmente posee ' + datosUsuario.experienciasLaborales.length + ' experencias laborales cargadas.' || 'No ha cargado experiencias laborales';
