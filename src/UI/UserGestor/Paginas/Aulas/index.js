@@ -63,13 +63,27 @@ class Aulas extends React.PureComponent {
       arrayCursos: [],
       // aulaFiltroSeleccionado: -1,
       // arrayAulas: [],
+      dialogConfirmacion: false,
       rowList: [],
+      busquedaRealizada: false
     };
   }
 
   componentWillMount() {
     //Cargamos los programas y los cursos
     this.cargarProgramasYCursos();
+  }
+
+  onDialogOpenConfirmacion = () => {
+    this.setState({
+      dialogConfirmacion: true
+    })
+  }
+
+  onDialogCloseConfirmacion = () => {
+    this.setState({
+      dialogConfirmacion: false
+    })
   }
 
   cargarProgramasYCursos = (callback) => {
@@ -89,6 +103,8 @@ class Aulas extends React.PureComponent {
         let arrayProgramas = [];
         let arrayCursos = [];
         datos.return.map((programa) => {
+          if(!programa.esVirtual) return true;
+
           const itemPrograma = {
             label: programa.nombre,
             subLabel: programa.descripcion,
@@ -130,25 +146,33 @@ class Aulas extends React.PureComponent {
   handleSelectFiltroPrograma = (item) => {
     this.setState({
       programaFiltroSeleccionado: item.value,
-      cursoFiltroSeleccionado: -1
+      cursoFiltroSeleccionado: -1,
+      rowList: [],
+      busquedaRealizada: false
     })
   }
 
   handleQuitarFiltroPrograma = () => {
     this.setState({
-      programaFiltroSeleccionado: -1
+      programaFiltroSeleccionado: -1,
+      rowList: [],
+      busquedaRealizada: false
     })
   }
 
   handleSelectFiltroCursos = (item) => {
     this.setState({
-      cursoFiltroSeleccionado: item.value
+      cursoFiltroSeleccionado: item.value,
+      rowList: [],
+      busquedaRealizada: false
     })
   }
 
   handleQuitarFiltroCursos = () => {
     this.setState({
-      cursoFiltroSeleccionado: -1
+      cursoFiltroSeleccionado: -1,
+      rowList: [],
+      busquedaRealizada: false
     })
   }
 
@@ -173,7 +197,12 @@ class Aulas extends React.PureComponent {
       return false;
     }
 
-    this.cargarPreinscriptos();
+    this.setState({
+      busquedaRealizada: true
+    }, () => {
+      this.cargarPreinscriptos();
+    });
+    
   }
 
   cargarPreinscriptos = () => {
@@ -191,7 +220,7 @@ class Aulas extends React.PureComponent {
     }
 
     //Solo los no asignados a cursos
-    filters['idAula'] = -1;
+    filters['aula'] = -1;
 
     Rules_Gestor.getPreinsciptos(token, filters).then((datos) => {
       this.props.mostrarCargando(false);
@@ -284,6 +313,8 @@ class Aulas extends React.PureComponent {
         filters['idCurso'] = this.state.cursoFiltroSeleccionado;
       }
 
+      filters['aula'] = -1;
+
       Rules_Gestor.asignarAulas(token, filters).then((datos) => {
         this.props.mostrarCargando(false);
         if (!datos.ok) {
@@ -304,6 +335,11 @@ class Aulas extends React.PureComponent {
     });
   }
 
+  onDialogoAcceptConfirmacion = () => {
+    this.onDialogCloseConfirmacion();
+    this.asignarAulas();
+  }
+
   render() {
     const { classes } = this.props;
     const {
@@ -314,6 +350,8 @@ class Aulas extends React.PureComponent {
       arrayCursos,
       // arrayAulas,
       rowList,
+      busquedaRealizada,
+      dialogConfirmacion
     } = this.state;
 
     var filterCursos = _.filter(arrayCursos, (o) => { return o.idPrograma == programaFiltroSeleccionado });
@@ -382,11 +420,10 @@ class Aulas extends React.PureComponent {
         <Grid container spacing={16}>
           <Grid item xs={12} sm={12}>
             <br />
-            <MiCard titulo="Lista de Cursos">
+            <MiCard titulo="Asignación de Aulas Virtuales">
 
               <div className={classes.buttonsAction}>
-                <Button onClick={this.asignarAulas} color="primary" variant="outlined" >Asignar Aulas</Button>
-                <Button color="primary" variant="outlined" >Decargar Excel</Button>
+                {busquedaRealizada && <Button onClick={rowList.length >= 150 ? this.asignarAulas : this.onDialogOpenConfirmacion} color="primary" variant="outlined" >Asignar Aulas</Button>}
               </div>
 
               {/* Tabla de detalle del tributo */}
@@ -415,6 +452,22 @@ class Aulas extends React.PureComponent {
             </MiCard>
           </Grid>
         </Grid>
+
+        <MiControledDialog
+          open={dialogConfirmacion}
+          onDialogoOpen={this.onDialogOpenConfirmacion}
+          onDialogoClose={this.onDialogCloseConfirmacion}
+          buttonOptions={{
+            labelAccept: 'Si',
+            labelCancel: 'No',
+            onDialogoAccept: this.onDialogoAcceptConfirmacion,
+            onDialogoCancel: this.onDialogCloseConfirmacion,
+          }}
+          titulo={'Confirmación de Asignación de Aula'}
+        >
+          El número de inscriptos es menor al tamaño del aula (150). ¿Esta de acuerdo en generar un aula de cupo menor?
+        </MiControledDialog>
+
 
       </section>
     );

@@ -213,7 +213,7 @@ class Home extends React.PureComponent {
     }
 
     if (this.state.aulaFiltroSeleccionado != -1) {
-      filters['idAula'] = this.state.aulaFiltroSeleccionado;
+      filters['aula'] = this.state.aulaFiltroSeleccionado;
     }
 
     if (this.state.valueInputNombre != '') {
@@ -267,7 +267,7 @@ class Home extends React.PureComponent {
           apellidoNombre: preinscripto.apellido + ', ' + preinscripto.nombre,
           programa: programa ? programa.label : '-',
           curso: curso ? curso.label : '-',
-          aula: curso && curso.aula ? curso.aula : 'Sin Asig.',
+          aula: preinscripto && preinscripto.aula ? 'Aula N°'+preinscripto.aula : 'Sin Asig.',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
           acceso: preinscripto && preinscripto.acceso ? preinscripto.acceso : 'No',
           acciones: <React.Fragment>
@@ -881,6 +881,7 @@ class Home extends React.PureComponent {
             <MiCard titulo="Lista de Preinscriptos">
               {/* Tabla de detalle del tributo */}
               <div className={classes.buttonDescargaReporte}>
+                <Button color="primary" variant="outlined" >Decargar Excel</Button> 
                 <Button onClick={this.onDialogOpenImpresionReporte} color="primary" variant="outlined" >
                   Descargar Reporte
               </Button>

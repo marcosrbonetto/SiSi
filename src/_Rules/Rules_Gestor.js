@@ -323,7 +323,7 @@ const getAulas = (token, idCurso) => {
 
     return new Promise((resolve, reject) => {
 
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/GetAulas&idCurso='+idCurso, {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/GetAulas?idCurso='+idCurso, {
             method: "GET",
             headers: {
                 "Accept": "application/json",

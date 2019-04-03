@@ -5,7 +5,7 @@ const styles = theme => ({
   },
   buttonsAction: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   centerItems: {
     display: 'flex',
