@@ -57,26 +57,26 @@ class FormDatosExtrasCV extends React.PureComponent {
         {
           id: 'InputHabilidades',
           value: datos.habilidades || '',
-          valiateCondition: /^[^]{0,150}$/,
+          valiateCondition: /^[^]{0,1000}$/,
           error: false,
           required: false,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          mensajeError: 'Este campo tiene un límite de 1000 catacteres.'
         },
         {
           id: 'InputIdiomas',
           value: datos.idiomas || '',
-          valiateCondition: /^[^]{0,150}$/,
+          valiateCondition: /^[^]{0,1000}$/,
           error: false,
           required: false,
-          mensajeError: 'Este campo es obligatorio y tiene un límite de 150 catacteres.'
+          mensajeError: 'Este campo tiene un límite de 1000 catacteres.'
         },
         {
           id: 'InputReferencias',
           value: datos.referencias || '',
-          valiateCondition: /^[^]{0,150}$/,
+          valiateCondition: /^[^]{0,1000}$/,
           error: false,
           required: false,
-          mensajeError: 'Este campo es opcional y debe contener 11 números.'
+          mensajeError: 'Este campo tiene un límite de 1000 catacteres.'
         }
       ]
     };

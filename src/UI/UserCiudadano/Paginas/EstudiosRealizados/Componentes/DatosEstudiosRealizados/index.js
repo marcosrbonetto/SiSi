@@ -190,7 +190,7 @@ class DatosEstudiosRealizados extends React.PureComponent {
 
                 if (_.filter(gruposNiveles[idTipoEstudio], { tipoEstudio: idTipoEstudio }).length > 0) {
 
-                  var lista = _.orderBy(gruposNiveles[idTipoEstudio], ['fechaFinalizacion', 'fechaInicio'], ['desc', 'desc']);
+                  var lista = _.orderBy(gruposNiveles[idTipoEstudio], ['fechaInicio', 'fechaFinalizacion'], ['desc', 'desc']);
                   var tipoEstudio = _.find(arrayTipoEstudios, { value: idTipoEstudio });
 
                   return <React.Fragment>

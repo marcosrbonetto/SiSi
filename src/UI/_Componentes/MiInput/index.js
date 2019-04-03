@@ -22,6 +22,8 @@ class MiInput extends React.Component {
   constructor(props) {
     super(props);
 
+    this.dateByInput = false;
+
     this.state = {
       checkDate: props.disabled != undefined ? !props.disabled : true
     }
@@ -32,10 +34,18 @@ class MiInput extends React.Component {
   }
 
   handleInputDateOnCange = (event) => {
+    
+    var dateTime = event;
+    if(this.dateByInput) {
+      dateTime.setDate(dateTime.getDate()+365);
+      this.dateByInput = false;
+    }
+
     this.props.onChange && this.props.onChange(event, 'value', undefined, this.props);
   }
 
   handleInputOnFocusOut = (event) => {
+    this.dateByInput = true;
     this.props.onFocusOut && this.props.onFocusOut(event, this.props);
   }
 
