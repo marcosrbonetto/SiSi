@@ -150,7 +150,7 @@ const activarCurso = (token, idCurso) => {
 const cerrarPrograma = (token, idPrograma) => {
 
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/CerrarPrograma?id='+idPrograma, {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/CerrarPrograma?id=' + idPrograma, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -178,7 +178,7 @@ const cerrarPrograma = (token, idPrograma) => {
 const activarPrograma = (token, idPrograma) => {
 
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/ActivarPrograma?id='+idPrograma, {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/ActivarPrograma?id=' + idPrograma, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -290,6 +290,64 @@ const exportarPreinscriptos = (token, body) => {
     });
 };
 
+const asignarAulas = (token, body) => {
+
+    return new Promise((resolve, reject) => {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/AsignarAulas', {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Token": token
+            },
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+
+                if (res.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+
+                return res.json();
+            })
+            .then(datos => {
+                resolve(datos);
+            })
+            .catch(err => {
+                reject("Error procesando la solicitud");
+            });
+    });
+};
+
+const getAulas = (token, idCurso) => {
+
+    return new Promise((resolve, reject) => {
+
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/GetAulas&idCurso='+idCurso, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Token": token
+            }
+        })
+            .then(res => {
+
+                if (res.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+
+                return res.json();
+            })
+            .then(datos => {
+                resolve(datos);
+            })
+            .catch(err => {
+                reject("Error procesando la solicitud");
+            });
+    });
+};
+
 const services = {
     getPreinsciptos: getPreinsciptos,
     deletePreinscripcion: deletePreinscripcion,
@@ -300,7 +358,9 @@ const services = {
     activarPrograma: activarPrograma,
     getCursos: getCursos,
     reInscribir: reInscribir,
-    exportarPreinscriptos: exportarPreinscriptos
+    exportarPreinscriptos: exportarPreinscriptos,
+    asignarAulas: asignarAulas,
+    getAulas: getAulas
 }
 
 export default services;

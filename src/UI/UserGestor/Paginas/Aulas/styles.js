@@ -16,13 +16,6 @@ const styles = theme => ({
     marginTop: '16px',
     cursor: 'pointer'
   },
-  buttonFilter: {
-    overflow: 'visible',
-    display: 'inline-block',
-    minWidth: 'auto',
-    margin: '2px',
-    borderRadius: '20px',
-  },
   containerBotonera: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -59,6 +52,15 @@ const styles = theme => ({
   },
   contentTable: {
     marginTop: '14px'
+  },
+  buttonFilter: {
+    overflow: 'visible',
+    display: 'inline-block',
+    minWidth: 'auto',
+    margin: '2px',
+    borderRadius: '20px',
+    marginLeft: '20px',
+    marginTop: '10px',
   }
 });
 

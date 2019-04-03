@@ -61,8 +61,8 @@ class Aulas extends React.PureComponent {
       arrayProgramas: [],
       cursoFiltroSeleccionado: -1,
       arrayCursos: [],
-      aulaFiltroSeleccionado: -1,
-      arrayAulas: [],
+      // aulaFiltroSeleccionado: -1,
+      // arrayAulas: [],
       rowList: [],
     };
   }
@@ -152,17 +152,17 @@ class Aulas extends React.PureComponent {
     })
   }
 
-  handleSelectFiltroAulas = (item) => {
-    this.setState({
-      aulaFiltroSeleccionado: item.value
-    })
-  }
+  // handleSelectFiltroAulas = (item) => {
+  //   this.setState({
+  //     aulaFiltroSeleccionado: item.value
+  //   })
+  // }
 
-  handleQuitarFiltroAulas = () => {
-    this.setState({
-      aulaFiltroSeleccionado: -1
-    })
-  }
+  // handleQuitarFiltroAulas = () => {
+  //   this.setState({
+  //     aulaFiltroSeleccionado: -1
+  //   })
+  // }
 
   handleBuscar = () => {
     const idCurso = this.state.cursoFiltroSeleccionado;
@@ -173,9 +173,135 @@ class Aulas extends React.PureComponent {
       return false;
     }
 
-    // this.setState({
-    //   rowList: rowList
-    // })
+    this.cargarPreinscriptos();
+  }
+
+  cargarPreinscriptos = () => {
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    let filters = {};
+
+    if (this.state.programaFiltroSeleccionado != -1) {
+      filters['idPrograma'] = this.state.programaFiltroSeleccionado;
+    }
+
+    if (this.state.cursoFiltroSeleccionado != -1) {
+      filters['idCurso'] = this.state.cursoFiltroSeleccionado;
+    }
+
+    //Solo los no asignados a cursos
+    filters['idAula'] = -1;
+
+    Rules_Gestor.getPreinsciptos(token, filters).then((datos) => {
+      this.props.mostrarCargando(false);
+      if (!datos.ok) {
+        mostrarAlerta('Ocurrió un error al intentar obtener los inscriptos.');
+        return false;
+      }
+
+      let listaInscriptos = [];
+
+      // {
+      //   "idUsuario": 0,
+      //   "nombre": "string",
+      //   "apellido": "string",
+      //   "cuit": "string",
+      //   "email": "string",
+      //   "fechaPreinscripcion": "2019-03-11T14:26:14.556Z",
+      //   "tieneEmpresa": true,
+      //   "nombreEmpresa": "string",
+      //   "cuitEmpresa": "string",
+      //   "domicilioEmpresa": "string",
+      //   "descripcionEmpresa": "string",
+      //   "filaDeEspera": true,
+      //   "idCurso": 0,
+      //   "idPrograma": 0
+      // }
+
+      datos.return.map((preinscripto) => {
+
+        const idPrograma = parseInt(preinscripto.idPrograma);
+        const programa = _.find(this.state.arrayProgramas, { value: idPrograma });
+
+        const idCurso = parseInt(preinscripto.idCurso);
+        const curso = _.find(this.state.arrayCursos, { value: idCurso });
+
+        listaInscriptos.push({
+          cuit: preinscripto.cuit,
+          apellidoNombre: preinscripto.apellido + ', ' + preinscripto.nombre,
+          email: preinscripto.email,
+          filaDeEspera: preinscripto.filaDeEspera ? 'Si' : 'No',
+          fechaPreinscripcion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
+          // acciones: <React.Fragment>
+          //   <Button onClick={this.onDialogOpenPreinscripcion} idUsuario={preinscripto.idUsuario} size="small" color="secondary" className={this.props.classes.iconoAceptar}>
+          //     <i class="material-icons">edit</i>
+          //   </Button>
+          //   <Button title="Desinscribir" idCurso={preinscripto.idCurso} idUsuario={preinscripto.idUsuario} onClick={this.onDialogOpenCancelacion} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+          //     <CloseIcon title="Desinscribir" />
+          //   </Button>
+          // </React.Fragment>,
+          data: {
+            idUsuario: preinscripto.idUsuario,
+            idPrograma: preinscripto.idPrograma,
+            idCurso: preinscripto.idCurso,
+            email: preinscripto.email,
+            apellido: preinscripto.apellido,
+            nombre: preinscripto.nombre,
+            cuit: preinscripto.cuit,
+          }
+        });
+
+      });
+
+      this.setState({
+        rowList: listaInscriptos
+      });
+
+    })
+      .catch((error) => {
+        this.props.mostrarCargando(false);
+        mostrarAlerta('Ocurrió un error al intentar obtener los inscriptos.');
+        console.error('Error Servicio "Rules_Gestor.getPreinsciptos": ' + error);
+      });
+  }
+
+  asignarAulas = () => {
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    this.setState({
+      rowList: []
+    }, () => {
+
+      let filters = {};
+
+      if (this.state.programaFiltroSeleccionado != -1) {
+        filters['idPrograma'] = this.state.programaFiltroSeleccionado;
+      }
+
+      if (this.state.cursoFiltroSeleccionado != -1) {
+        filters['idCurso'] = this.state.cursoFiltroSeleccionado;
+      }
+
+      Rules_Gestor.asignarAulas(token, filters).then((datos) => {
+        this.props.mostrarCargando(false);
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar asignar las alulas.');
+          return false;
+        }
+
+        this.cargarPreinscriptos();
+      })
+        .catch((error) => {
+          this.props.mostrarCargando(false);
+          this.cargarPreinscriptos();
+
+          mostrarAlerta('Ocurrió un error al intentar asignar las alulas.');
+          console.error('Error Servicio "Rules_Gestor.asignarAulas": ' + error);
+        });
+        
+    });
   }
 
   render() {
@@ -183,10 +309,10 @@ class Aulas extends React.PureComponent {
     const {
       programaFiltroSeleccionado,
       cursoFiltroSeleccionado,
-      aulaFiltroSeleccionado,
+      // aulaFiltroSeleccionado,
       arrayProgramas,
       arrayCursos,
-      arrayAulas,
+      // arrayAulas,
       rowList,
     } = this.state;
 
@@ -223,11 +349,17 @@ class Aulas extends React.PureComponent {
                         fullWidth={true}
                         options={filterCursos} />
                       {cursoFiltroSeleccionado != -1 && <Icon className={classes.limpiarSelect} onClick={this.handleQuitarFiltroCursos}>clear</Icon>}
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.buttonFilter}
+                        onClick={this.handleBuscar}
+                      >Buscar</Button>
                     </Grid>
                   </Grid>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                {/* <Grid item xs={12} sm={6}>
                   <Grid container>
                     <Grid item xs={12} sm={12} className={classes.centerItems}>
                       <MiSelect
@@ -239,22 +371,8 @@ class Aulas extends React.PureComponent {
                       {aulaFiltroSeleccionado != -1 && <Icon className={classes.limpiarSelect} onClick={this.handleQuitarFiltroAulas}>clear</Icon>}
                     </Grid>
                   </Grid>
-                </Grid>
+                </Grid> */}
 
-                <Grid item xs={12} sm={6}>
-                  <Grid container>
-                    <Grid item xs={12} sm={12} className={classes.centerItems}>
-                      <section className={classes.containerBotonera}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          className={classes.buttonFilter}
-                          onClick={this.handleBuscar}
-                        >Buscar</Button>
-                      </section>
-                    </Grid>
-                  </Grid>
-                </Grid>
               </Grid>
 
             </MiCard>
@@ -267,7 +385,7 @@ class Aulas extends React.PureComponent {
             <MiCard titulo="Lista de Cursos">
 
               <div className={classes.buttonsAction}>
-                <Button color="primary" variant="outlined" >Asignar Aulas</Button>
+                <Button onClick={this.asignarAulas} color="primary" variant="outlined" >Asignar Aulas</Button>
                 <Button color="primary" variant="outlined" >Decargar Excel</Button>
               </div>
 
@@ -285,12 +403,14 @@ class Aulas extends React.PureComponent {
 
                   { id: 'filaDeEspera', type: 'string', numeric: false, disablePadding: false, label: 'En Espera' },
 
-                  { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
+                  { id: 'fechaPreinscripcion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Inscr.' },
+
+                  // { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
                 rows={rowList || []}
                 order={'asc'}
                 orderBy={'apellido'}
-                rowsPerPage={5}
+                rowsPerPage={30}
               />
             </MiCard>
           </Grid>

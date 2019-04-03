@@ -72,6 +72,8 @@ class Home extends React.PureComponent {
       cursoFiltroSeleccionado: -1,
       cursoFiltroSeleccionadoPreinscripcion: -1,
       arrayCursos: [],
+      aulaFiltroSeleccionado: -1,
+      arrayAulas: [],
       valueInputCUIT: '',
       valueInputNombre: '',
       valueInputLugar: '',
@@ -210,6 +212,10 @@ class Home extends React.PureComponent {
       filters['idCurso'] = this.state.cursoFiltroSeleccionado;
     }
 
+    if (this.state.aulaFiltroSeleccionado != -1) {
+      filters['idAula'] = this.state.aulaFiltroSeleccionado;
+    }
+
     if (this.state.valueInputNombre != '') {
       filters['nombre'] = this.state.valueInputNombre;
     }
@@ -261,9 +267,9 @@ class Home extends React.PureComponent {
           apellidoNombre: preinscripto.apellido + ', ' + preinscripto.nombre,
           programa: programa ? programa.label : '-',
           curso: curso ? curso.label : '-',
-          lugar: curso ? (curso.lugar && curso.lugar != '' ? curso.lugar : '-') : '-',
-          horario: curso ? (curso.dia && curso.dia != '' ? curso.dia + ' ' + curso.horario : '-') : '-',
+          aula: curso && curso.aula ? curso.aula : 'Sin Asig.',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
+          acceso: preinscripto && preinscripto.acceso ? preinscripto.acceso : 'No',
           acciones: <React.Fragment>
             <Button onClick={this.onDialogOpenPreinscripcion} idUsuario={preinscripto.idUsuario} size="small" color="secondary" className={this.props.classes.iconoAceptar}>
               <i class="material-icons">edit</i>
@@ -298,25 +304,80 @@ class Home extends React.PureComponent {
   handleSelectFiltroPrograma = (item) => {
     this.setState({
       programaFiltroSeleccionado: item.value,
-      cursoFiltroSeleccionado: -1
+      cursoFiltroSeleccionado: -1,
+      arrayAulas: [],
+      aulaFiltroSeleccionado: -1
     })
   }
 
   handleQuitarFiltroPrograma = () => {
     this.setState({
-      programaFiltroSeleccionado: -1
+      programaFiltroSeleccionado: -1,
+      arrayAulas: [],
+      aulaFiltroSeleccionado: -1
     })
   }
 
   handleSelectFiltroCursos = (item) => {
     this.setState({
-      cursoFiltroSeleccionado: item.value
+      cursoFiltroSeleccionado: item.value, 
+      arrayAulas: [],
+      aulaFiltroSeleccionado: -1
+    }, () => {
+      if (item.value && item.value != -1) {
+        const token = this.props.loggedUser.token;
+        const idCurso = item.value;
+
+        Rules_Gestor.getAulas(token, idCurso).then((datos) => {
+          this.props.mostrarCargando(false);
+          if (!datos.ok) {
+            mostrarAlerta('Ocurrió un error al intentar obtener las aulas del curso seleccionado.');
+            return false;
+          }
+
+          if (datos.return == null || datos.return.length == 0) return false;
+
+          let arrayAulas = [];
+          datos.return.map((idAula) => {
+            arrayAulas.push({
+              value: idAula,
+              label: "Aula N°"+idAula
+            });
+          });
+
+          this.setState({
+            arrayAulas: arrayAulas
+          });
+
+        })
+          .catch((error) => {
+            this.props.mostrarCargando(false);
+
+            mostrarAlerta('Ocurrió un error al intentar obtener las aulas del curso seleccionado.');
+            console.error('Error Servicio "Rules_Gestor.getAulas": ' + error);
+          });
+
+      }
     })
   }
 
   handleQuitarFiltroCursos = () => {
     this.setState({
-      cursoFiltroSeleccionado: -1
+      cursoFiltroSeleccionado: -1,
+      arrayAulas: [],
+      aulaFiltroSeleccionado: -1
+    })
+  }
+
+  handleSelectFiltroAulas = (item) => {
+    this.setState({
+      aulaFiltroSeleccionado: item.value,
+    })
+  }
+
+  handleQuitarFiltroAulas = () => {
+    this.setState({
+      aulaFiltroSeleccionado: -1
     })
   }
 
@@ -337,7 +398,7 @@ class Home extends React.PureComponent {
     const idCurso = event.currentTarget.attributes.idCurso.value;
 
     if (!idUsuario || !idCurso) return false;
-    
+
     this.idUsuarioAEliminar = idUsuario;
     this.idCursoUsuarioAEliminar = idCurso;
 
@@ -573,7 +634,7 @@ class Home extends React.PureComponent {
 
     const idUsuario = this.idUsuarioAPreinscribir;
     this.idUsuarioAPreinscribir = null;
-    
+
     let rowList = _.cloneDeep(this.state.rowList);
     const usuario = _.find(rowList, (o) => o.data.idUsuario == idUsuario);
     const curso = this.state.cursoSeleccionado;
@@ -665,7 +726,7 @@ class Home extends React.PureComponent {
         });
 
         mostrarMensaje('Preinscripción actualizada exitosamente.');
-      
+
       })
       .catch((error) => {
         this.props.mostrarCargando(false);
@@ -686,6 +747,7 @@ class Home extends React.PureComponent {
       programaFiltroSeleccionadoPreinscripcion,
       cursoFiltroSeleccionado,
       cursoFiltroSeleccionadoPreinscripcion,
+      aulaFiltroSeleccionado,
       rowList,
       dialogConfirmacion,
       dialogCancelacion,
@@ -693,6 +755,7 @@ class Home extends React.PureComponent {
       dialogImpresionReporte,
       arrayProgramas,
       arrayCursos,
+      arrayAulas,
       arrayReporte,
       valueInputLugar,
       valueInputCUIT,
@@ -737,19 +800,18 @@ class Home extends React.PureComponent {
                         options={_.filter(arrayCursos, (o) => { return o.idPrograma == programaFiltroSeleccionado || programaFiltroSeleccionado == -1 })} />
                       {cursoFiltroSeleccionado != -1 && <Icon className={classes.limpiarSelect} onClick={this.handleQuitarFiltroCursos}>clear</Icon>}
                     </Grid>
-                    <Grid item xs={12} sm={12} className={classes.centerItems}>
-                      <MiInput
-                        id={'InputLugar'}
-                        tipoInput={'input'}
-                        type={'text'}
-                        value={valueInputLugar}
-                        error={false}
-                        mensajeError={false}
-                        label={'Buscar por Lugar'}
-                        placeholder={'Ingrese el lugar del curso...'}
-                        onChange={this.onChangeInputLugar}
-                      />
-                    </Grid>
+
+                    {arrayAulas && arrayAulas.length > 0 &&
+                      <Grid item xs={12} sm={12} className={classes.centerItems}>
+                        <MiSelect
+                          onChange={this.handleSelectFiltroAulas}
+                          value={aulaFiltroSeleccionado}
+                          label="Aulas"
+                          fullWidth={true}
+                          options={arrayAulas} />
+                        {aulaFiltroSeleccionado != -1 && <Icon className={classes.limpiarSelect} onClick={this.handleQuitarFiltroAulas}>clear</Icon>}
+                      </Grid>}
+
                   </Grid>
                 </Grid>
 
@@ -781,7 +843,21 @@ class Home extends React.PureComponent {
                         onChange={this.onChangeInputNombre}
                       />
                     </Grid>
+
                     <Grid item xs={12} sm={12} className={classes.centerItems}>
+                      <React.Fragment>
+                        <MiInput
+                          id={'InputLugar'}
+                          tipoInput={'input'}
+                          type={'text'}
+                          value={valueInputLugar}
+                          error={false}
+                          mensajeError={false}
+                          label={'Buscar por Lugar'}
+                          placeholder={'Ingrese el lugar del curso...'}
+                          onChange={this.onChangeInputLugar}
+                        />
+                      </React.Fragment>
                       <section className={classes.containerBotonera}>
                         <Button
                           variant="contained"
@@ -819,10 +895,11 @@ class Home extends React.PureComponent {
 
                   { id: 'programa', type: 'string', numeric: false, disablePadding: false, label: 'Programa' },
                   { id: 'curso', type: 'string', numeric: false, disablePadding: false, label: 'Curso' },
-                  { id: 'lugar', type: 'string', numeric: false, disablePadding: false, label: 'Lugar' },
-                  { id: 'horario', type: 'string', numeric: false, disablePadding: false, label: 'Horario' },
+                  { id: 'aula', type: 'string', numeric: false, disablePadding: false, label: 'Aula' },
 
                   { id: 'fechaPreinscricion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Preinsc.' },
+
+                  { id: 'acceso', type: 'string', numeric: false, disablePadding: false, label: 'Con Acceso' },
 
                   { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
