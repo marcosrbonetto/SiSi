@@ -136,58 +136,60 @@ class MiToolbar extends React.Component {
 
     return (
       <AppBar color="secondary" position="absolute" className={classNames(classes.appBar)}>
-        <Toolbar disableGutters={true} className={classes.toolbar}>
-          {this.props.renderLeftIcon != undefined &&
-            this.props.renderLeftIcon()}
+        <Toolbar disableGutters={true} classes={{ root: classes.toolbar }}>
+          <section className={classes.sectionToolbar}>
+            {this.props.renderLeftIcon != undefined &&
+              this.props.renderLeftIcon()}
 
-          {this.props.renderLeftIcon == undefined &&
-            this.props.leftIcon != undefined && (
-              <div className={classes.menuButton}>
-                <IconButton
-                  color="inherit"
-                  aria-label={this.props.leftIconHint || "Boton del toolbar"}
-                  onClick={this.props.leftIconClick}
-                >
-                  <Icon>{this.props.leftIcon}</Icon>
-                </IconButton>
-              </div>
-            )}
+            {this.props.renderLeftIcon == undefined &&
+              this.props.leftIcon != undefined && (
+                <div className={classes.menuButton}>
+                  <IconButton
+                    color="inherit"
+                    aria-label={this.props.leftIconHint || "Boton del toolbar"}
+                    onClick={this.props.leftIconClick}
+                  >
+                    <Icon>{this.props.leftIcon}</Icon>
+                  </IconButton>
+                </div>
+              )}
 
-          {/* Logo muni */}
-          {<div onClick={this.handleClickLogo} className={classNames("imgMuni", classes.logoMuni)}></div>}
+            {/* Logo muni */}
+            {<div onClick={this.handleClickLogo} className={classNames("imgMuni", classes.logoMuni)}></div>}
 
+            <Typography
+              variant="title"
+              color="inherit"
+              noWrap
+              className={classNames(classes.title, "tituloTooltip")}
+            >
+              {titulo}
+            </Typography>
+          </section>
 
-          <Typography
-            variant="title"
-            color="inherit"
-            noWrap
-            className={classNames(classes.title, "tituloTooltip")}
-          >
-            {titulo}
-          </Typography>
-
-          {/* {this.state.datosUsuario && <div className={classes.loggedIcons}>
+          <section className={classes.sectionToolbar}>
+            {/* {this.state.datosUsuario && <div className={classes.loggedIcons}>
             <MiNotificacion />
           </div>} */}
 
-          <MiMenuApps />
+            <MiMenuApps />
 
-          {/* Icono de Notificaciones */}
-          {/* Icono del usuario */}
-          {this.state.datosUsuario && <div className={classes.loggedIcons}>
-            <IconButton onClick={this.onUsuarioPress} color="inherit">
-              <Avatar alt="Menu del usuario" src={urlFotoPerfilMiniatura} className={classNames(classes.icono)} />
-            </IconButton>
-          </div>}
+            {/* Icono de Notificaciones */}
+            {/* Icono del usuario */}
+            {this.state.datosUsuario && <div className={classes.loggedIcons}>
+              <IconButton onClick={this.onUsuarioPress} color="inherit">
+                <Avatar alt="Menu del usuario" src={urlFotoPerfilMiniatura} className={classNames(classes.icono)} />
+              </IconButton>
+            </div>}
 
 
-          {/* Inicio sesion Vecino Virtual */}
-          {/*!this.state.datosUsuario && <div>
+            {/* Inicio sesion Vecino Virtual */}
+            {/*!this.state.datosUsuario && <div>
             <Button onClick={this.handleInicioSesion} variant="contained" color="primary">
               Iniciar Sesión
             </Button>
           </div>*/}
-
+          </section>
         </Toolbar>
 
         {this.state.datosUsuario && <Menu
@@ -232,7 +234,8 @@ class MiToolbar extends React.Component {
 const styles = theme => {
   return {
     toolbar: {
-      paddingRight: 24 // keep right padding when drawer closed
+      paddingRight: 12, // keep right padding when drawer closed
+      justifyContent: 'space-between'
     },
     toolbarIcon: {
       display: "flex",
@@ -240,6 +243,10 @@ const styles = theme => {
       justifyContent: "flex-end",
       padding: "0 8px",
       ...theme.mixins.toolbar
+    },
+    sectionToolbar: {
+      display: "flex",
+      alignItems: "center",
     },
     menuButton: {
       marginLeft: 6,
