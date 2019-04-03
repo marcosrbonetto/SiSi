@@ -127,6 +127,7 @@ class CV extends React.PureComponent {
           }
           fileName={'CV'} onLoading={this.handleOnLoading} onFinish={this.handleOnFinish} onError={this.handleOnError}>
           <Grid container>
+            <Typography variant="title" className={classes.tituloCV}>Curriculum Vitae</Typography>
             <Grid item xs={12} sm={12} className={classes.widthHoja}>
               <Grid container>
                 <Grid item xs={12} sm={8}>
@@ -175,7 +176,7 @@ class CV extends React.PureComponent {
                   {datosUsuario.domicilioDireccion && <div className={classes.leftContainer}>
                     <Icon className={classes.iconoDetalle}>home</Icon>
                     <Typography variant="body1">
-                      Domicilio Actual: {datosUsuario.domicilioDireccion} {datosUsuario.domicilioAltura} {datosUsuario.domicilioPiso}{datosUsuario.domicilioDepto} {datosUsuario.domicilioTorre} {datosUsuario.domicilioCodigoPostal && '(Código Postal: ' + datosUsuario.domicilioCodigoPostal + ')'}
+                      Domicilio Real: {datosUsuario.domicilioDireccion} {datosUsuario.domicilioAltura} {datosUsuario.domicilioPiso}{datosUsuario.domicilioDepto} {datosUsuario.domicilioTorre} {datosUsuario.domicilioCodigoPostal && '(Código Postal: ' + datosUsuario.domicilioCodigoPostal + ')'}
                     </Typography>
                   </div>}
                   {datosUsuario.domicilioLegal && <div className={classes.leftContainer}>
@@ -214,7 +215,7 @@ class CV extends React.PureComponent {
                       Celular: {datosUsuario.telefonoCelular}
                     </Typography>
                   </div>}
-                  {datosUsuario.cantidadHijos && <div className={classes.leftContainer}>
+                  {datosUsuario.cantidadHijos != null && datosUsuario.cantidadHijos > 0 && <div className={classes.leftContainer}>
                     <Icon className={classes.iconoDetalle}>child_friendly</Icon>
                     <Typography variant="body1">
                       Cantidad de Hijos: {datosUsuario.cantidadHijos}
@@ -444,6 +445,10 @@ const styles = theme => ({
   tituloNivel: {
     fontSize: '18px',
     fontWeight: '500'
+  },
+  tituloCV: {
+    fontSize: '25px',
+    margin: '0px auto'
   }
 });
 
