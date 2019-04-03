@@ -151,6 +151,7 @@ class Home extends React.PureComponent {
               <img src={Logo_SiSi} width={150} height={84} /><br /><br />
               <Typography variant="body2" gutterBottom className={classes.informacion}>
                 Bienvenido a tu perfil del programa Sí Estudio Sí Trabajo. Desde acá podés gestionar tus datos, experiencia, programa al que querés participar.<br /><br />
+                <b>Los cursos de Si Si Presencial inician entre abril y mayo, se les informará oportunamente desde la dirección de empleo (consultar e-mails y verificar si esta cargado su teléfono para recibir las notificaciones correspondientes). <br /><br /> Los cursos del Si Si Virtual "Autogestionados" y Lenguaje de Señas Argentina: comienzan en mayo y serán notificados a medida que se vayan cerrando las aulas para que puedan acceder a la plataforma.</b><br /><br />
                 Son 100.000 cursos gratuitos de formación profesional virtuales, 5.000 capacitaciones presenciales remuneradas para jóvenes de 18 a 24 años (curso introducción al trabajo), 5.000 cursos presenciales gratuitos para mayores de 24 años sin empleo y 10.000 prácticas laborales remuneradas para jovenes de 18 a 24 años.<br /><br />
                 En Córdoba decimos Si Estudio Si Trabajo y queremos que vos seas protagonista.</Typography>
             </MiCard>
