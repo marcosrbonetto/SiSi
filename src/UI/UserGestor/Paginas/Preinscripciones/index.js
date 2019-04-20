@@ -123,6 +123,9 @@ class Home extends React.PureComponent {
         },
       ],
       cursoSeleccionado: undefined,
+      valueEmailExcel: '',
+      dialogoOpenEmailExcel: false,
+      dialogoOpenHabilitarAulaVirtual: false,
     };
   }
 
@@ -154,7 +157,8 @@ class Home extends React.PureComponent {
           const itemPrograma = {
             label: programa.nombre,
             subLabel: programa.descripcion,
-            value: programa.id
+            value: programa.id,
+            esVirtual: programa.esVirtual
           };
 
           arrayProgramas.push(itemPrograma);
@@ -267,9 +271,10 @@ class Home extends React.PureComponent {
           apellidoNombre: preinscripto.apellido + ', ' + preinscripto.nombre,
           programa: programa ? programa.label : '-',
           curso: curso ? curso.label : '-',
-          aula: preinscripto && preinscripto.aula ? 'Aula N°'+preinscripto.aula : 'Sin Asig.',
+          aula: preinscripto && preinscripto.aula ? 'Aula N°' + preinscripto.aula : 'Sin Asig.',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
           acceso: preinscripto && preinscripto.acceso ? preinscripto.acceso : 'No',
+          codigo: preinscripto && preinscripto.codigo ? preinscripto.codigo : '-',
           acciones: <React.Fragment>
             <Button onClick={this.onDialogOpenPreinscripcion} idUsuario={preinscripto.idUsuario} size="small" color="secondary" className={this.props.classes.iconoAceptar}>
               <i class="material-icons">edit</i>
@@ -306,6 +311,7 @@ class Home extends React.PureComponent {
       programaFiltroSeleccionado: item.value,
       cursoFiltroSeleccionado: -1,
       arrayAulas: [],
+      rowList: [],
       aulaFiltroSeleccionado: -1
     })
   }
@@ -320,8 +326,9 @@ class Home extends React.PureComponent {
 
   handleSelectFiltroCursos = (item) => {
     this.setState({
-      cursoFiltroSeleccionado: item.value, 
+      cursoFiltroSeleccionado: item.value,
       arrayAulas: [],
+      rowList: [],
       aulaFiltroSeleccionado: -1
     }, () => {
       if (item.value && item.value != -1) {
@@ -341,7 +348,7 @@ class Home extends React.PureComponent {
           datos.return.map((idAula) => {
             arrayAulas.push({
               value: idAula,
-              label: "Aula N°"+idAula
+              label: "Aula N°" + idAula
             });
           });
 
@@ -515,6 +522,12 @@ class Home extends React.PureComponent {
     })
   }
 
+  onChangeInputEmailExcel = (value) => {
+    this.setState({
+      valueEmailExcel: value
+    })
+  }
+
   onChangeInputCUIT = (value) => {
     this.setState({
       valueInputCUIT: value
@@ -553,6 +566,30 @@ class Home extends React.PureComponent {
 
     this.setState({
       dialogPreinscripcion: false
+    })
+  }
+
+  onDialogoOpenEmailExcel = () => {
+    this.setState({
+      dialogoOpenEmailExcel: true
+    })
+  }
+
+  onDialogoCloseEmailExcel = () => {
+    this.setState({
+      dialogoOpenEmailExcel: false
+    })
+  }
+
+  onDialogoOpenHabilitarAulaVirtual = () => {
+    this.setState({
+      dialogoOpenHabilitarAulaVirtual: true
+    })
+  }
+
+  onDialogoCloseHabilitarAulaVirtual = () => {
+    this.setState({
+      dialogoOpenHabilitarAulaVirtual: false
     })
   }
 
@@ -740,8 +777,97 @@ class Home extends React.PureComponent {
       });
   }
 
+  exportarInscripcionesProgramaAExcel = () => {
+    const habilitarExcelAccesoAulaVirtual = this.state.programaFiltroSeleccionado != -1 && this.state.cursoFiltroSeleccionado != -1 && _.find(this.state.arrayProgramas, (o) => { return o.value == this.state.programaFiltroSeleccionado && o.esVirtual == true });
+
+    if (!habilitarExcelAccesoAulaVirtual) {
+      mostrarAlerta('Para exportar el excel debe seleccionar un curso virtual.');
+      return false;
+    }
+
+    const idCurso = this.state.cursoFiltroSeleccionado;
+    const email = this.state.valueEmailExcel;
+
+    if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(email)) {
+      mostrarAlerta('El email ingresado no es correcto.');
+      return false;
+    }
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    this.props.mostrarCargando(false);
+
+    this.setState({
+      valueEmailExcel: '',
+      dialogoOpenEmailExcel: false
+    }, () => {
+      Rules_Gestor.exportarInscripcionesProgramaAExcel(token, {
+        idCurso: idCurso,
+        email: email
+      })
+        .then((datos) => {
+
+          if (!datos.ok) {
+            this.props.mostrarCargando(false);
+            mostrarAlerta('Ocurrió un error al intentar enviar el excel.');
+            return false;
+          }
+
+          this.props.mostrarCargando(false);
+          mostrarMensaje('Excel enviado al correo exitosamente!');
+        })
+        .catch((error) => {
+          this.props.mostrarCargando(false);
+          mostrarAlerta('Ocurrió un error al intentar enviar el excel.');
+          console.error('Error Servicio "Rules_Gestor.exportarInscripcionesProgramaAExcel": ' + error);
+        });
+    });
+  }
+
+  habilitarInscripcionAulaVirtual = () => {
+    const habilitarExcelAccesoAulaVirtual = this.state.programaFiltroSeleccionado != -1 && this.state.cursoFiltroSeleccionado != -1 && _.find(this.state.arrayProgramas, (o) => { return o.value == this.state.programaFiltroSeleccionado && o.esVirtual == true });
+
+    if (!habilitarExcelAccesoAulaVirtual) {
+      mostrarAlerta('Para habilitar Aula Virtual debe seleccionar un curso virtual.');
+      return false;
+    }
+
+    const idCurso = this.state.cursoFiltroSeleccionado;
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    this.props.mostrarCargando(false);
+
+    this.setState({
+      dialogoOpenHabilitarAulaVirtual: false
+    }, () => {
+      Rules_Gestor.habilitarInscripcionAulaVirtual(token, {
+        idCurso: idCurso
+      })
+        .then((datos) => {
+
+          if (!datos.ok) {
+            this.props.mostrarCargando(false);
+            mostrarAlerta('Ocurrió un error al intentar habilitar el Aula Virtual.');
+            return false;
+          }
+
+          this.props.mostrarCargando(false);
+          mostrarMensaje('Se Habilitó el Aula Virtual exitosamente!');
+          this.cargarPreinscriptos();
+        })
+        .catch((error) => {
+          this.props.mostrarCargando(false);
+          mostrarAlerta('Ocurrió un error al intentar habilitar el Aula Virtual.');
+          console.error('Error Servicio "Rules_Gestor.habilitarInscripcionAulaVirtual": ' + error);
+        });
+    });
+  }
+
   render() {
-    const { classes } = this.props;
+    const { classes, paraMobile } = this.props;
     const {
       programaFiltroSeleccionado,
       programaFiltroSeleccionadoPreinscripcion,
@@ -762,7 +888,8 @@ class Home extends React.PureComponent {
       valueInputNombre,
       checkEmpresa,
       formInputsEmpresa,
-      cursoSeleccionado
+      cursoSeleccionado,
+      valueEmailExcel
     } = this.state;
 
     let programasInReporte = [];
@@ -772,6 +899,8 @@ class Home extends React.PureComponent {
     const InputDescripcionEmpresa = _.find(formInputsEmpresa, { id: 'InputDescripcionEmpresa' });
     const InputCuitEmpresa = _.find(formInputsEmpresa, { id: 'InputCuitEmpresa' });
     const InputContactoEmpresa = _.find(formInputsEmpresa, { id: 'InputContactoEmpresa' });
+
+    const habilitarExcelAccesoAulaVirtual = programaFiltroSeleccionado != -1 && cursoFiltroSeleccionado != -1 && _.find(arrayProgramas, (o) => { return o.value == programaFiltroSeleccionado && o.esVirtual == true });
 
     return (
       <section className={classes.mainContainer}>
@@ -880,12 +1009,19 @@ class Home extends React.PureComponent {
             <br />
             <MiCard titulo="Lista de Preinscriptos">
               {/* Tabla de detalle del tributo */}
-              <div className={classes.buttonDescargaReporte}>
-                <Button color="primary" variant="outlined" >Decargar Excel</Button> 
-                <Button onClick={this.onDialogOpenImpresionReporte} color="primary" variant="outlined" >
-                  Descargar Reporte
+              {rowList.length > 0 && <React.Fragment>
+                <div className={classes.buttonDescargaReporte}>
+                  {habilitarExcelAccesoAulaVirtual && <React.Fragment>
+                    <Button color="primary" variant="outlined" onClick={this.onDialogoOpenEmailExcel}>Exportar Excel</Button>
+
+                    <Button color="primary" variant="outlined" onClick={this.onDialogoOpenHabilitarAulaVirtual}>Habilitar Aula Virtual</Button>
+                  </React.Fragment>}
+
+                  <Button onClick={this.onDialogOpenImpresionReporte} color="primary" variant="outlined" >
+                    Descargar Reporte
               </Button>
-              </div>
+                </div>
+              </React.Fragment>}
               <MiTabla
                 classPaper={classes.contentTable}
                 pagination={true}
@@ -901,6 +1037,7 @@ class Home extends React.PureComponent {
                   { id: 'fechaPreinscricion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Preinsc.' },
 
                   { id: 'acceso', type: 'string', numeric: false, disablePadding: false, label: 'Con Acceso' },
+                  { id: 'codigo', type: 'string', numeric: false, disablePadding: false, label: 'Código Certf.' },
 
                   { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
                 ]}
@@ -1122,6 +1259,50 @@ class Home extends React.PureComponent {
               </Grid>}
           </Grid>
         </MiControledDialog>
+
+        <MiControledDialog
+          paraMobile={paraMobile}
+          open={this.state.dialogoOpenEmailExcel}
+          onDialogoOpen={this.onDialogoOpenEmailExcel}
+          onDialogoClose={this.onDialogoCloseEmailExcel}
+          titulo={'Email Exportación Excel'}
+          buttonOptions={{
+            onDialogoAccept: this.exportarInscripcionesProgramaAExcel,
+            onDialogoCancel: this.onDialogoCloseEmailExcel
+          }}
+          classContainterContent={classes.widthInputEmailExcel}
+        >
+          <div key="mainContent">
+            <MiInput
+              id={'InputEmailExcel'}
+              tipoInput={'input'}
+              type={'text'}
+              value={valueEmailExcel}
+              error={false}
+              mensajeError={false}
+              label={'Ingrese email al que se le enviará el excel'}
+              placeholder={'Ingrese Email...'}
+              onChange={this.onChangeInputEmailExcel}
+            />
+          </div>
+        </MiControledDialog>
+
+        <MiControledDialog
+          paraMobile={paraMobile}
+          open={this.state.dialogoOpenHabilitarAulaVirtual}
+          onDialogoOpen={this.onDialogoOpenHabilitarAulaVirtual}
+          onDialogoClose={this.onDialogoCloseHabilitarAulaVirtual}
+          titulo={'Habilitar Aula Virtual'}
+          buttonOptions={{
+            onDialogoAccept: this.habilitarInscripcionAulaVirtual,
+            onDialogoCancel: this.onDialogoCloseHabilitarAulaVirtual
+          }}
+        >
+          <div key="mainContent">
+            <Typography>¿Está seguro que desea habilitar el acceso a Aula Virtual para los alumnos del curso seleccionado?</Typography>
+          </div>
+        </MiControledDialog>
+
       </section>
     );
   }

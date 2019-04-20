@@ -87,7 +87,7 @@ const styles = theme => ({
   },
   buttonDescargaReporte: {
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between'
   },
   contentTable: {
     marginTop: '14px'
@@ -101,6 +101,9 @@ const styles = theme => ({
     textDecoration: 'underline',
     marginLeft: '24px'
   },
+  widthInputEmailExcel: {
+    width: '600px'
+  }
 });
 
 
