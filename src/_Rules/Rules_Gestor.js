@@ -348,6 +348,94 @@ const getAulas = (token, idCurso) => {
     });
 };
 
+
+const exportarInscripcionesProgramaAExcel = (token, body) => {
+
+    return new Promise((resolve, reject) => {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/exportarInscripcionesProgramaAExcel', {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Token": token
+            },
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+
+                if (res.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+
+                return res.json();
+            })
+            .then(datos => {
+                resolve(datos);
+            })
+            .catch(err => {
+                reject("Error procesando la solicitud");
+            });
+    });
+};
+
+const habilitarInscripcionAulaVirtual = (token, body) => {
+
+    return new Promise((resolve, reject) => {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/habilitarInscripcionAulaVirtual', {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Token": token
+            },
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+
+                if (res.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+
+                return res.json();
+            })
+            .then(datos => {
+                resolve(datos);
+            })
+            .catch(err => {
+                reject("Error procesando la solicitud");
+            });
+    });
+};
+
+const iniciarSesionCampusVirtual = (token) => {
+
+    return new Promise((resolve, reject) => {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/iniciarSesionCampusVirtual', {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Token": token
+            },
+        })
+            .then(res => {
+
+                if (res.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+
+                return res.json();
+            })
+            .then(datos => {
+                resolve(datos);
+            })
+            .catch(err => {
+                reject("Error procesando la solicitud");
+            });
+    });
+};
+
+
 const services = {
     getPreinsciptos: getPreinsciptos,
     deletePreinscripcion: deletePreinscripcion,
@@ -360,7 +448,10 @@ const services = {
     reInscribir: reInscribir,
     exportarPreinscriptos: exportarPreinscriptos,
     asignarAulas: asignarAulas,
-    getAulas: getAulas
+    getAulas: getAulas,
+    exportarInscripcionesProgramaAExcel: exportarInscripcionesProgramaAExcel,
+    habilitarInscripcionAulaVirtual: habilitarInscripcionAulaVirtual,
+    iniciarSesionCampusVirtual: iniciarSesionCampusVirtual,
 }
 
 export default services;

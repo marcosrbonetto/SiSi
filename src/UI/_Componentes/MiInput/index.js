@@ -81,14 +81,15 @@ class MiInput extends React.Component {
       mensajeError,
       withDisabled,
       maxLength,
-      multiline
+      multiline,
+      classContainerOuter
     } = this.props;
 
     const randomId = (new Date()).getTime() + parseInt(1 + Math.random() * (10 - 1));
 
     return (
       <React.Fragment>
-        <div className={classes.classContainer}>
+        <div className={classNames(classes.classContainer, classContainerOuter)}>
           {icono &&
             <i className={classNames("material-icons", classes.classIcono, label && classes.conLabel)}>{icono || 'assignment'}</i>}
           {iconoSvg &&

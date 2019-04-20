@@ -22,6 +22,13 @@ const styles = theme => ({
     width: '100%',
     marginTop: '8px',
   },
+  asignacionAulas: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  widthAuto: {
+    width: 'auto'
+  },
   iconoAceptar: {
     background: '#fff',
     border: '1px solid ' +theme.color.ok.main,

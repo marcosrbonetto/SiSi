@@ -61,6 +61,7 @@ class Aulas extends React.PureComponent {
       arrayProgramas: [],
       cursoFiltroSeleccionado: -1,
       arrayCursos: [],
+      capacidadAula: 150,
       // aulaFiltroSeleccionado: -1,
       // arrayAulas: [],
       dialogConfirmacion: false,
@@ -103,7 +104,7 @@ class Aulas extends React.PureComponent {
         let arrayProgramas = [];
         let arrayCursos = [];
         datos.return.map((programa) => {
-          if(!programa.esVirtual) return true;
+          if (!programa.esVirtual) return true;
 
           const itemPrograma = {
             label: programa.nombre,
@@ -147,6 +148,7 @@ class Aulas extends React.PureComponent {
     this.setState({
       programaFiltroSeleccionado: item.value,
       cursoFiltroSeleccionado: -1,
+      capacidadAula: 150,
       rowList: [],
       busquedaRealizada: false
     })
@@ -155,6 +157,7 @@ class Aulas extends React.PureComponent {
   handleQuitarFiltroPrograma = () => {
     this.setState({
       programaFiltroSeleccionado: -1,
+      capacidadAula: 150,
       rowList: [],
       busquedaRealizada: false
     })
@@ -163,6 +166,7 @@ class Aulas extends React.PureComponent {
   handleSelectFiltroCursos = (item) => {
     this.setState({
       cursoFiltroSeleccionado: item.value,
+      capacidadAula: 150,
       rowList: [],
       busquedaRealizada: false
     })
@@ -171,22 +175,25 @@ class Aulas extends React.PureComponent {
   handleQuitarFiltroCursos = () => {
     this.setState({
       cursoFiltroSeleccionado: -1,
+      capacidadAula: 150,
       rowList: [],
       busquedaRealizada: false
     })
   }
 
-  // handleSelectFiltroAulas = (item) => {
-  //   this.setState({
-  //     aulaFiltroSeleccionado: item.value
-  //   })
-  // }
+  onChangeInputCantAlumnosxAula = (item) => {
+    this.setState({
+      capacidadAula: item
+    })
+  }
 
-  // handleQuitarFiltroAulas = () => {
-  //   this.setState({
-  //     aulaFiltroSeleccionado: -1
-  //   })
-  // }
+  onFocusOutInputCantAlumnosxAula = () => {
+    const capacidadAula = this.state.capacidadAula;
+
+    this.setState({
+      capacidadAula: !capacidadAula || capacidadAula == '' || isNaN(capacidadAula) || capacidadAula <= 0 ? 150 : parseInt(capacidadAula)
+    })
+  }
 
   handleBuscar = () => {
     const idCurso = this.state.cursoFiltroSeleccionado;
@@ -202,7 +209,7 @@ class Aulas extends React.PureComponent {
     }, () => {
       this.cargarPreinscriptos();
     });
-    
+
   }
 
   cargarPreinscriptos = () => {
@@ -315,6 +322,11 @@ class Aulas extends React.PureComponent {
 
       filters['aula'] = -1;
 
+      filters['capacidadAula'] = 150;
+      if (this.state.capacidadAula > 0) {
+        filters['capacidadAula'] = this.state.capacidadAula;
+      }
+
       Rules_Gestor.asignarAulas(token, filters).then((datos) => {
         this.props.mostrarCargando(false);
         if (!datos.ok) {
@@ -331,7 +343,7 @@ class Aulas extends React.PureComponent {
           mostrarAlerta('Ocurrió un error al intentar asignar las alulas.');
           console.error('Error Servicio "Rules_Gestor.asignarAulas": ' + error);
         });
-        
+
     });
   }
 
@@ -345,6 +357,7 @@ class Aulas extends React.PureComponent {
     const {
       programaFiltroSeleccionado,
       cursoFiltroSeleccionado,
+      capacidadAula,
       // aulaFiltroSeleccionado,
       arrayProgramas,
       arrayCursos,
@@ -423,7 +436,27 @@ class Aulas extends React.PureComponent {
             <MiCard titulo="Asignación de Aulas Virtuales">
 
               <div className={classes.buttonsAction}>
-                {busquedaRealizada && <Button onClick={rowList.length >= 150 ? this.asignarAulas : this.onDialogOpenConfirmacion} color="primary" variant="outlined" >Asignar Aulas</Button>}
+                {busquedaRealizada &&
+                  <React.Fragment>
+                    <Grid container spacing={16} >
+                      <Grid item xs={12} sm={6}>
+                      </Grid>
+                      <Grid item xs={12} sm={6} className={classes.asignacionAulas}>
+                        <MiInput
+                          classContainerOuter={classes.widthAuto}
+                          onChange={this.onChangeInputCantAlumnosxAula}
+                          onFocusOut={this.onFocusOutInputCantAlumnosxAula}
+                          id={'capacidadAula'}
+                          tipoInput={'input'}
+                          type={'text'}
+                          value={capacidadAula}
+                          label={'Alumnos por Aula'}
+                        />
+
+                        <Button onClick={rowList.length >= 150 ? this.asignarAulas : this.onDialogOpenConfirmacion} color="primary" variant="outlined" >Asignar Aulas</Button>
+                      </Grid>
+                    </Grid>
+                  </React.Fragment>}
               </div>
 
               {/* Tabla de detalle del tributo */}
