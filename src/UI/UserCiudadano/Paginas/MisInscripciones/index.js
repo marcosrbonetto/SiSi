@@ -151,6 +151,38 @@ class MisInscripciones extends React.PureComponent {
     this.setState({ dialogoOpenAccesoDenegado: false });
   }
 
+  entrarAulaVirtual = () => {
+
+    this.props.mostrarCargando(true);
+    const token = this.props.loggedUser.token;
+
+    this.props.mostrarCargando(false);
+
+
+    Rules_Gestor.iniciarSesionCampusVirtual(token, {
+      idCurso: idCurso
+    })
+      .then((datos) => {
+        this.props.mostrarCargando(false);
+
+        if (!datos.ok) {
+          mostrarAlerta('Ocurrió un error al intentar obtener el acceso a Aula Virtual.');
+          return false;
+        }
+
+        if (datos.return) {
+          window.location.href = datos.return;
+        } else {
+          this.onDialogoOpenAccesoDenegado();
+        }
+      })
+      .catch((error) => {
+        this.props.mostrarCargando(false);
+        mostrarAlerta('Ocurrió un error al intentar obtener el acceso a Aula Virtual.');
+        console.error('Error Servicio "Rules_Gestor.iniciarSesionCampusVirtual": ' + error);
+      });
+  }
+
   volverInicio = () => {
     this.props.redireccionar("/Inicio");
   }
@@ -169,7 +201,7 @@ class MisInscripciones extends React.PureComponent {
           <Grid item xs={12} sm={8}>
 
             <MiCard>
-            <Typography variant="title" gutterBottom>Pre-inscripción Presencial</Typography>
+              <Typography variant="title" gutterBottom>Pre-inscripción Presencial</Typography>
 
               <List className={classes.root}>
                 {miInscripcionPresencial &&
@@ -185,16 +217,16 @@ class MisInscripciones extends React.PureComponent {
                     </ListItem>;
                   })}
 
-                  {(!miInscripcionPresencial ||
-                    miInscripcionPresencial.length == 0) &&
+                {(!miInscripcionPresencial ||
+                  miInscripcionPresencial.length == 0) &&
                   <Typography variant="body1" gutterBottom className={classes.informacion} style={{ textAlign: 'center', marginBottom: '0px' }}>
                     No posee inscripción.</Typography>}
 
               </List>
             </MiCard>
-            <br/><br/>
+            <br /><br />
             <MiCard>
-            <Typography variant="title" gutterBottom>Inscripciones Virtuales</Typography>
+              <Typography variant="title" gutterBottom>Inscripciones Virtuales</Typography>
 
               <List className={classes.root}>
                 {misInscripcionesVirtuales &&
@@ -208,7 +240,7 @@ class MisInscripciones extends React.PureComponent {
                         <CloseIcon />
                       </Avatar>
                       {/* classes.iconoAcceso */}
-                      <Avatar className={classes.iconoAccesoDenegado} onClick={this.onDialogoOpenAccesoDenegado}>
+                      <Avatar className={classes.iconoAccesoDenegado} onClick={this.entrarAulaVirtual}>
                         <ArrowForwardIcon />
                       </Avatar>
                     </ListItem>;
