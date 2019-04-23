@@ -157,15 +157,12 @@ class MisInscripciones extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    this.props.mostrarCargando(false);
-
-
     Rules_CampusVirtual.iniciarSesionCampusVirtual(token)
       .then((datos) => {
         this.props.mostrarCargando(false);
 
         if (!datos.ok) {
-          mostrarAlerta('Ocurrió un error al intentar obtener el acceso a Aula Virtual.');
+          mostrarAlerta(datos.error);
           return false;
         }
 
@@ -239,9 +236,15 @@ class MisInscripciones extends React.PureComponent {
                         <CloseIcon />
                       </Avatar>
                       {/* classes.iconoAcceso */}
-                      <Avatar className={classes.iconoAccesoDenegado} onClick={this.entrarAulaVirtual}>
-                        <ArrowForwardIcon />
-                      </Avatar>
+                      {inscripcion.habilitada &&
+                        <Avatar className={classes.iconoAcceso} onClick={this.entrarAulaVirtual}>
+                          <ArrowForwardIcon />
+                        </Avatar>
+                        ||
+                        <Avatar className={classes.iconoAccesoDenegado} onClick={this.onDialogoOpenAccesoDenegado}>
+                          <ArrowForwardIcon />
+                        </Avatar>
+                      }
                     </ListItem>;
                   })}
 
