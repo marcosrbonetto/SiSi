@@ -350,9 +350,9 @@ const getAulas = (token, idCurso) => {
 
 
 const exportarInscripcionesProgramaAExcel = (token, body) => {
-
+    
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/exportarInscripcionesProgramaAExcel', {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/ExportarInscripcionesProgramaAExcel', {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -381,7 +381,7 @@ const exportarInscripcionesProgramaAExcel = (token, body) => {
 const habilitarInscripcionAulaVirtual = (token, body) => {
 
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/habilitarInscripcionAulaVirtual', {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/HabilitarInscripcionAulaVirtual', {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -389,34 +389,6 @@ const habilitarInscripcionAulaVirtual = (token, body) => {
                 "Token": token
             },
             body: JSON.stringify(body)
-        })
-            .then(res => {
-
-                if (res.status >= 400) {
-                    throw new Error("Bad response from server");
-                }
-
-                return res.json();
-            })
-            .then(datos => {
-                resolve(datos);
-            })
-            .catch(err => {
-                reject("Error procesando la solicitud");
-            });
-    });
-};
-
-const iniciarSesionCampusVirtual = (token) => {
-
-    return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/iniciarSesionCampusVirtual', {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "Token": token
-            },
         })
             .then(res => {
 
@@ -451,7 +423,6 @@ const services = {
     getAulas: getAulas,
     exportarInscripcionesProgramaAExcel: exportarInscripcionesProgramaAExcel,
     habilitarInscripcionAulaVirtual: habilitarInscripcionAulaVirtual,
-    iniciarSesionCampusVirtual: iniciarSesionCampusVirtual,
 }
 
 export default services;

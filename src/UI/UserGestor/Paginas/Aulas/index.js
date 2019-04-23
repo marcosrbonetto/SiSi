@@ -453,7 +453,7 @@ class Aulas extends React.PureComponent {
                           label={'Alumnos por Aula'}
                         />
 
-                        <Button onClick={rowList.length >= 150 ? this.asignarAulas : this.onDialogOpenConfirmacion} color="primary" variant="outlined" >Asignar Aulas</Button>
+                        <Button onClick={rowList.length >= (this.state.capacidadAula || 150) ? this.asignarAulas : this.onDialogOpenConfirmacion} color="primary" variant="outlined" >Asignar Aulas</Button>
                       </Grid>
                     </Grid>
                   </React.Fragment>}
@@ -498,7 +498,7 @@ class Aulas extends React.PureComponent {
           }}
           titulo={'Confirmación de Asignación de Aula'}
         >
-          El número de inscriptos es menor al tamaño del aula (150). ¿Esta de acuerdo en generar un aula de cupo menor?
+          El número de inscriptos es menor al tamaño del aula ({this.state.capacidadAula || 150}). ¿Esta de acuerdo en generar un aula de cupo menor?
         </MiControledDialog>
 
 

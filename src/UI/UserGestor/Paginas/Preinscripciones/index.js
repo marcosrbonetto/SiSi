@@ -781,7 +781,7 @@ class Home extends React.PureComponent {
     const habilitarExcelAccesoAulaVirtual = this.state.programaFiltroSeleccionado != -1 && this.state.cursoFiltroSeleccionado != -1 && _.find(this.state.arrayProgramas, (o) => { return o.value == this.state.programaFiltroSeleccionado && o.esVirtual == true });
 
     if (!habilitarExcelAccesoAulaVirtual) {
-      mostrarAlerta('Para exportar el excel debe seleccionar un curso virtual.');
+      mostrarAlerta('Para exportar el txt debe seleccionar un curso virtual.');
       return false;
     }
 
@@ -810,7 +810,7 @@ class Home extends React.PureComponent {
 
           if (!datos.ok) {
             this.props.mostrarCargando(false);
-            mostrarAlerta('Ocurrió un error al intentar enviar el excel.');
+            mostrarAlerta(datos.error);
             return false;
           }
 
@@ -819,7 +819,7 @@ class Home extends React.PureComponent {
         })
         .catch((error) => {
           this.props.mostrarCargando(false);
-          mostrarAlerta('Ocurrió un error al intentar enviar el excel.');
+          mostrarAlerta('Ocurrió un error al intentar enviar el txt.');
           console.error('Error Servicio "Rules_Gestor.exportarInscripcionesProgramaAExcel": ' + error);
         });
     });
@@ -850,12 +850,12 @@ class Home extends React.PureComponent {
 
           if (!datos.ok) {
             this.props.mostrarCargando(false);
-            mostrarAlerta('Ocurrió un error al intentar habilitar el Aula Virtual.');
+            mostrarAlerta(datos.error);
             return false;
           }
 
           this.props.mostrarCargando(false);
-          mostrarMensaje('Se Habilitó el Aula Virtual exitosamente!');
+          mostrarMensaje('Se habilitó el Aula Virtual exitosamente!');
           this.cargarPreinscriptos();
         })
         .catch((error) => {
@@ -1012,7 +1012,7 @@ class Home extends React.PureComponent {
               {rowList.length > 0 && <React.Fragment>
                 <div className={classes.buttonDescargaReporte}>
                   {habilitarExcelAccesoAulaVirtual && <React.Fragment>
-                    <Button color="primary" variant="outlined" onClick={this.onDialogoOpenEmailExcel}>Exportar Excel</Button>
+                    <Button color="primary" variant="outlined" onClick={this.onDialogoOpenEmailExcel}>Exportar Txt</Button>
 
                     <Button color="primary" variant="outlined" onClick={this.onDialogoOpenHabilitarAulaVirtual}>Habilitar Aula Virtual</Button>
                   </React.Fragment>}
@@ -1265,7 +1265,7 @@ class Home extends React.PureComponent {
           open={this.state.dialogoOpenEmailExcel}
           onDialogoOpen={this.onDialogoOpenEmailExcel}
           onDialogoClose={this.onDialogoCloseEmailExcel}
-          titulo={'Email Exportación Excel'}
+          titulo={'Email Exportación Txt'}
           buttonOptions={{
             onDialogoAccept: this.exportarInscripcionesProgramaAExcel,
             onDialogoCancel: this.onDialogoCloseEmailExcel
@@ -1280,7 +1280,7 @@ class Home extends React.PureComponent {
               value={valueEmailExcel}
               error={false}
               mensajeError={false}
-              label={'Ingrese email al que se le enviará el excel'}
+              label={'Ingrese email al que se le enviará el txt'}
               placeholder={'Ingrese Email...'}
               onChange={this.onChangeInputEmailExcel}
             />

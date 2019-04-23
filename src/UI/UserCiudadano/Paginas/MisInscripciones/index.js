@@ -29,6 +29,7 @@ import Button from "@material-ui/core/Button";
 import Icon from '@material-ui/core/Icon';
 
 import Rules_Preinscripcion from "@Rules/Rules_Preinscripcion";
+import Rules_CampusVirtual from "@Rules/Rules_CampusVirtual";
 
 import { mostrarAlerta, mostrarMensaje } from "@Utils/functions";
 import { Grid } from "@material-ui/core";
@@ -159,9 +160,7 @@ class MisInscripciones extends React.PureComponent {
     this.props.mostrarCargando(false);
 
 
-    Rules_Gestor.iniciarSesionCampusVirtual(token, {
-      idCurso: idCurso
-    })
+    Rules_CampusVirtual.iniciarSesionCampusVirtual(token)
       .then((datos) => {
         this.props.mostrarCargando(false);
 
@@ -179,7 +178,7 @@ class MisInscripciones extends React.PureComponent {
       .catch((error) => {
         this.props.mostrarCargando(false);
         mostrarAlerta('Ocurrió un error al intentar obtener el acceso a Aula Virtual.');
-        console.error('Error Servicio "Rules_Gestor.iniciarSesionCampusVirtual": ' + error);
+        console.error('Error Servicio "Rules_CampusVirtual.iniciarSesionCampusVirtual": ' + error);
       });
   }
 
