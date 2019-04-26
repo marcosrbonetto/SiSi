@@ -90,7 +90,7 @@ const styles = theme => ({
     justifyContent: 'space-between'
   },
   contentTable: {
-    marginTop: '14px'
+    marginTop: '0px'
   },
   containerInfoEmpresa: {
     display: 'flex',
@@ -103,6 +103,10 @@ const styles = theme => ({
   },
   widthInputEmailExcel: {
     width: '600px'
+  },
+  rowResultText: {
+    margin: '5px auto',
+    fontWeight: 'bold'
   }
 });
 

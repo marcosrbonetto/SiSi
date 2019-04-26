@@ -1022,6 +1022,11 @@ class Home extends React.PureComponent {
               </Button>
                 </div>
               </React.Fragment>}
+
+              <Typography className={classes.rowResultText}>
+                Resultados: {rowList.length} filas.
+              </Typography>
+
               <MiTabla
                 classPaper={classes.contentTable}
                 pagination={true}
