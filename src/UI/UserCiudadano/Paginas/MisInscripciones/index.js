@@ -157,9 +157,6 @@ class MisInscripciones extends React.PureComponent {
     this.props.mostrarCargando(true);
     const token = this.props.loggedUser.token;
 
-    this.props.mostrarCargando(false);
-
-
     Rules_CampusVirtual.iniciarSesionCampusVirtual(token)
       .then((datos) => {
         this.props.mostrarCargando(false);
@@ -235,11 +232,13 @@ class MisInscripciones extends React.PureComponent {
 
                     return <ListItem>
                       <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag.split(';')[0] + (curso.tag.split(';')[1] != undefined ? ' - ' + curso.tag.split(';')[1] : '') + ' - ' + curso.nombrePrograma} />
+                      
+                      {!inscripcion.habilitada &&
                       <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'Si'} onClick={this.onDialogoOpen}>
                         <CloseIcon />
-                      </Avatar>
-                      {/* classes.iconoAcceso */}
-                      <Avatar className={classes.iconoAccesoDenegado} onClick={this.entrarAulaVirtual}>
+                      </Avatar>}
+                      
+                      <Avatar className={inscripcion.habilitada ? classes.iconoAcceso : classes.iconoAccesoDenegado} onClick={inscripcion.habilitada ? this.entrarAulaVirtual : this.onDialogoOpenAccesoDenegado}>
                         <ArrowForwardIcon />
                       </Avatar>
                     </ListItem>;
