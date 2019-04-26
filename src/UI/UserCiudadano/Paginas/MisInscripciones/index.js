@@ -234,13 +234,13 @@ class MisInscripciones extends React.PureComponent {
                       <ListItemText primary={curso.nombre + ' ' + curso.lugar + (curso.dia ? curso.dia + " - " : '') + "" + (curso.horario ? curso.horario : '')} secondary={curso.tag.split(';')[0] + (curso.tag.split(';')[1] != undefined ? ' - ' + curso.tag.split(';')[1] : '') + ' - ' + curso.nombrePrograma} />
                       
                       {!inscripcion.habilitada &&
-                      <Avatar className={classes.iconDesinscripcion} idCurso={curso.id} esVirtual={'Si'} onClick={this.onDialogoOpen}>
-                        <CloseIcon />
-                      </Avatar>}
+                      <Button onClick={this.onDialogoOpen} idCurso={curso.id} esVirtual={'Si'} variant="outlined" color="primary" className={classNames(classes.iconDesinscripcion)}>
+                        Eliminar<br/>inscripcion
+                      </Button>}
                       
-                      <Avatar className={inscripcion.habilitada ? classes.iconoAcceso : classes.iconoAccesoDenegado} onClick={inscripcion.habilitada ? this.entrarAulaVirtual : this.onDialogoOpenAccesoDenegado}>
-                        <ArrowForwardIcon />
-                      </Avatar>
+                      <Button onClick={inscripcion.habilitada ? this.entrarAulaVirtual : this.onDialogoOpenAccesoDenegado} variant="outlined" color="primary" className={classNames(inscripcion.habilitada ? classes.iconoAcceso : classes.iconoAccesoDenegado)}>
+                        Ir al<br/>Aula Virtual
+                      </Button>
                     </ListItem>;
                   })}
 

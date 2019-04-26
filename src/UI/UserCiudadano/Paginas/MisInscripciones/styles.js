@@ -52,21 +52,24 @@ const styles = theme => ({
     color: theme.color.error.main,
     background: '#fff',
     border: '1px solid ' + theme.color.error.main,
-    margin: 'auto 2px'
+    margin: 'auto 2px',
+    fontSize: '12px'
   },
   iconoAccesoDenegado: {
     cursor: 'pointer',
     color: '#bdbdbd',
     background: '#fff',
     border: '1px solid #bdbdbd',
-    margin: 'auto 2px'
+    margin: 'auto 2px',
+    fontSize: '12px'
   },
   iconoAcceso: {
     cursor: 'pointer',
     color: theme.color.ok.main,
     background: '#fff',
     border: '1px solid ' + theme.color.ok.main,
-    margin: 'auto 2px'
+    margin: 'auto 2px',
+    fontSize: '12px'
   }
 });
 
