@@ -1007,7 +1007,7 @@ class Home extends React.PureComponent {
         <Grid container spacing={16}>
           <Grid item xs={12} sm={12}>
             <br />
-            <MiCard titulo="Lista de Preinscriptos">
+            <MiCard titulo={"Lista de Preinscriptos (Resultados: "+rowList.length+" filas)"}>
               {/* Tabla de detalle del tributo */}
               {rowList.length > 0 && <React.Fragment>
                 <div className={classes.buttonDescargaReporte}>
@@ -1022,10 +1022,6 @@ class Home extends React.PureComponent {
               </Button>
                 </div>
               </React.Fragment>}
-
-              <Typography className={classes.rowResultText}>
-                Resultados: {rowList.length} filas.
-              </Typography>
 
               <MiTabla
                 classPaper={classes.contentTable}

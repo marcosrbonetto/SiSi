@@ -53,7 +53,11 @@ const styles = theme => ({
     background: '#fff',
     border: '1px solid ' + theme.color.error.main,
     margin: 'auto 2px',
-    fontSize: '12px'
+    fontSize: '12px',
+    '&:hover': {
+      color: theme.color.error.main,
+      border: '1px solid ' + theme.color.error.main,
+    }
   },
   iconoAccesoDenegado: {
     cursor: 'pointer',
@@ -61,7 +65,11 @@ const styles = theme => ({
     background: '#fff',
     border: '1px solid #bdbdbd',
     margin: 'auto 2px',
-    fontSize: '12px'
+    fontSize: '12px',
+    '&:hover': {
+      color: '#bdbdbd',
+      border: '1px solid #bdbdbd',
+    }
   },
   iconoAcceso: {
     cursor: 'pointer',
