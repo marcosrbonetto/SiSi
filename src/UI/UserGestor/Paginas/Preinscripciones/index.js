@@ -273,7 +273,7 @@ class Home extends React.PureComponent {
           curso: curso ? curso.label : '-',
           aula: preinscripto && preinscripto.aula ? 'Aula N°' + preinscripto.aula : 'Sin Asig.',
           fechaPreinscricion: preinscripto.fechaPreinscricion ? dateToString(new Date(preinscripto.fechaPreinscricion), 'DD/MM/YYYY') : '',
-          acceso: preinscripto && preinscripto.acceso ? preinscripto.acceso : 'No',
+          acceso: preinscripto && preinscripto.habilitada ? preinscripto.habilitada : 'No',
           codigo: preinscripto && preinscripto.codigo ? preinscripto.codigo : '-',
           acciones: <React.Fragment>
             <Button onClick={this.onDialogOpenPreinscripcion} idUsuario={preinscripto.idUsuario} size="small" color="secondary" className={this.props.classes.iconoAceptar}>

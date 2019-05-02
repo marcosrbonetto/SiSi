@@ -162,7 +162,7 @@ class MisInscripciones extends React.PureComponent {
         this.props.mostrarCargando(false);
 
         if (!datos.ok) {
-          mostrarAlerta('Ocurrió un error al intentar obtener el acceso a Aula Virtual.');
+          mostrarAlerta(datos.error);
           return false;
         }
 
