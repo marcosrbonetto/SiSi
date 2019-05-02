@@ -1,7 +1,7 @@
 const DEPLOY = 1;
 const TEST = 2;
 const LOCAL = 3;
-const ENTORNO = DEPLOY;
+const ENTORNO = TEST;
 
 //Url Root
 const URL_ROOT_SISI_LOCAL = "http://localhost:3000/#";

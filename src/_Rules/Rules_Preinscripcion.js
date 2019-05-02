@@ -59,11 +59,12 @@ const validarCodigo = (codigo) => {
 
     return new Promise((resolve, reject) => {
 
-        fetch(window.Config.BASE_URL_WS + '/v1/Preinscripcion/validarCodigo?codigo=' + codigo, {
+        fetch(window.Config.BASE_URL_WS + '/v1/Preinscripcion/GetInscripcionPorCodigo?codigo=' + codigo, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Token": "INVITADO"
             }
         })
             .then(res => {

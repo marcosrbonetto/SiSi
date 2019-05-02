@@ -89,10 +89,11 @@ class ValidarCertificado extends React.Component {
               return false;
             }
 
+            const datosCertificado = datos.return;
             //mostrar datos de preinscripcion
             this.setState({
               mostrarDialog: true,
-              mensaje: 'bla bla',
+              mensaje: `Se corrobora que el alumno ${datosCertificado.apellido}, ${datosCertificado.nombre} (CUIT: ${datosCertificado.cuit}), recibió el certificado para el curso ${datosCertificado.curso.nombre} lugar ${datosCertificado.curso.lugar} en el programa ${datosCertificado.curso.nombrePrograma}.`,
               validadionOK: true
             });
           })
@@ -103,6 +104,12 @@ class ValidarCertificado extends React.Component {
 
       });
 
+    } else {
+      this.setState({
+        mostrarDialog: true,
+        mensaje: 'Debe ingresar un código que conste de 6 dígitos.',
+        validadionOK: false
+      });
     }
   }
 
@@ -215,7 +222,9 @@ const styles = theme => {
     },
     textoInformativo: {
       maxWidth: '600px',
-      textAlign: 'center'
+      textAlign: 'center',
+      margin: '0px auto',
+      display: 'block'
     },
     inputCodigo: {
       margin: '0px',
