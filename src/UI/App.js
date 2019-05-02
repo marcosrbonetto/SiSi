@@ -31,6 +31,7 @@ import { IconButton, Icon } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 //Mis componentes
+import ValidarCertificado from "./UserCiudadano/ValidarCertificado";
 import InicioCiudadano from "./UserCiudadano/Inicio";
 import InicioGestor from "./UserGestor/Inicio";
 import Pagina404 from "@UI/_Pagina404";
@@ -124,6 +125,9 @@ class App extends React.Component {
             token = tokenQueryString;
           }
         }
+
+        if(this.anonymousAccess())
+          return false;
 
         this.setState({ validandoToken: true }, () => {
           Rules_VecinoVirtual.validarToken(token)
@@ -232,6 +236,18 @@ class App extends React.Component {
     });
   }
 
+  anonymousAccess = () => {
+    switch (this.props.location.pathname) {
+      case "/validar":
+        return true;
+    
+      default:
+        return false;
+    }
+
+    return false;
+  }
+
   init = (callback) => {
     const service = Rules_VecinoVirtual.AplicacionPanel()
       .then(datos => {
@@ -331,6 +347,7 @@ class App extends React.Component {
           className={"switch-wrapper"}
         >
           <Route exact path="/" component={null} />
+          <Route path={`${base}/validar`} component={ValidarCertificado} />
           <Route path={`${base}/Inicio`} component={login ? InicioCiudadano : null} />
           <Route path={`${base}/InicioGestor`} component={login ? InicioGestor : null} />
           <Route component={login ? Pagina404 : null} />

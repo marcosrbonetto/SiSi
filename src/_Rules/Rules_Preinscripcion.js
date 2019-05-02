@@ -55,9 +55,38 @@ const deletePreinscripcion = (token, idCurso) => {
     });
 };
 
+const validarCodigo = (codigo) => {
+
+    return new Promise((resolve, reject) => {
+
+        fetch(window.Config.BASE_URL_WS + '/v1/Preinscripcion/validarCodigo?codigo=' + codigo, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(res => {
+
+                if (res.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+
+                return res.json();
+            })
+            .then(datos => {
+                resolve(datos);
+            })
+            .catch(err => {
+                reject("Error procesando la solicitud");
+            });
+    });
+};
+
 const services = {
     insertPreinscripcion: insertPreinscripcion,
     deletePreinscripcion: deletePreinscripcion,
+    validarCodigo: validarCodigo
 }
 
 export default services;
