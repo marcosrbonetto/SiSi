@@ -29,6 +29,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 //MisComponentes
 import MiCard from "@Componentes/MiNewCard";
 import MiTabla from "@Componentes/MiTabla";
+import MiTablaPaginada from "@Componentes/MiTablaPaginada";
 import MiControledDialog from "@Componentes/MiControledDialog";
 import MiSelect from "@Componentes/MiSelect";
 import MiInput from "@Componentes/MiInput";
@@ -1023,29 +1024,58 @@ class Home extends React.PureComponent {
                 </div>
               </React.Fragment>}
 
-              <MiTabla
-                classPaper={classes.contentTable}
-                pagination={true}
-                columns={[
-                  { id: 'cuit', type: 'string', numeric: false, disablePadding: false, label: 'CUIT' },
+              <br/>
+              <MiTablaPaginada
+                    cols={[
+                      {
+                        id: "cuit",
+                        label: "CUIT",
+                        orderBy: undefined
+                      },
+                      {
+                        id: "programa",
+                        label: "Programa",
+                        orderBy: undefined
+                      },
+                      {
+                        id: "curso",
+                        label: "Curso",
+                        orderBy: undefined
+                      },
+                      {
+                        id: "aula",
+                        label: "Aula",
+                        orderBy: undefined
+                      },
+                      {
+                        id: "fechaPreinscricion",
+                        label: "Fecha Preinsc.",
+                        orderBy: undefined
+                      },
+                      {
+                        id: "acceso",
+                        label: "Con Acceso",
+                        orderBy: undefined
+                      },
+                      {
+                        id: "codigo",
+                        label: "Código Certf.",
+                        orderBy: undefined
+                      },
+                      {
+                        id: "acciones",
+                        label: "Acciones",
+                        //render: this.onTablaCellBotonesRender
+                      }
+                    ]}
+                    rows={rowList || []}
+                    rowsPerPage={30}
+                    //count={0}
+                    //page={1}
+                    onChangePage={() => {}}
+                    onChangeRowsPerPage={() => {}}
+                  />
 
-                  { id: 'apellidoNombre', type: 'string', numeric: false, disablePadding: false, label: 'Apellido Nombre' },
-
-                  { id: 'programa', type: 'string', numeric: false, disablePadding: false, label: 'Programa' },
-                  { id: 'curso', type: 'string', numeric: false, disablePadding: false, label: 'Curso' },
-                  { id: 'aula', type: 'string', numeric: false, disablePadding: false, label: 'Aula' },
-
-                  { id: 'fechaPreinscricion', type: 'string', numeric: false, disablePadding: false, label: 'Fecha Preinsc.' },
-
-                  { id: 'acceso', type: 'string', numeric: false, disablePadding: false, label: 'Con Acceso' },
-                  { id: 'codigo', type: 'string', numeric: false, disablePadding: false, label: 'Código Certf.' },
-
-                  { id: 'acciones', type: 'custom', numeric: false, disablePadding: false, label: 'Acciones' },
-                ]}
-                rows={rowList || []}
-                sortTable={false}
-                rowsPerPage={30}
-              />
             </MiCard>
           </Grid>
         </Grid>
