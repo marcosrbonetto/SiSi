@@ -127,6 +127,14 @@ class Home extends React.PureComponent {
       valueEmailExcel: '',
       dialogoOpenEmailExcel: false,
       dialogoOpenHabilitarAulaVirtual: false,
+      orderByCuit: false,
+      orderByApellidoNombre: false,
+      orderByPrograma: false,
+      orderByCurso: false,
+      valuePagina: 1,
+      valueTamañoPagina: 10,
+      valueOrderBy: 1,
+      valueOrderByAsc: true,
     };
   }
 
@@ -233,7 +241,21 @@ class Home extends React.PureComponent {
       filters['lugar'] = this.state.valueInputLugar;
     }
 
-    Rules_Gestor.getPreinsciptos(token, filters).then((datos) => {
+
+    
+    filters['pagina'] = this.state.valuePagina || 0;
+
+    
+    filters['tamañoPagina'] = this.state.valueTamañoPagina || 50;
+
+    
+    filters['orderBy'] = this.state.valueOrderBy || 1;
+
+    
+    filters['orderByAsc'] = this.state.valueOrderByAsc || true;
+
+
+    Rules_Gestor.getPreinsciptosPaginados(token, filters).then((datos) => {
       this.props.mostrarCargando(false);
       if (!datos.ok) {
         mostrarAlerta('Ocurrió un error al intentar obtener los preinscriptos.');
@@ -241,23 +263,6 @@ class Home extends React.PureComponent {
       }
 
       let listaPreinscriptos = [];
-
-      // {
-      //   "idUsuario": 0,
-      //   "nombre": "string",
-      //   "apellido": "string",
-      //   "cuit": "string",
-      //   "email": "string",
-      //   "fechaPreinscricion": "2019-03-11T14:26:14.556Z",
-      //   "tieneEmpresa": true,
-      //   "nombreEmpresa": "string",
-      //   "cuitEmpresa": "string",
-      //   "domicilioEmpresa": "string",
-      //   "descripcionEmpresa": "string",
-      //   "filaDeEspera": true,
-      //   "idCurso": 0,
-      //   "idPrograma": 0
-      // }
 
       datos.return.map((preinscripto) => {
 
@@ -302,7 +307,7 @@ class Home extends React.PureComponent {
     })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar obtener los preinscriptos.');
-        console.error('Error Servicio "Rules_Gestor.getPreinsciptos": ' + error);
+        console.error('Error Servicio "Rules_Gestor.getPreinsciptosPaginados": ' + error);
       });
 
   }
@@ -867,6 +872,31 @@ class Home extends React.PureComponent {
     });
   }
 
+  
+  onTablaPaginaChange = (e, index) => {
+    if (index == this.state.valuePagina) return;
+
+    this.setState({ rowList: [], valuePagina: index }, () => {
+      this.cargarPreinscriptos();
+    });
+  };
+
+  onTablaPaginaTamChange = (a, b) => {
+    var tam = b.key;
+
+    if (this.state.valueTamañoPagina == tam) return;
+
+    this.setState({ valueTamañoPagina: tam }, () => {
+      this.cargarPreinscriptos();
+    });
+  };
+
+  headerOrderBy = (col, value) => {
+    this.setState({ [col]: !value }, () => {
+      this.cargarPreinscriptos();
+    });
+  }
+
   render() {
     const { classes, paraMobile } = this.props;
     const {
@@ -1025,22 +1055,32 @@ class Home extends React.PureComponent {
               </React.Fragment>}
 
               <br/>
+
               <MiTablaPaginada
                     cols={[
                       {
                         id: "cuit",
                         label: "CUIT",
-                        orderBy: undefined
+                        orderBy: this.state.orderByCuit,
+                        onHeaderClick: () => { this.headerOrderBy("cuit", this.state.orderByCuit) },
+                      },
+                      {
+                        id: "apellidoNombre",
+                        label: "Apellido Nombre",
+                        orderBy: this.state.orderByApellidoNombre,
+                        onHeaderClick: () => { this.headerOrderBy("apellidoNombre", this.state.orderByApellidoNombre) },
                       },
                       {
                         id: "programa",
                         label: "Programa",
-                        orderBy: undefined
+                        orderBy: this.state.orderByPrograma,
+                        onHeaderClick: () => { this.headerOrderBy("programa", this.state.orderByPrograma) },
                       },
                       {
                         id: "curso",
                         label: "Curso",
-                        orderBy: undefined
+                        orderBy: this.state.orderByCurso,
+                        onHeaderClick: () => { this.headerOrderBy("curso", this.state.orderByCurso) },
                       },
                       {
                         id: "aula",
@@ -1069,11 +1109,11 @@ class Home extends React.PureComponent {
                       }
                     ]}
                     rows={rowList || []}
-                    rowsPerPage={30}
-                    //count={0}
-                    //page={1}
-                    onChangePage={() => {}}
-                    onChangeRowsPerPage={() => {}}
+                    rowsPerPage={this.state.valueTamañoPagina}
+                    count={rowList.length}
+                    page={this.state.valuePagina}
+                    onChangePage={this.onTablaPaginaChange}
+                    onChangeRowsPerPage={this.onTablaPaginaTamChange}
                   />
 
             </MiCard>

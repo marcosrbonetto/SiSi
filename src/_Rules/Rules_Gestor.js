@@ -1,3 +1,32 @@
+const getPreinsciptosPaginados = (token, body) => {
+
+    return new Promise((resolve, reject) => {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/getPreinsciptosPaginados', {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Token": token
+            },
+            body: JSON.stringify(body)
+        })
+            .then(res => {
+
+                if (res.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+
+                return res.json();
+            })
+            .then(datos => {
+                resolve(datos);
+            })
+            .catch(err => {
+                reject("Error procesando la solicitud");
+            });
+    });
+};
+
 const getPreinsciptos = (token, body) => {
 
     return new Promise((resolve, reject) => {
@@ -409,6 +438,7 @@ const habilitarInscripcionAulaVirtual = (token, body) => {
 
 
 const services = {
+    getPreinsciptosPaginados: getPreinsciptosPaginados,
     getPreinsciptos: getPreinsciptos,
     deletePreinscripcion: deletePreinscripcion,
     getProgramasYCursos: getProgramasYCursos,
