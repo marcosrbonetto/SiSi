@@ -1,7 +1,7 @@
 const getPreinsciptosPaginados = (token, body) => {
 
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/getPreinsciptosPaginados', {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/PreinscriptosPaginados', {
             method: "POST",
             headers: {
                 "Accept": "application/json",

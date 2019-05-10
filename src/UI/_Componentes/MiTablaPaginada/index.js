@@ -67,6 +67,9 @@ class MiTablaPaginada extends React.PureComponent {
                     onClick={this.onHeaderClick}
                     active={col.orderBy != undefined}
                     direction={col.orderBy == true ? "desc" : "asc"}
+                    classes={{
+                      root: classes.orderLabel
+                    }}
                   >
                     {col.label || ""}
                   </TableSortLabel>
@@ -76,9 +79,13 @@ class MiTablaPaginada extends React.PureComponent {
           </TableRow>
         </TableHead>
         <TableBody>
+          {rows.length == 0 && 
+          <TableRow>
+            <TableCell colSpan={cols.length || 6}>{this.props.msgNoRows ? this.props.msgNoRows : 'No se encontraron registros'}</TableCell>
+          </TableRow>
+          }
+
           {rows.map((item, indexRow) => {
-              if(indexRow > 5)
-              return false;
               
             let style = {};
             if (this.props.rowsStyle) {

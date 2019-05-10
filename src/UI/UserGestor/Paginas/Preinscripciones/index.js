@@ -127,14 +127,15 @@ class Home extends React.PureComponent {
       valueEmailExcel: '',
       dialogoOpenEmailExcel: false,
       dialogoOpenHabilitarAulaVirtual: false,
-      orderByCuit: false,
-      orderByApellidoNombre: false,
-      orderByPrograma: false,
-      orderByCurso: false,
-      valuePagina: 1,
+      orderByCuit: undefined,
+      orderByApellidoNombre: undefined,
+      orderByPrograma: undefined,
+      orderByCurso: undefined,
+      valuePagina: 0,
       valueTamañoPagina: 10,
       valueOrderBy: 1,
       valueOrderByAsc: true,
+      countRows: 0
     };
   }
 
@@ -252,7 +253,7 @@ class Home extends React.PureComponent {
     filters['orderBy'] = this.state.valueOrderBy || 1;
 
     
-    filters['orderByAsc'] = this.state.valueOrderByAsc || true;
+    filters['orderByAsc'] = this.state.valueOrderByAsc;
 
 
     Rules_Gestor.getPreinsciptosPaginados(token, filters).then((datos) => {
@@ -264,7 +265,7 @@ class Home extends React.PureComponent {
 
       let listaPreinscriptos = [];
 
-      datos.return.map((preinscripto) => {
+      datos.return.data.map((preinscripto) => {
 
         const idPrograma = parseInt(preinscripto.idPrograma);
         const programa = _.find(this.state.arrayProgramas, { value: idPrograma });
@@ -302,7 +303,8 @@ class Home extends React.PureComponent {
       });
 
       this.setState({
-        rowList: listaPreinscriptos
+        rowList: listaPreinscriptos,
+        countRows: datos.return.count
       });
     })
       .catch((error) => {
@@ -318,6 +320,7 @@ class Home extends React.PureComponent {
       cursoFiltroSeleccionado: -1,
       arrayAulas: [],
       rowList: [],
+      countRows: 0,
       aulaFiltroSeleccionado: -1
     })
   }
@@ -335,6 +338,7 @@ class Home extends React.PureComponent {
       cursoFiltroSeleccionado: item.value,
       arrayAulas: [],
       rowList: [],
+      countRows: 0,
       aulaFiltroSeleccionado: -1
     }, () => {
       if (item.value && item.value != -1) {
@@ -874,15 +878,17 @@ class Home extends React.PureComponent {
 
   
   onTablaPaginaChange = (e, index) => {
-    if (index == this.state.valuePagina) return;
+    const numPagina = index;
+    debugger;
+    if (numPagina == this.state.valuePagina) return;
 
-    this.setState({ rowList: [], valuePagina: index }, () => {
+    this.setState({ rowList: [], valuePagina: numPagina }, () => {
       this.cargarPreinscriptos();
     });
   };
 
-  onTablaPaginaTamChange = (a, b) => {
-    var tam = b.key;
+  onTablaPaginaTamChange = (event) => {
+    var tam = event.target.value;
 
     if (this.state.valueTamañoPagina == tam) return;
 
@@ -891,8 +897,19 @@ class Home extends React.PureComponent {
     });
   };
 
-  headerOrderBy = (col, value) => {
-    this.setState({ [col]: !value }, () => {
+  headerOrderBy = (col) => {
+    const orderValue = this.state.valueOrderByAsc;
+    this.setState({ 
+      valueOrderByAsc: !orderValue, 
+      valueOrderBy: ((col == 'orderByCuit' && 2) ||
+      (col == 'orderByApellidoNombre' && 1) ||
+      (col == 'orderByPrograma' && 4) ||
+      (col == 'orderByCurso' && 3) || 1),
+      orderByCuit: col == 'orderByCuit' ? !orderValue : undefined,
+      orderByApellidoNombre: col == 'orderByApellidoNombre' ? !orderValue : undefined,
+      orderByPrograma: col == 'orderByPrograma' ? !orderValue : undefined,
+      orderByCurso: col == 'orderByCurso' ? !orderValue : undefined,
+    }, () => {
       this.cargarPreinscriptos();
     });
   }
@@ -1038,7 +1055,7 @@ class Home extends React.PureComponent {
         <Grid container spacing={16}>
           <Grid item xs={12} sm={12}>
             <br />
-            <MiCard titulo={"Lista de Preinscriptos (Resultados: "+rowList.length+" filas)"}>
+            <MiCard titulo={"Lista de Preinscriptos (Resultados: "+this.state.countRows+" filas)"}>
               {/* Tabla de detalle del tributo */}
               {rowList.length > 0 && <React.Fragment>
                 <div className={classes.buttonDescargaReporte}>
@@ -1062,25 +1079,25 @@ class Home extends React.PureComponent {
                         id: "cuit",
                         label: "CUIT",
                         orderBy: this.state.orderByCuit,
-                        onHeaderClick: () => { this.headerOrderBy("cuit", this.state.orderByCuit) },
+                        onHeaderClick: () => { this.headerOrderBy("orderByCuit") },
                       },
                       {
                         id: "apellidoNombre",
                         label: "Apellido Nombre",
                         orderBy: this.state.orderByApellidoNombre,
-                        onHeaderClick: () => { this.headerOrderBy("apellidoNombre", this.state.orderByApellidoNombre) },
+                        onHeaderClick: () => { this.headerOrderBy("orderByApellidoNombre") },
                       },
                       {
                         id: "programa",
                         label: "Programa",
                         orderBy: this.state.orderByPrograma,
-                        onHeaderClick: () => { this.headerOrderBy("programa", this.state.orderByPrograma) },
+                        onHeaderClick: () => { this.headerOrderBy("orderByPrograma") },
                       },
                       {
                         id: "curso",
                         label: "Curso",
                         orderBy: this.state.orderByCurso,
-                        onHeaderClick: () => { this.headerOrderBy("curso", this.state.orderByCurso) },
+                        onHeaderClick: () => { this.headerOrderBy("orderByCurso") },
                       },
                       {
                         id: "aula",
@@ -1110,7 +1127,7 @@ class Home extends React.PureComponent {
                     ]}
                     rows={rowList || []}
                     rowsPerPage={this.state.valueTamañoPagina}
-                    count={rowList.length}
+                    count={this.state.countRows}
                     page={this.state.valuePagina}
                     onChangePage={this.onTablaPaginaChange}
                     onChangeRowsPerPage={this.onTablaPaginaTamChange}

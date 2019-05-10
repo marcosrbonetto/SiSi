@@ -1,5 +1,9 @@
 const styles = theme => {
     return {
+      orderLabel: {
+        color: '#fff !important',
+        cursor: 'pointer'
+      },
       tableHead: { 
         backgroundColor: "#149257",
       },
