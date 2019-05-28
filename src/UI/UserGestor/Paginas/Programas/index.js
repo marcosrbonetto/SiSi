@@ -33,6 +33,8 @@ import MiInput from "@Componentes/MiInput";
 import Rules_Gestor from "@Rules/Rules_Gestor";
 import { mostrarAlerta, mostrarMensaje, dateToString } from "@Utils/functions";
 
+import FormPrograma from "@ComponentesProgramasGestor/FormPrograma.js";
+
 const mapStateToProps = state => {
   return {
     loggedUser: state.Usuario.loggedUser,
@@ -56,6 +58,7 @@ class Programas extends React.PureComponent {
     this.idProgramaAExportarExcel = null;
     
     this.state = {
+      dialogModificarPrograma: false,
       arrayProgramas: [],
       valueInputNombre: '',
       rowList: [],
@@ -90,11 +93,14 @@ class Programas extends React.PureComponent {
           const itemPrograma = {
             nombre: programa.nombre,
             descripcion: programa.descripcion != '' ? programa.descripcion : '',
-            acciones: <React.Fragment>
-              <Button title="Enviar Excel" idPrograma={programa.id} onClick={this.onDialogOpenExportarExcelPrograma} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+            acciones: <div className={this.props.classes.iconContainer}>
+              <Button title="Enviar Excel" idPrograma={programa.id} onClick={this.onDialogOpenExportarExcelPrograma} size="small" color="secondary" className={classNames(this.props.classes.icono, this.props.classes.iconoExportar)}>
                 <EmailIcon />
               </Button>
-            </React.Fragment>,
+              <Button title="Modificar" idPrograma={programa.id} onClick={this.onDialogOpenModificarPrograma} size="small" color="secondary" className={classNames(this.props.classes.icono, this.props.classes.iconoModificar)}>
+                <i class="material-icons">edit</i>
+              </Button>
+            </div>,
             data: {
               ...programa
             }
@@ -134,6 +140,34 @@ class Programas extends React.PureComponent {
     this.setState({
       dialogExportarExcelPrograma: false
     })
+  }
+
+  onDialogOpenModificarPrograma = (event) => {
+    const idPrograma = event.currentTarget.attributes.idPrograma.value;
+    if (!idPrograma) return false;
+    this.idProgramaAModificar = idPrograma;
+    
+    const programa = this.state.arrayProgramas.find((o) => {
+      return o.data.id == idPrograma;
+    });
+    this.programaAModificar = programa || null;
+
+    this.setState({
+      dialogModificarPrograma: true
+    })
+  }
+
+  onDialogCloseModificarPrograma = () => {
+    this.idProgramaAModificar = null;
+    this.programaAModificar = null;
+
+    this.setState({
+      dialogModificarPrograma: false
+    })
+  }
+
+  onSubmitModificarPrograma = (programaValues) => {
+    //AJAX MODIFICAR
   }
 
   onChangeInputNombre = (value) => {
@@ -221,6 +255,7 @@ class Programas extends React.PureComponent {
   render() {
     const { classes } = this.props;
     const {
+      dialogModificarPrograma,
       dialogExportarExcelPrograma,
       rowList,
       valueInputNombre,
@@ -325,6 +360,24 @@ class Programas extends React.PureComponent {
             className={classes.inputWidth}
           />
         </MiControledDialog>
+
+
+
+
+
+
+
+
+        <MiControledDialog
+          open={dialogModificarPrograma}
+          onDialogoOpen={this.onDialogOpenModificarPrograma}
+          onDialogoClose={this.onDialogCloseModificarPrograma}
+          titulo={'Modificación de Programa'}
+          classMaxWidth={classes.dialogExpand}
+        >
+          <FormPrograma programa={this.programaAModificar} onSubmit={this.onSubmitModificarPrograma} />
+        </MiControledDialog>
+
       </section>
     );
   }

@@ -30,7 +30,7 @@ const styles = theme => ({
     width: '100%',
     marginTop: '8px',
   },
-  iconoAceptar: {
+  icono: {
     background: '#fff',
     border: '1px solid ' +theme.color.ok.main,
     color: theme.color.ok.main,
@@ -43,15 +43,48 @@ const styles = theme => ({
       color: '#fff'
     }
   },
+  iconoActivar: {
+    background: '#fff',
+    border: '1px solid ' + theme.color.unblock.main,
+    color: theme.color.unblock.main,
+    '&:hover': {
+      background: theme.color.unblock.main,
+      color: '#fff'
+    }
+  },
+  iconoCerrar: {
+    background: '#fff',
+    border: '1px solid ' + theme.color.block.main,
+    color: theme.color.block.main,
+    '&:hover': {
+      background: theme.color.block.main,
+      color: '#fff'
+    }
+  },
+  iconoAgregar: {
+    background: '#fff',
+    border: '1px solid ' + theme.color.info.main,
+    color: theme.color.info.main,
+    '&:hover': {
+      background: theme.color.info.main,
+      color: '#fff'
+    }
+  },
+  iconoModificar: {
+    background: '#fff',
+    border: '1px solid ' + theme.color.ok.main,
+    color: theme.color.ok.main,
+    '&:hover': {
+      background: theme.color.ok.main,
+      color: '#fff'
+    }
+  },
   iconoEliminar: {
     background: '#fff',
-    border: '1px solid #cacaca',
-    color: '#cacaca',
-    boxShadow: 'none',
-    minWidth: '10px',
-    borderRadius: '30px',
+    border: '1px solid ' + theme.color.error.main,
+    color: theme.color.error.main,
     '&:hover': {
-      background: '#cacaca',
+      background: theme.color.error.main,
       color: '#fff'
     }
   },
@@ -91,6 +124,10 @@ const styles = theme => ({
   },
   contentTable: {
     marginTop: '14px'
+  },
+  addButtonWrapper: {
+    width: '100%',
+    textAlign: 'right'
   }
 });
 

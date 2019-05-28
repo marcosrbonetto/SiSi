@@ -107,6 +107,8 @@ module.exports = {
       "@ComponentesProgramas": "UI/UserCiudadano/Paginas/Programas/Componentes",
       "@ComponentesProgramasVirtuales": "UI/UserCiudadano/Paginas/ProgramasVirtuales/Componentes",
       "@ComponentesPreinscripciones": "UI/UserGestor/Paginas/Preinscripciones/Componentes",
+      "@ComponentesProgramasGestor": "UI/UserGestor/Paginas/Programas/Componentes",
+      "@ComponentesCursosGestor": "UI/UserGestor/Paginas/Cursos/Componentes",
       "@UI": "UI",
       "@ReduxSrc": "_Redux/Src"
     },

@@ -30,7 +30,7 @@ const styles = theme => ({
     width: '100%',
     marginTop: '8px',
   },
-  iconoAceptar: {
+  icono: {
     background: '#fff',
     border: '1px solid ' +theme.color.ok.main,
     color: theme.color.ok.main,
@@ -43,17 +43,35 @@ const styles = theme => ({
       color: '#fff'
     }
   },
+  iconoExportar: {
+    background: '#fff',
+    border: '1px solid ' + theme.color.info.main,
+    color: theme.color.info.main,
+    '&:hover': {
+      background: theme.color.info.main,
+      color: '#fff'
+    }
+  },
+  iconoModificar: {
+    background: '#fff',
+    border: '1px solid ' + theme.color.ok.main,
+    color: theme.color.ok.main,
+    '&:hover': {
+      background: theme.color.ok.main,
+      color: '#fff'
+    }
+  },
   iconoEliminar: {
     background: '#fff',
     border: '1px solid ' + theme.color.error.main,
     color: theme.color.error.main,
-    boxShadow: 'none',
-    minWidth: '10px',
-    borderRadius: '30px',
     '&:hover': {
       background: theme.color.error.main,
       color: '#fff'
     }
+  },
+  iconContainer: {
+    display: 'flex'
   },
   tituloReporte: {
     fontSize: '1.8em',
@@ -94,6 +112,9 @@ const styles = theme => ({
   },
   dialogWidth: {
     height: '190px',
+    minWidth: '500px'
+  },
+  dialogExpand: {
     minWidth: '500px'
   },
   inputWidth: {

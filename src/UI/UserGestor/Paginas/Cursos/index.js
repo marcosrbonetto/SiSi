@@ -33,6 +33,8 @@ import MiInput from "@Componentes/MiInput";
 import Rules_Gestor from "@Rules/Rules_Gestor";
 import { mostrarAlerta, mostrarMensaje, dateToString } from "@Utils/functions";
 
+import FormCurso from "@ComponentesCursosGestor/FormCurso.js";
+
 const mapStateToProps = state => {
   return {
     loggedUser: state.Usuario.loggedUser,
@@ -57,6 +59,8 @@ class Cursos extends React.PureComponent {
     this.idCursoAActivar = null;
 
     this.state = {
+      dialogAgregarCurso: false,
+      dialogModificarCurso: false,
       programaFiltroSeleccionado: -1,
       arrayProgramas: [],
       cursoFiltroSeleccionado: -1,
@@ -153,14 +157,17 @@ class Cursos extends React.PureComponent {
   getActionsButtons = (curso) => {
     return <React.Fragment version={new Date().getTime()}>
       {curso.fechaBaja != null ?
-        <Button title="Activar" idCurso={curso.id} onClick={this.onDialogOpenActivarCurso} size="small" color="secondary" className={this.props.classes.iconoEliminar}>
+        <Button title="Activar" idCurso={curso.id} onClick={this.onDialogOpenActivarCurso} size="small" color="secondary" className={classNames(this.props.classes.icono, this.props.classes.iconoActivar)}>
           <LockIcon title="Activar" />
         </Button>
         :
-        <Button title="Cerrar" idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={this.props.classes.iconoAceptar}>
+        <Button title="Cerrar" idCurso={curso.id} onClick={this.onDialogOpenCerrarCurso} size="small" color="secondary" className={classNames(this.props.classes.icono, this.props.classes.iconoCerrar)}>
           <LockOpenIcon title="Cerrar" />
         </Button>
       }
+      <Button title="Modificar" idCurso={curso.id} onClick={this.onDialogOpenModificarCurso} size="small" color="secondary" className={classNames(this.props.classes.icono, this.props.classes.iconoModificar)}>
+        <i class="material-icons">edit</i>
+      </Button>
     </React.Fragment>;
   }
 
@@ -328,9 +335,60 @@ class Cursos extends React.PureComponent {
       });
   }
 
+
+
+  onDialogOpenAgregarCurso = (event) => {
+    this.setState({
+      dialogAgregarCurso: true
+    })
+  }
+
+  onDialogCloseAgregarCurso = () => {
+    this.idCursoAAgregar = null;
+    this.cursoAAgregar = null;
+
+    this.setState({
+      dialogAgregarCurso: false
+    })
+  }
+
+  onSubmitAgregarCurso = (cursoValues) => {
+    //AJAX AGEGAR
+  }
+
+  onDialogOpenModificarCurso = (event) => {
+    const idCurso = event.currentTarget.attributes.idCurso.value;
+    if (!idCurso) return false;
+    this.idCursoAModificar = idCurso;
+
+    const curso = this.state.arrayCursos.find((o) => {
+      return o.data.id == idCurso;
+    });
+    this.cursoAModificar = curso || null;
+
+    this.setState({
+      dialogModificarCurso: true
+    })
+  }
+
+  onDialogCloseModificarCurso = () => {
+    this.idCursoAModificar = null;
+    this.cursoAModificar = null;
+
+    this.setState({
+      dialogModificarCurso: false
+    })
+  }
+
+  onSubmitModificarCurso = (cursoValues) => {
+    //AJAX MODIFICAR
+  }
+
   render() {
     const { classes } = this.props;
     const {
+      dialogAgregarCurso,
+      dialogModificarCurso,
       programaFiltroSeleccionado,
       dialogCerrarCurso,
       dialogActivarCurso,
@@ -412,6 +470,10 @@ class Cursos extends React.PureComponent {
           <Grid item xs={12} sm={12}>
             <br />
             <MiCard titulo="Lista de Cursos">
+              <div className={classes.addButtonWrapper}>
+                <Button color="primary" variant="outlined" onClick={this.onDialogOpenAgregarCurso}>+ Agregar Curso</Button>
+              </div>
+
               {/* Tabla de detalle del tributo */}
               <MiTabla
                 pagination={true}
@@ -470,6 +532,32 @@ class Cursos extends React.PureComponent {
         >
           ¿Esta segura que desea activar el curso seleccionado?
         </MiControledDialog>
+
+
+
+
+
+
+        <MiControledDialog
+          open={dialogAgregarCurso}
+          onDialogoOpen={this.onDialogOpenAgregarCurso}
+          onDialogoClose={this.onDialogCloseAgregarCurso}
+          titulo={'Agregar Curso'}
+          classMaxWidth={classes.dialogExpand}
+        >
+          <FormCurso onSubmit={this.onSubmitAgregarCurso} />
+        </MiControledDialog>
+
+        <MiControledDialog
+          open={dialogModificarCurso}
+          onDialogoOpen={this.onDialogOpenModificarCurso}
+          onDialogoClose={this.onDialogCloseModificarCurso}
+          titulo={'Modificación de Curso'}
+          classMaxWidth={classes.dialogExpand}
+        >
+          <FormCurso curso={this.cursoAModificar} onSubmit={this.onSubmitModificarCurso} />
+        </MiControledDialog>
+
       </section>
     );
   }
