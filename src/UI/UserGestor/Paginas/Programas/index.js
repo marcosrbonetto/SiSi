@@ -31,6 +31,7 @@ import MiSelect from "@Componentes/MiSelect";
 import MiInput from "@Componentes/MiInput";
 
 import Rules_Gestor from "@Rules/Rules_Gestor";
+import Rules_Programas from "@Rules/Rules_Programas";
 import { mostrarAlerta, mostrarMensaje, dateToString } from "@Utils/functions";
 
 import FormPrograma from "@ComponentesProgramasGestor/FormPrograma.js";
@@ -167,7 +168,27 @@ class Programas extends React.PureComponent {
   }
 
   onSubmitModificarPrograma = (programaValues) => {
-    //AJAX MODIFICAR
+    Rules_Programas.updatePrograma(token, body)
+      .then((datos) => {
+        if (!datos.ok) {
+          mostrarAlerta(datos.error);
+          return false;
+        }
+
+        const arrayProgramas = this.state.arrayProgramas.filter((o) => {
+          return o.id != programaValues.id;
+        })
+
+        this.setState({
+          arrayProgramas: [curso, ...arrayProgramas],
+        }, () => {
+          mostrarMensaje('Programa modificado exitosamente!');
+        });
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar modificar el programa.');
+        console.error('Error Servicio "Rules_Programas.updatePrograma": ' + error);
+      });
   }
 
   onChangeInputNombre = (value) => {

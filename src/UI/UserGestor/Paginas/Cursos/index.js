@@ -31,6 +31,7 @@ import MiSelect from "@Componentes/MiSelect";
 import MiInput from "@Componentes/MiInput";
 
 import Rules_Gestor from "@Rules/Rules_Gestor";
+import Rules_Cursos from "@Rules/Rules_Cursos";
 import { mostrarAlerta, mostrarMensaje, dateToString } from "@Utils/functions";
 
 import FormCurso from "@ComponentesCursosGestor/FormCurso.js";
@@ -352,8 +353,27 @@ class Cursos extends React.PureComponent {
     })
   }
 
-  onSubmitAgregarCurso = (cursoValues) => {
-    //AJAX AGEGAR
+  onSubmitAgregarCurso = (curso) => {
+
+    Rules_Cursos.insertCurso(token, body)
+      .then((datos) => {
+        if (!datos.ok) {
+          mostrarAlerta(datos.error);
+          return false;
+        }
+
+        this.setState({
+          arrayCursos: [curso, ...this.state.arrayCursos],
+        }, () => {
+          mostrarMensaje('Curso agregado exitosamente!');
+        });
+        
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar crear el curso.');
+        console.error('Error Servicio "Rules_Cursos.insertCurso": ' + error);
+      });
+
   }
 
   onDialogOpenModificarCurso = (event) => {
@@ -381,7 +401,27 @@ class Cursos extends React.PureComponent {
   }
 
   onSubmitModificarCurso = (cursoValues) => {
-    //AJAX MODIFICAR
+    Rules_Cursos.updateCurso(token, body)
+      .then((datos) => {
+        if (!datos.ok) {
+          mostrarAlerta(datos.error);
+          return false;
+        }
+
+        const arrayCursos = this.state.arrayCursos.filter((o) => {
+          return o.id != cursoValues.id;
+        })
+
+        this.setState({
+          arrayCursos: [curso, ...arrayCursos],
+        }, () => {
+          mostrarMensaje('Curso modificado exitosamente!');
+        });
+      })
+      .catch((error) => {
+        mostrarAlerta('Ocurrió un error al intentar modificar el curso.');
+        console.error('Error Servicio "Rules_Cursos.updateCurso": ' + error);
+      });
   }
 
   render() {
