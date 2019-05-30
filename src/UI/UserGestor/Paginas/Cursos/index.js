@@ -353,9 +353,10 @@ class Cursos extends React.PureComponent {
     })
   }
 
-  onSubmitAgregarCurso = (curso) => {
+  onSubmitAgregarCurso = (cursoValues) => {
+    const token = this.props.loggedUser.token;
 
-    Rules_Cursos.insertCurso(token, body)
+    Rules_Cursos.insertCurso(token, {})
       .then((datos) => {
         if (!datos.ok) {
           mostrarAlerta(datos.error);
@@ -363,7 +364,7 @@ class Cursos extends React.PureComponent {
         }
 
         this.setState({
-          arrayCursos: [curso, ...this.state.arrayCursos],
+          arrayCursos: [cursoValues, ...this.state.arrayCursos],
         }, () => {
           mostrarMensaje('Curso agregado exitosamente!');
         });
@@ -401,7 +402,9 @@ class Cursos extends React.PureComponent {
   }
 
   onSubmitModificarCurso = (cursoValues) => {
-    Rules_Cursos.updateCurso(token, body)
+    const token = this.props.loggedUser.token;
+
+    Rules_Cursos.updateCurso(token, {})
       .then((datos) => {
         if (!datos.ok) {
           mostrarAlerta(datos.error);

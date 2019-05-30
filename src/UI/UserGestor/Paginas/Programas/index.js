@@ -168,7 +168,9 @@ class Programas extends React.PureComponent {
   }
 
   onSubmitModificarPrograma = (programaValues) => {
-    Rules_Programas.updatePrograma(token, body)
+    const token = this.props.loggedUser.token;
+    
+    Rules_Programas.updatePrograma(token, {})
       .then((datos) => {
         if (!datos.ok) {
           mostrarAlerta(datos.error);
@@ -180,7 +182,7 @@ class Programas extends React.PureComponent {
         })
 
         this.setState({
-          arrayProgramas: [curso, ...arrayProgramas],
+          arrayProgramas: [programaValues, ...arrayProgramas],
         }, () => {
           mostrarMensaje('Programa modificado exitosamente!');
         });
