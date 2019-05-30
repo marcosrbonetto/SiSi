@@ -16,7 +16,6 @@ const validationForm = Yup.object().shape({
         .max(50, 'No sebe insertar más de 50 caracteres')
         .required('Campo requerido'),
     descripcion: Yup.string()
-        .max(225, 'No sebe insertar más de 225 caracteres')
         .required('Campo requerido'),
     fechaInicioInscripcion: Yup.string()
         .required('Campo requerido'),
@@ -58,8 +57,11 @@ class FormPrograma extends React.Component {
 
     handleSubmit = (values) => {
         const programaValues = {
+            ...values,
             id: this.props.programa.data.id || undefined,
-            ...values
+            menos24: values.menos24 == "1" ? true : false,
+            soloParaDesocupados: values.soloParaDesocupados == "1" ? true : false,
+            esVirtual: values.esVirtual == "1" ? true : false
         };
 
         this.props.onSubmit && this.props.onSubmit(programaValues);
@@ -70,6 +72,9 @@ class FormPrograma extends React.Component {
 
         if(!programa) return <Typography>Error, vuelva a intentarlo</Typography>;
 
+        const inicioInscripcion = programa.data.inicioInscripcion ? programa.data.inicioInscripcion.split("T")[0] : false;
+        const finInscripcion = programa.data.finInscripcion ? programa.data.finInscripcion.split("T")[0] : false;
+
         return (
             <Formik
                 initialValues={{
@@ -77,8 +82,8 @@ class FormPrograma extends React.Component {
                     descripcion: programa.data.descripcion || "",
                     menos24: programa.data.menos24 ? "1" : "0",
                     soloParaDesocupados: programa.data.soloParaDesocupados ? "1" : "0",
-                    fechaInicioInscripcion: programa.data.finInscripcion || "",
-                    fechaFinInscripcion: programa.data.fechaBaja || "",
+                    fechaInicioInscripcion: inicioInscripcion || "",
+                    fechaFinInscripcion: finInscripcion || "",
                     estudiosAlcanzadosLimInf: programa.data.keyValueEstudioAlcanzadoLimiteInferior || "",
                     estudiosAlcanzadosLimSup: programa.data.keyValueEstudioAlcanzadoLimiteSuperior || "",
                     esVirtual: programa.data.esVirtual ? "1" : "0",
@@ -114,6 +119,8 @@ class FormPrograma extends React.Component {
                                                 name: "descripcion",
                                                 label: "Descripción del Programa",
                                                 placeholder: "Inserte Descripción del Programa",
+                                                multiline: true,
+                                                maxLength: 500
                                             })
                                         )}
                                     />

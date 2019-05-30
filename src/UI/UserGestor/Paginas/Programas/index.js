@@ -93,7 +93,7 @@ class Programas extends React.PureComponent {
 
           const itemPrograma = {
             nombre: programa.nombre,
-            descripcion: programa.descripcion != '' ? programa.descripcion : '',
+            descripcion: programa.descripcion != '' ? <div style={{overflow: 'hidden', maxHeight: '38px'}}>{programa.descripcion}</div> : '',
             acciones: <div className={this.props.classes.iconContainer}>
               <Button title="Enviar Excel" idPrograma={programa.id} onClick={this.onDialogOpenExportarExcelPrograma} size="small" color="secondary" className={classNames(this.props.classes.icono, this.props.classes.iconoExportar)}>
                 <EmailIcon />
@@ -159,33 +159,28 @@ class Programas extends React.PureComponent {
   }
 
   onDialogCloseModificarPrograma = () => {
-    this.idProgramaAModificar = null;
-    this.programaAModificar = null;
 
     this.setState({
       dialogModificarPrograma: false
-    })
+    }, () => {
+      this.idProgramaAModificar = null;
+      this.programaAModificar = null;
+    });
   }
 
   onSubmitModificarPrograma = (programaValues) => {
     const token = this.props.loggedUser.token;
     
-    Rules_Programas.updatePrograma(token, {})
+    Rules_Programas.updatePrograma(token, programaValues)
       .then((datos) => {
         if (!datos.ok) {
           mostrarAlerta(datos.error);
           return false;
         }
 
-        const arrayProgramas = this.state.arrayProgramas.filter((o) => {
-          return o.id != programaValues.id;
-        })
-
-        this.setState({
-          arrayProgramas: [programaValues, ...arrayProgramas],
-        }, () => {
-          mostrarMensaje('Programa modificado exitosamente!');
-        });
+        this.cargarProgramas();
+        mostrarMensaje('Programa modificado exitosamente!');
+        this.onDialogCloseModificarPrograma();
       })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar modificar el programa.');

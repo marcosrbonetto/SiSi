@@ -6,7 +6,7 @@ const ENTORNO = LOCAL;
 //Url Root
 const URL_ROOT_SISI_LOCAL = "http://localhost:3000/#";
 const URL_ROOT_SISI_TEST = "http://localhost:3000/#";
-const URL_ROOT_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/SiSiPresencial/#";
+const URL_ROOT_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/SiSi/#";
 let URL_ROOT_SISI = URL_ROOT_SISI_DEPLOY;
 
 //WS SISI
@@ -16,9 +16,9 @@ const URL_WS_SISI_DEPLOY = "https://servicios2.cordoba.gov.ar/WSSiSi_Bridge";
 let URL_WS_SISI = URL_WS_SISI_DEPLOY;
 
 //Url Login
-const URL_LOGIN_LOCAL = "https://servicios2.cordoba.gov.ar/MuniOnlineLogin/#/Login/SiSiPresencialLocal";
-const URL_LOGIN_TEST = "https://servicios2.cordoba.gov.ar/MuniOnlineLogin/#/Login/SiSiPresencialTest";
-const URL_LOGIN_DEPLOY = "https://servicios2.cordoba.gov.ar/MuniOnlineLogin/#/Login/SiSiPresencial";
+const URL_LOGIN_LOCAL = "https://servicios2.cordoba.gov.ar/MuniOnlineLogin/#/Login/SiSiLocal";
+const URL_LOGIN_TEST = "https://servicios2.cordoba.gov.ar/MuniOnlineLogin/#/Login/SiSiTest";
+const URL_LOGIN_DEPLOY = "https://servicios2.cordoba.gov.ar/MuniOnlineLogin/#/Login/SiSi";
 let URL_LOGIN = URL_LOGIN_DEPLOY;
 
 //Segun el entorno, cargo las variables
@@ -50,7 +50,7 @@ switch (ENTORNO) {
 
 var Config = {
   URL_ROOT: URL_ROOT_SISI, 
-  BASE_URL: "/SiSiPresencial",
+  BASE_URL: "/SiSi",
   BASE_URL_WS: URL_WS_SISI,
   VV_URL_WS: "https://servicios2.cordoba.gov.ar/WSVecinoVirtual_Bridge",
   WS_CORDOBA_GEO: "https://servicios2.cordoba.gov.ar/CordobaGeoApi",

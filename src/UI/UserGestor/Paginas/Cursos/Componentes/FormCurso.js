@@ -20,7 +20,7 @@ const validationForm = Yup.object().shape({
     lugarDeCursado: Yup.string()
         .max(50, 'No sebe insertar más de 50 caracteres')
         .required('Campo requerido'),
-    Cupo: Yup.number()
+    cupo: Yup.number()
         .typeError('Debe ingresar un número')
         .positive('Debe ingresar un numero positivo')
         .required('Campo requerido'),
@@ -28,25 +28,26 @@ const validationForm = Yup.object().shape({
         .typeError('Debe ingresar un número')
         .positive('Debe ingresar un numero positivo')
         .required('Campo requerido'),
-    dia: Yup.number()
-        .typeError('Debe ingresar un número')
-        .positive('Debe ingresar un numero positivo')
+    dia: Yup.string()
+        .max(50, 'No sebe insertar más de 50 caracteres')
         .required('Campo requerido'),
-    Horario: Yup.number()
-        .typeError('Debe ingresar un número')
-        .positive('Debe ingresar un numero positivo')
+    horario: Yup.string()
+        .max(50, 'No sebe insertar más de 50 caracteres')
         .required('Campo requerido'),
     tag: Yup.string()
         .max(50, 'No sebe insertar más de 50 caracteres')
+        .required('Campo requerido'),
 });
 
 class FormCurso extends React.Component {
 
     handleSubmit = (values) => {
+
         const cursoValues = {
-            id: this.props.curso.data.id || undefined,
-            idPrograma: this.props.curso.data.idPrograma || undefined,
-            ...values
+            ...values,
+            id: this.props.curso ? this.props.curso.data.id : '',
+            idPrograma: 9 || '', // falta combo programas
+            necesitaEmpresa: values.necesitaEmpresa == "1" ? true : false,
         };
 
         this.props.onSubmit && this.props.onSubmit(cursoValues);
@@ -101,9 +102,10 @@ class FormCurso extends React.Component {
                                         render={({ field }) => (
                                             getInputText(field, formProps, classes, {
                                                 name: "descripcion1",
-                                                label: "Descripción 1 del Curso",
+                                                label: "Descripción 1 del curso",
                                                 placeholder: "Inserte Descripción",
-                                                multiline: true
+                                                multiline: true,
+                                                maxLength: 500
                                             })
                                         )}
                                     />
@@ -117,9 +119,10 @@ class FormCurso extends React.Component {
                                         render={({ field }) => (
                                             getInputText(field, formProps, classes, {
                                                 name: "descripcion2",
-                                                label: "Descripción 2 del Curso",
+                                                label: "Descripción 2 del curso",
                                                 placeholder: "Inserte Descripción 2",
-                                                multiline: true
+                                                multiline: true,
+                                                maxLength: 500
                                             })
                                         )}
                                     />
@@ -133,7 +136,7 @@ class FormCurso extends React.Component {
                                         render={({ field }) => (
                                             getInputText(field, formProps, classes, {
                                                 name: "cupo",
-                                                label: "Cupo para el Curso",
+                                                label: "Cupo para el curso",
                                                 placeholder: "Inserte cupo",
                                             })
                                         )}
@@ -160,7 +163,7 @@ class FormCurso extends React.Component {
                                         render={({ field }) => (
                                             getInputText(field, formProps, classes, {
                                                 name: "dia",
-                                                label: "Día de cursadp",
+                                                label: "Día de cursado",
                                                 placeholder: "Inserte día de cursado",
                                             })
                                         )}
@@ -212,7 +215,7 @@ class FormCurso extends React.Component {
                                         render={({ field }) => (
                                             getInputText(field, formProps, classes, {
                                                 name: "lugarDeCursado",
-                                                label: "Lugar de cursadp",
+                                                label: "Lugar de cursado",
                                                 placeholder: "Inserte lugar de cursado",
                                             })
                                         )}

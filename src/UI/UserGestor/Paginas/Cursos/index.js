@@ -345,29 +345,28 @@ class Cursos extends React.PureComponent {
   }
 
   onDialogCloseAgregarCurso = () => {
-    this.idCursoAAgregar = null;
-    this.cursoAAgregar = null;
 
     this.setState({
       dialogAgregarCurso: false
+    }, () => {
+      this.idCursoAAgregar = null;
+      this.cursoAAgregar = null;
     })
   }
 
   onSubmitAgregarCurso = (cursoValues) => {
     const token = this.props.loggedUser.token;
 
-    Rules_Cursos.insertCurso(token, {})
+    Rules_Cursos.insertCurso(token, cursoValues)
       .then((datos) => {
         if (!datos.ok) {
           mostrarAlerta(datos.error);
           return false;
         }
 
-        this.setState({
-          arrayCursos: [cursoValues, ...this.state.arrayCursos],
-        }, () => {
-          mostrarMensaje('Curso agregado exitosamente!');
-        });
+        this.cargarProgramasYCursos();
+        mostrarMensaje('Curso agregado exitosamente!');
+        this.onDialogCloseAgregarCurso();
         
       })
       .catch((error) => {
@@ -393,33 +392,28 @@ class Cursos extends React.PureComponent {
   }
 
   onDialogCloseModificarCurso = () => {
-    this.idCursoAModificar = null;
-    this.cursoAModificar = null;
 
     this.setState({
       dialogModificarCurso: false
+    }, () => {
+      this.idCursoAModificar = null;
+      this.cursoAModificar = null;
     })
   }
 
   onSubmitModificarCurso = (cursoValues) => {
     const token = this.props.loggedUser.token;
 
-    Rules_Cursos.updateCurso(token, {})
+    Rules_Cursos.updateCurso(token, cursoValues)
       .then((datos) => {
         if (!datos.ok) {
           mostrarAlerta(datos.error);
           return false;
         }
 
-        const arrayCursos = this.state.arrayCursos.filter((o) => {
-          return o.id != cursoValues.id;
-        })
-
-        this.setState({
-          arrayCursos: [curso, ...arrayCursos],
-        }, () => {
-          mostrarMensaje('Curso modificado exitosamente!');
-        });
+        this.cargarProgramasYCursos();
+        mostrarMensaje('Curso modificado exitosamente!');
+        this.onDialogCloseModificarCurso();
       })
       .catch((error) => {
         mostrarAlerta('Ocurrió un error al intentar modificar el curso.');
