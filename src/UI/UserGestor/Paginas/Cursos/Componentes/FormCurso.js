@@ -72,7 +72,7 @@ class FormCurso extends React.Component {
                     horario: cursoDatos ? cursoDatos.horario : "",
                     descripcion1: cursoDatos ? cursoDatos.descripcion1 : "",
                     descripcion2: cursoDatos ? cursoDatos.descripcion2 : "",
-                    tag: cursoDatos ? cursoDatos.tag : ""
+                    tag: cursoDatos ? (cursoDatos.tag ? cursoDatos.tag : "") : ""
                 }}
                 validationSchema={validationForm}
                 onSubmit={this.handleSubmit}
