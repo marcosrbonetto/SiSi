@@ -582,7 +582,7 @@ class Cursos extends React.PureComponent {
           titulo={'Agregar Curso'}
           classMaxWidth={classes.dialogExpand}
         >
-          <FormCurso onSubmit={this.onSubmitAgregarCurso} />
+          <FormCurso onSubmit={this.onSubmitAgregarCurso} arrayProgramas={arrayProgramas} />
         </MiControledDialog>
 
         <MiControledDialog

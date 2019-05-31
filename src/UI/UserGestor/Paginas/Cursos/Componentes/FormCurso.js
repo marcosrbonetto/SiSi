@@ -46,7 +46,6 @@ class FormCurso extends React.Component {
         const cursoValues = {
             ...values,
             id: this.props.curso ? this.props.curso.data.id : '',
-            idPrograma: 9 || '', // falta combo programas
             necesitaEmpresa: values.necesitaEmpresa == "1" ? true : false,
         };
 
@@ -63,6 +62,7 @@ class FormCurso extends React.Component {
         return (
             <Formik
                 initialValues={{
+                    idPrograma: 9, //CID
                     nombre: cursoDatos ? cursoDatos.nombre : "",
                     necesitaEmpresa: cursoDatos ? (cursoDatos.necesitaEmpresa ? "1" : "0") : "0",
                     cupo: cursoDatos ? cursoDatos.cupo : "",
@@ -80,6 +80,26 @@ class FormCurso extends React.Component {
 
                     return (
                         <Form>
+                            {!curso && <React.Fragment>
+                            <Grid container spacing={16} justifiy="center">
+                                <Grid item xs={12} sm={12}>
+                                    <Field
+                                        name={"idPrograma"}
+                                        render={({ field }) => (
+                                            getSelect(field, formProps, classes, {
+                                                name: "idPrograma",
+                                                label: "Programa",
+                                                placeholder: "Seleccione el Programa",
+                                                itemsSelect: this.props.arrayProgramas || [{
+                                                    value: "9",
+                                                    label: "CID"
+                                                }]
+                                            })
+                                        )}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <br /></React.Fragment>}
                             <Grid container spacing={16} justifiy="center">
                                 <Grid item xs={12} sm={12}>
                                     <Field
