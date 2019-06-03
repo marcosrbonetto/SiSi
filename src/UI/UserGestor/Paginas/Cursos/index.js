@@ -364,7 +364,9 @@ class Cursos extends React.PureComponent {
           return false;
         }
 
-        this.cargarProgramasYCursos();
+        this.cargarProgramasYCursos(() => {
+          this.handleBuscarCursos();
+        });
         mostrarMensaje('Curso agregado exitosamente!');
         this.onDialogCloseAgregarCurso();
         
@@ -411,7 +413,9 @@ class Cursos extends React.PureComponent {
           return false;
         }
 
-        this.cargarProgramasYCursos();
+        this.cargarProgramasYCursos(() => {
+          this.handleBuscarCursos();
+        });
         mostrarMensaje('Curso modificado exitosamente!');
         this.onDialogCloseModificarCurso();
       })

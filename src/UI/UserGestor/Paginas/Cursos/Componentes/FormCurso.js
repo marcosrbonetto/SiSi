@@ -62,7 +62,7 @@ class FormCurso extends React.Component {
         return (
             <Formik
                 initialValues={{
-                    idPrograma: 9, //CID
+                    idPrograma: cursoDatos ? cursoDatos.idPrograma : 9, //CID
                     nombre: cursoDatos ? cursoDatos.nombre : "",
                     necesitaEmpresa: cursoDatos ? (cursoDatos.necesitaEmpresa ? "1" : "0") : "0",
                     cupo: cursoDatos ? cursoDatos.cupo : "",
