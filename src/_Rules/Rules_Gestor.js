@@ -378,10 +378,10 @@ const getAulas = (token, idCurso) => {
 };
 
 
-const exportarInscripcionesProgramaAExcel = (token, body) => {
+const exportarInscripcionesAlCampusVirtual  = (token, body) => {
     
     return new Promise((resolve, reject) => {
-        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/ExportarInscripcionesProgramaAExcel', {
+        fetch(window.Config.BASE_URL_WS + '/v1/Reporte/ExportarInscripcionesAlCampusVirtual ', {
             method: "POST",
             headers: {
                 "Accept": "application/json",
@@ -451,7 +451,7 @@ const services = {
     exportarPreinscriptos: exportarPreinscriptos,
     asignarAulas: asignarAulas,
     getAulas: getAulas,
-    exportarInscripcionesProgramaAExcel: exportarInscripcionesProgramaAExcel,
+    exportarInscripcionesAlCampusVirtual : exportarInscripcionesAlCampusVirtual ,
     habilitarInscripcionAulaVirtual: habilitarInscripcionAulaVirtual,
 }
 

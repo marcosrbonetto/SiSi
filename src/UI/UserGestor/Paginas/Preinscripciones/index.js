@@ -787,7 +787,7 @@ class Home extends React.PureComponent {
       });
   }
 
-  exportarInscripcionesProgramaAExcel = () => {
+  exportarInscripcionesAlCampusVirtual = () => {
     const habilitarExcelAccesoAulaVirtual = this.state.programaFiltroSeleccionado != -1 && this.state.cursoFiltroSeleccionado != -1 && _.find(this.state.arrayProgramas, (o) => { return o.value == this.state.programaFiltroSeleccionado && o.esVirtual == true });
 
     if (!habilitarExcelAccesoAulaVirtual) {
@@ -812,7 +812,7 @@ class Home extends React.PureComponent {
       valueEmailExcel: '',
       dialogoOpenEmailExcel: false
     }, () => {
-      Rules_Gestor.exportarInscripcionesProgramaAExcel(token, {
+      Rules_Gestor.exportarInscripcionesAlCampusVirtual(token, {
         idCurso: idCurso,
         email: email
       })
@@ -826,13 +826,31 @@ class Home extends React.PureComponent {
 
           this.props.mostrarCargando(false);
           mostrarMensaje('Excel enviado al correo exitosamente!');
+
+          if(datos.return) {
+            mostrarMensaje('A continuación se comenzarán a descargar los archivos.');
+            datos.return.map((item) => {
+              downloadTxtFile(item.link, item.nombreArchivo);
+            });
+          }
+
         })
         .catch((error) => {
           this.props.mostrarCargando(false);
           mostrarAlerta('Ocurrió un error al intentar enviar el txt.');
-          console.error('Error Servicio "Rules_Gestor.exportarInscripcionesProgramaAExcel": ' + error);
+          console.error('Error Servicio "Rules_Gestor.exportarInscripcionesAlCampusVirtual": ' + error);
         });
     });
+  }
+
+  downloadTxtFile = (uri, name) => {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    window.URL.revokeObjectURL(uri);
+    document.body.removeChild(link);
   }
 
   habilitarInscripcionAulaVirtual = () => {
@@ -1355,7 +1373,7 @@ class Home extends React.PureComponent {
           onDialogoClose={this.onDialogoCloseEmailExcel}
           titulo={'Email Exportación Txt'}
           buttonOptions={{
-            onDialogoAccept: this.exportarInscripcionesProgramaAExcel,
+            onDialogoAccept: this.exportarInscripcionesAlCampusVirtual,
             onDialogoCancel: this.onDialogoCloseEmailExcel
           }}
           classContainterContent={classes.widthInputEmailExcel}
@@ -1368,7 +1386,7 @@ class Home extends React.PureComponent {
               value={valueEmailExcel}
               error={false}
               mensajeError={false}
-              label={'Ingrese email al que se le enviará el txt'}
+              label={'Usted va descargar la exportación de inscripciones para el Campus Virtual, además, recibirá los archivos vía e-mail. Ingrese email al que se le enviará los archivos'}
               placeholder={'Ingrese Email...'}
               onChange={this.onChangeInputEmailExcel}
             />
